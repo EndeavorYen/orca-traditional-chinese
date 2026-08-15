@@ -17,9 +17,17 @@ Full coverage of Orca's translatable UI catalog:
 
 ## Installation
 
-Orca discovers language packs through its plugin system. Point Orca at this
-repository (or a local checkout) as a plugin source, then select
-**zh-TW — orca-traditional-chinese** from Settings → Appearance → Language.
+Orca discovers language packs through its plugin system (git marketplaces):
+
+1. Settings → Plugins → **Add marketplace source** with:
+   - Git URL: `https://github.com/a-lang/orca-traditional-chinese.git`
+   - Git ref: `main`
+2. The **Traditional Chinese Language Pack** listing appears in the
+   marketplace browser — install it.
+3. Select **繁體中文（台灣）** from Settings → Appearance → Language.
+
+The marketplace index (`orca-marketplace.json`) lists the pack at
+`a-lang.traditional-chinese`, pinned to the `main` ref.
 
 ## How this pack was built
 

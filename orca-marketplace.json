@@ -1,0 +1,16 @@
+{
+  "name": "Traditional Chinese Language Pack",
+  "owner": "a-lang",
+  "plugins": [
+    {
+      "id": "a-lang.traditional-chinese",
+      "source": {
+        "kind": "git",
+        "url": "https://github.com/a-lang/orca-traditional-chinese.git",
+        "ref": "main"
+      },
+      "description": "Traditional Chinese (zh-TW) translations for Orca.",
+      "categories": ["languages"]
+    }
+  ]
+}
