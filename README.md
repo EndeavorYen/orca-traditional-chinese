@@ -73,8 +73,10 @@ side alone — flagging them here for visibility:
 - **2 inline CSS animation styles** (`review.animated.visual.*.styles.*`)
   exceed the 8,192-char per-string artifact limit and are not translatable
   prose; they are excluded from the pack and fall back to English.
-- The language selector shows **zh-TW — orca-traditional-chinese** (native
-  display names for plugin packs are an upstream work item).
+- The language selector shows **zh-TW — a-lang.traditional-chinese** because
+  upstream renders plugin packs as `{locale} — {pluginKey}`; a native display
+  name (e.g. 中文（繁體）) is tracked upstream in
+  [#13140](https://github.com/stablyai/orca/issues/13140).
 
 ## Contributing
 
