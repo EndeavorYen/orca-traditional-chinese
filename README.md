@@ -1,0 +1,75 @@
+# orca-traditional-chinese
+
+Traditional Chinese (zh-TW) language pack for [Orca](https://github.com/stablyai/orca).
+
+## Status
+
+Full coverage of Orca's translatable UI catalog:
+
+- **12,529 / 12,531** translatable strings translated (99.98%)
+- Settings, sidebars, editor, terminal, GitHub/GitLab/Linear/Jira integrations,
+  onboarding, mobile companion app, dashboard, system tray, and application menu
+- Human-reviewed Taiwan Traditional Chinese — not a mechanical conversion of
+  the Simplified Chinese catalog
+- 2 remaining keys are inline CSS animation styles, not translatable prose
+  (see [Known limitations](#known-limitations)); they fall back to English
+  automatically with no user-facing impact
+
+## Installation
+
+Orca discovers language packs through its plugin system. Point Orca at this
+repository (or a local checkout) as a plugin source, then select
+**zh-TW — orca-traditional-chinese** from Settings → Appearance → Language.
+
+## How this pack was built
+
+The English source (`en.json` from `stablyai/orca`,
+`src/renderer/src/i18n/locales/en.json`) was extracted, split into batches by
+UI namespace, and translated with an LLM-assisted, multi-pass process:
+
+1. Flatten the English catalog into `path -> string` pairs, excluding keys
+   under the plugin-protected namespace (`auto.components.settings.plugin*`,
+   enforced by Orca's own plugin artifact parser) — 180 protected keys stay
+   in English by design.
+2. Translate in batches grouped by component/namespace, with a shared
+   zh-TW glossary (儲存庫 / 終端 / 外掛程式 / 預設 / 設定 …), placeholders
+   preserved verbatim, and brand names / code literals kept untranslated
+   (Claude, Codex, GitHub, Git, Markdown, `orca status`, etc.).
+3. Terminology pass with the l10n-tw glossary tooling: banned simplified-Chinese
+   terms (软件 / 服务器 / 设置 / 加载 …) are auto-replaced, and scan-only terms
+   are adjudicated per namespace.
+4. Cross-batch consistency pass: reconciled terminology that drifted between
+   independently translated batches.
+5. Validated against the same rules Orca's plugin loader enforces at runtime
+   (`parsePluginLanguagePackArtifact`): max 20,000 entries, max depth 16, no
+   dangerous/unsafe keys, no protected paths, no string over 8,192 chars, and
+   `{{placeholder}}` sets preserved per key.
+
+Every translated string was reviewed against the English source; no string
+was left identical to English except where that is the correct choice (brand
+names, technical terms, code/CLI literals, keyboard shortcuts).
+
+## Known limitations
+
+A few upstream i18n design constraints can't be fixed from the translation
+side alone — flagging them here for visibility:
+
+- **Positional placeholder pluralization**: some English strings compose a
+  sentence from an English verb/noun injected via a positional placeholder
+  (e.g. `"{{value0}} PR #{{value1}}?"` where `{{value0}}` is `close`/`reopen`
+  in English). Since Chinese grammar differs from English, these preserve the
+  placeholders and produce the closest natural phrasing possible.
+- **180 plugin-protected keys** under `auto.components.settings.plugin*`
+  (plugin trust, safety, and consent copy) are intentionally left in English —
+  plugin language packs cannot override them by design.
+- **2 inline CSS animation styles** (`review.animated.visual.*.styles.*`)
+  exceed the 8,192-char per-string artifact limit and are not translatable
+  prose; they are excluded from the pack and fall back to English.
+- The language selector shows **zh-TW — orca-traditional-chinese** (native
+  display names for plugin packs are an upstream work item).
+
+## Contributing
+
+Corrections and improvements welcome — please open a PR against
+`locales/zh-TW.json`, keeping the existing key structure and the style
+conventions above.

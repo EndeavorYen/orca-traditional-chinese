@@ -1,0 +1,22 @@
+{
+  "manifestVersion": 1,
+  "id": "orca-traditional-chinese",
+  "publisher": "a-lang",
+  "name": "繁體中文（台灣）",
+  "version": "1.0.0",
+  "description": "Traditional Chinese (zh-TW) translations for Orca.",
+  "repository": "https://github.com/a-lang/orca-traditional-chinese",
+  "engines": {
+    "orca": ">=1.4.0"
+  },
+  "pluginApi": 1,
+  "contributes": {
+    "languagePacks": [
+      {
+        "locale": "zh-TW",
+        "path": "locales/zh-TW.json"
+      }
+    ]
+  },
+  "capabilities": []
+}
