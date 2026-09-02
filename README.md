@@ -84,6 +84,11 @@ side alone — flagging them here for visibility:
   [#13031](https://github.com/stablyai/orca/issues/13031), with an open pull
   request in [#13140](https://github.com/stablyai/orca/pull/13140).
 
+  **Do not add `displayName` to `orca-plugin.json` until that PR ships.**
+  `pluginLanguagePackContributionSchema` is currently `.strict()`, so an
+  unrecognised key fails manifest validation for the whole plugin — the pack
+  would stop loading entirely rather than degrade to the old picker label.
+
 ## Contributing
 
 Corrections and improvements welcome — please open a PR against
