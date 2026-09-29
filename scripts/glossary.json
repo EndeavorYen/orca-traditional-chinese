@@ -1,5 +1,5 @@
 {
-  "_comment": "banned = wrong for Taiwan Traditional (zero occurrences when introduced; validate errors). watch = plausible but non-preferred (validate warns). simplifiedChars = characters that only exist in Simplified Chinese. 程序 is not watched: 處理程序 (process) is the established rendering.",
+  "_comment": "banned = unambiguous mainland terms (validate errors). watch = context-sensitive terms (validate warnings; they do not fail the command). exceptions suppress a hit: patterns are compounds that may contain the term (處理程序 is not a 程序 hit); keys suppress that term on those catalog paths. A term may stay banned while specific hits are excepted. simplifiedChars = characters that only exist in Simplified Chinese.",
   "simplifiedChars": "软设载读这个们为与对没还页务储库据线络专处开关发权时问题选项连击点应标签显频类别组织认证书档错误终测验态压缩预览说话语请该让从样种门东车长风飞马鸟鱼见观规计订记论许访评词译试诉负资赛赞贝贡货购费贴贵买贸贷轨转轮较输边过运远迟适遗总经结给绝统继续维编缓罗义习乡乱争亏产亲仅仑仓价众优传伤伦体侧侦俭债倾偿儿兑内冈册写军农冲决况净减凑凤划则创刘办动励劲势勋区医华协单卖卢卫却历压厂厅县参双变叙叹号吗听启员响哑团园围图圆场块坏坚坛坝声备够头夹夺奋",
   "banned": {
     "軟件": "軟體",
@@ -40,6 +40,13 @@
     "支持": "支援",
     "保存": "儲存",
     "配置": "設定",
-    "渲染": "轉譯／呈現"
+    "渲染": "轉譯／呈現",
+    "程序": "處理程序／行程"
+  },
+  "exceptions": {
+    "程序": {
+      "patterns": ["處理程序"],
+      "keys": []
+    }
   }
 }

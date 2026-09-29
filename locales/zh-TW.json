@@ -146,7 +146,6 @@
         "geminiToggleDescription": "顯示目前工作區的 Gemini Token 與費用用量。",
         "grokToggleDescription": "透過 Grok CLI 登入後，顯示 Grok 訂閱額度用量。",
         "cursorToggleDescription": "透過 cursor-agent 或 Cursor IDE 登入後，顯示 Cursor 方案使用量。",
-        "zcodeToggleDescription": "顯示 ZCode Coding Plan 的配額使用量。",
         "kimiToggleDescription": "顯示目前工作區的 Kimi 訂閱用量。",
         "minimaxToggleDescription": "顯示目前工作區的 MiniMax 訂閱用量。",
         "opencodeGoToggleDescription": "顯示目前工作區的 OpenCode Go Token 與費用用量。",
@@ -10418,11 +10417,6 @@
               "title": "也在原始清單中顯示已釘選的工作樹"
             },
             "usagePercentageDisplayDescription": "選擇供應商額度要顯示已使用或剩餘的百分比。",
-            "zcodeUsageTitle": "ZCode 使用量",
-            "zcodeUsageDescription": "在狀態列中顯示 ZCode Coding Plan 的配額使用量。",
-            "zcode": "zcode",
-            "zai": "zai",
-            "glm": "glm",
             "tray": {
               "tray": "系統匣",
               "system": "系統匣",
@@ -15056,7 +15050,6 @@
             "codexSignInError": "Codex 登入失敗。請再試一次。",
             "cursorUsageMenu": "Cursor 使用量",
             "hiddenUsageProviders": "另有：{{value0}}",
-            "zcodeUsageMenu": "ZCode 使用量",
             "codexSignInSuccess": "已登入 Codex"
           },
           "StatusBarUsageEmptyCta": {
@@ -15234,9 +15227,6 @@
             }
           },
           "tooltip": {
-            "zcode": {
-              "mcp": "MCP"
-            },
             "0d8d7cfe15": "正在等待 Claude 工作階段",
             "1292d4f2ee": "無法使用",
             "1804cd8c3f": "正在重新整理登入狀態",
@@ -15763,7 +15753,6 @@
             "9528a65ef8": "沒有快速命令",
             "98bccf4fa2": "向下分割終端",
             "b4cdd9314e": "清除畫面",
-            "resetTerminal": "重設終端",
             "c2f0b72b8d": "插入",
             "cff67afad1": "複製上下文",
             "clearPaneTitle": "清除窗格標題",
@@ -15783,8 +15772,6 @@
             "42b283ecfc": "Orca 無法安全地重新連接這個終端，因為主機無法驗證它已儲存的工作階段。Orca 未變更已儲存的工作階段。請點選「重試」立即嘗試重新連線。若仍無法連線，請開啟新的終端。",
             "ownerUnknown": "Orca 無法驗證這個終端的擁有者。",
             "remoteTerminalClosed": "遠端終端已關閉。",
-            "ptyAllocationLimit": "您的系統無法再配置更多 pty 裝置。請關閉一些未使用的終端（無論是在 Orca 或其他程式中），然後再試一次。",
-            "terminalProcessLimit": "您的系統無法再啟動另一個終端處理程序。請關閉未使用的終端或結束不需要的處理程序，然後再試一次。",
             "retry": "重試",
             "retrying": "重試中…",
             "retryUnavailable": "重試尚未成功重新連線。請稍後再試一次。",
@@ -15818,9 +15805,6 @@
           "TerminalQuickCommandsSubmenu": {
             "3ccc7981bb": "主機無法使用",
             "54f29b7c0d": "正在載入主機…"
-          },
-          "TerminalRestoringPlaceholder": {
-            "restoring": "正在還原終端…"
           },
           "TerminalRemoteRuntimeReconnectBanner": {
             "disconnectedBody": "自動重試已停止。請重新連線以繼續此終端工作階段。",
@@ -16506,8 +16490,6 @@
         "catalog": {
           "060d152fb5": "Trae",
           "muse_label": "Muse",
-          "dsh_label": "DeepSeek Harness",
-          "qoder_label": "Qoder CLI",
           "zcode_label": "ZCode",
           "0708ed89f1": "Claude",
           "09973b4d84": "OMP",
@@ -16517,7 +16499,6 @@
           "28810273af": "Kimi",
           "302934c5d9": "Pi",
           "4238b771b5": "Codebuff",
-          "freebuff_label": "Freebuff",
           "4e63c7b956": "Rovo Dev",
           "5dff448636": "OpenClaw",
           "5e8eff11b3": "Auggie",
@@ -16545,8 +16526,7 @@
           "e7a4ca5103": "OpenCode",
           "fc80296033": "Devin",
           "mimo_code_label": "MiMo Code",
-          "opencode2_label": "OpenCode 2",
-          "codebuddy_label": "CodeBuddy"
+          "opencode2_label": "OpenCode 2"
         },
         "skill": {
           "cli": {
@@ -17281,56 +17261,6 @@
       "untitledSession": "目前的工作階段"
     },
     "native-chat": {
-      "writeNotice": {
-        "notDoneReadHistory": "無法載入此聊天的歷史紀錄。",
-        "notDoneSend": "您的訊息未送出。",
-        "tryAgainComposerSend": "請再傳送一次。",
-        "notDoneStop": "智慧體未停止。",
-        "notDoneStopTask": "背景工作未停止。",
-        "notDoneStopTasks": "背景工作未停止。",
-        "notDoneAnswer": "您的回答未送出。",
-        "notDoneOption": "設定未變更。",
-        "notDoneCommand": "命令未執行。",
-        "notDoneGoal": "目標未變更。",
-        "restartFailed": "智慧體無法重新啟動。",
-        "capacity": "Orca 在過去一天內收到了過多請求。",
-        "outcomeUnknown": "Orca 無法確認發生了什麼事。請查看聊天。",
-        "questionChanged": "此問題已被回答或已變更。",
-        "historyUnreadable": "Orca 無法讀取此聊天已儲存的歷史紀錄。",
-        "historyUnusable": "無法載入此聊天。",
-        "historyUnavailable": "Orca 目前無法開啟此聊天的歷史紀錄。",
-        "unsupported": "執行此聊天的 Orca 不支援此操作。請更新 Orca 後再試一次。",
-        "unreachable": "Orca 無法連上智慧體。",
-        "recordFailed": "Orca 無法將其記錄到此聊天的歷史紀錄中。",
-        "conversationCleared": "此對話已被清除。",
-        "openCurrentConversation": "請開啟目前的對話以繼續。",
-        "clearUnfinished": "上一個 /clear 未完成。",
-        "commandRunning": "/compact 或 /clear 仍在執行中。",
-        "waitForCommand": "請等待 /compact 或 /clear 完成。",
-        "agentStarting": "智慧體仍在啟動中。",
-        "waitForStart": "請等待智慧體啟動完成。",
-        "turnActive": "智慧體仍在回應中。",
-        "waitForTurn": "請等待智慧體回應完畢，或將其停止。",
-        "promptPending": "智慧體正在等待問題或核准的回答。",
-        "answerFirst": "請先回答問題或核准。",
-        "backgroundTasksRunning": "背景工作仍在執行中。",
-        "waitForBackgroundTasks": "請等待背景工作完成。",
-        "messagesUnsettled": "您先前傳送的訊息尚未獲得確認。",
-        "settleEarlierMessage": "請等待您先前的訊息送出，或重試該訊息。",
-        "optionRejected": "智慧體未接受此設定。",
-        "goalsUnsupported": "此智慧體不支援目標。",
-        "agentRefused": "智慧體拒絕了此操作。",
-        "ownerUnproven": "Orca 尚未確認此聊天先前的智慧體已停止。",
-        "reopenChat": "請重新開啟聊天以再次檢查。",
-        "terminalAgentHoldsChat": "此聊天仍在終端智慧體中開啟。",
-        "quitTerminalAgent": "請結束該智慧體，以便在此繼續聊天。",
-        "hostReconciling": "Orca 在重新啟動後仍在檢查此聊天。",
-        "waitMoment": "請稍候。",
-        "recordUnreadable": "Orca 無法讀取此聊天已儲存的狀態。",
-        "chatNotFound": "執行此聊天的 Orca 沒有它的紀錄。",
-        "startNewChat": "請開始新的聊天以繼續。",
-        "tryAgain": "請再試一次。"
-      },
       "taskList": {
         "title": "工作",
         "completed": "已完成",
@@ -17478,10 +17408,8 @@
         },
         "error": {
           "subtitle": "無法讀取紀錄。請切回終端以繼續工作。",
-          "retryingSubtitle": "無法讀取對話紀錄。Orca 會持續嘗試載入。",
           "title": "無法載入對話"
         },
-        "reconnecting": "正在重新連線到此聊天…",
         "loading": {
           "subtitle": "正在讀取智慧體紀錄。",
           "title": "正在載入對話…"
@@ -17638,9 +17566,7 @@
         "startedN": "已啟動 {{value0}} 個子智慧體",
         "ranOne": "已執行 1 個子智慧體",
         "ranN": "已執行 {{value0}} 個子智慧體",
-        "tokens": "{{value0}} token",
-        "unnamed": "子智慧體",
-        "writtenBy": "由子智慧體 {{value0}} 撰寫"
+        "tokens": "{{value0}} token"
       },
       "conversationCommand": {
         "pendingWork": "請等待待處理的工作與訊息完成後，再使用此命令。",
@@ -18199,7 +18125,6 @@
       "needsInput": "需要輸入",
       "working": "執行中",
       "stopped": "已停止",
-      "failed": "失敗",
       "finished": "已完成"
     }
   },

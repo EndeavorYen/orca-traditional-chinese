@@ -1,6 +1,8 @@
 name: resync-check
 
-# Daily drift detection. Costs nothing (no LLM): it only diffs upstream en.json
+# Daily drift detection against the latest stable Orca release (not main, not
+# an -rc). Orca's releases live on stablyai/orca; this workflow does not use
+# this repo's release event. Costs nothing (no LLM): it only diffs en.json
 # against the pack. When enough has piled up it opens ONE tracking issue and
 # keeps it up to date; when the pack catches up, the issue closes itself.
 # Translating is a separate, deliberate step: run `/resync` locally
@@ -31,7 +33,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Diff against upstream
+      - name: Diff against the latest stable Orca release
         id: diff
         run: |
           python3 scripts/sync.py check --json > check.json || true
@@ -43,11 +45,13 @@ jobs:
           pending=$(jq '.pending + .untracked' check.json)
           days=$(jq '.days_since_synced // 0' check.json)
           warns=$(jq '.rule_warnings | length' check.json)
+          release=$(jq -r '.release // empty' check.json)
+          sha=$(jq -r '.upstream[0:7]' check.json)
           number=$(gh issue list --label resync --state open --json number --jq '.[0].number // empty')
 
           if [ "$pending" -eq 0 ] && [ "$warns" -eq 0 ]; then
             if [ -n "$number" ]; then
-              gh issue close "$number" --comment "Pack is back in sync with upstream $(jq -r '.upstream[0:7]' check.json)."
+              gh issue close "$number" --comment "Pack is back in sync with upstream release ${release} (${sha})."
             fi
             exit 0
           fi
@@ -57,9 +61,9 @@ jobs:
             exit 0
           fi
 
-          title="i18n: resync with upstream ($(jq -r '"+\(.add) ~\(.changed) −\(.removed)"' check.json))"
+          title="i18n: resync with Orca ${release} ($(jq -r '"+\(.add) ~\(.changed) −\(.removed)"' check.json))"
           {
-            echo "Upstream \`stablyai/orca@$(jq -r '.upstream[0:7]' check.json)\` has moved ahead of this pack (${days} days since last sync)."
+            echo "Upstream \`stablyai/orca\` release \`${release}\` (\`${sha}\`) has moved ahead of this pack (${days} days since last sync)."
             echo
             echo '```'
             cat check.txt

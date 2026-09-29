@@ -139,18 +139,91 @@ def tags(text: str) -> frozenset[str]:
 
 
 @dataclass(frozen=True)
+class TermException:
+    """Legitimate hits for one glossary term.
+
+    `patterns` are compounds that contain the term (處理程序 covers 程序).
+    `keys` suppress the term for those catalog paths only.
+    """
+
+    patterns: tuple[str, ...] = ()
+    keys: frozenset[str] = frozenset()
+
+
+@dataclass(frozen=True)
 class Glossary:
     simplified_chars: frozenset[str] = frozenset()
-    banned: dict[str, str] = field(default_factory=dict)
-    watch: dict[str, str] = field(default_factory=dict)
+    banned: dict[str, str] = field(default_factory=dict)  # error
+    watch: dict[str, str] = field(default_factory=dict)  # warning; does not fail validate
+    exceptions: dict[str, TermException] = field(default_factory=dict)
 
     @staticmethod
     def from_json(data: dict[str, Any]) -> "Glossary":
+        exceptions: dict[str, TermException] = {}
+        raw = data.get("exceptions") or {}
+        if isinstance(raw, dict):
+            for term, spec in raw.items():
+                if isinstance(spec, dict):
+                    patterns = spec.get("patterns") or []
+                    keys = spec.get("keys") or []
+                elif isinstance(spec, list):
+                    patterns, keys = spec, []
+                else:
+                    continue
+                exceptions[str(term)] = TermException(tuple(patterns), frozenset(keys))
         return Glossary(
             frozenset(data.get("simplifiedChars", "")),
             dict(data.get("banned", {})),
             dict(data.get("watch", {})),
+            exceptions,
         )
+
+
+def term_outside_allowed_patterns(text: str, term: str, patterns: tuple[str, ...]) -> bool:
+    """True when `term` occurs outside every allowed compound.
+
+    處理程序 covers the 程序 inside it. A second, uncovered 程序 is still a hit.
+    """
+    if not term or term not in text:
+        return False
+    covered: list[tuple[int, int]] = []
+    for pattern in patterns:
+        if not pattern:
+            continue
+        start = 0
+        while True:
+            found = text.find(pattern, start)
+            if found < 0:
+                break
+            covered.append((found, found + len(pattern)))
+            start = found + 1
+    start = 0
+    while True:
+        found = text.find(term, start)
+        if found < 0:
+            return False
+        end = found + len(term)
+        if not any(a <= found and end <= b for a, b in covered):
+            return True
+        start = found + 1
+
+
+def terminology_hits(key: str, text: str, glossary: Glossary) -> list[tuple[str, str, str]]:
+    """Return (level, code, message) for glossary hits that are not excepted."""
+    hits: list[tuple[str, str, str]] = []
+    groups = (
+        ("error", "banned-term", glossary.banned),
+        ("warning", "watch-term", glossary.watch),
+    )
+    for level, code, table in groups:
+        for term, fix in table.items():
+            exc = glossary.exceptions.get(term)
+            if exc is not None and key in exc.keys:
+                continue
+            patterns = exc.patterns if exc is not None else ()
+            if term_outside_allowed_patterns(text, term, patterns):
+                hits.append((level, code, f"'{term}' -> use '{fix}'"))
+    return hits
 
 
 @dataclass
@@ -250,12 +323,11 @@ def validate_catalog(
         bad = sorted({c for c in text if c in glossary.simplified_chars})
         if bad:
             report.error("simplified", key, f"Simplified-Chinese characters: {''.join(bad)}")
-        for term, fix in glossary.banned.items():
-            if term in text:
-                report.error("banned-term", key, f"'{term}' -> use '{fix}'")
-        for term, fix in glossary.watch.items():
-            if term in text:
-                report.warn("watch-term", key, f"'{term}' -> consider '{fix}'")
+        for level, code, msg in terminology_hits(key, text, glossary):
+            if level == "error":
+                report.error(code, key, msg)
+            else:
+                report.warn(code, key, msg)
 
         if text == en and key not in keep_english and any(c.isalpha() for c in en):
             report.warn("identical", key, "identical to English and not in keep-english.json")
@@ -274,6 +346,8 @@ def validate_catalog(
 _ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 _OWNER_RE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$")
 _SEMVER_RE = re.compile(r"^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
+# pluginLanguagePackContributionSchema is strict today: only these keys.
+LANGUAGE_PACK_KEYS = frozenset({"locale", "path"})
 
 
 def check_manifests(plugin: dict[str, Any], marketplace: dict[str, Any] | None) -> list[str]:
@@ -303,6 +377,36 @@ def check_manifests(plugin: dict[str, Any], marketplace: dict[str, Any] | None) 
             errs.append(f"orca-marketplace.json has no plugin id {publisher}.{pid!s} (found {ids}); it must equal <publisher>.<id> of the manifest")
         if len(ids) != len(set(ids)):
             errs.append("orca-marketplace.json has duplicate plugin ids")
+    errs.extend(language_pack_errors(plugin))
+    return errs
+
+
+def language_pack_errors(plugin: dict[str, Any]) -> list[str]:
+    """Unknown language-pack keys fail the whole plugin under the strict schema.
+
+    `displayName` is not accepted until upstream ships it. `locale` and `path` pass.
+    """
+    errs: list[str] = []
+    contributes = plugin.get("contributes")
+    if not isinstance(contributes, dict):
+        return errs
+    packs = contributes.get("languagePacks")
+    if packs is None:
+        return errs
+    if not isinstance(packs, list):
+        errs.append("orca-plugin.json contributes.languagePacks must be an array")
+        return errs
+    for index, pack in enumerate(packs):
+        if not isinstance(pack, dict):
+            errs.append(f"orca-plugin.json languagePacks[{index}] must be an object")
+            continue
+        unknown = sorted(set(pack) - LANGUAGE_PACK_KEYS)
+        if unknown:
+            errs.append(
+                "orca-plugin.json languagePacks"
+                f"[{index}] has unknown key(s) {', '.join(unknown)}; "
+                "pluginLanguagePackContributionSchema only accepts locale and path"
+            )
     return errs
 
 
