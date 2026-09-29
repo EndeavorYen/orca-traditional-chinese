@@ -1,11 +1,11 @@
 {
   "manifestVersion": 1,
   "id": "traditional-chinese",
-  "publisher": "a-lang",
+  "publisher": "endeavoryen",
   "name": "繁體中文（台灣）",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Traditional Chinese (zh-TW) translations for Orca.",
-  "repository": "https://github.com/a-lang/orca-traditional-chinese",
+  "repository": "https://github.com/EndeavorYen/orca-traditional-chinese",
   "engines": {
     "orca": ">=1.4.0"
   },
