@@ -1,0 +1,79 @@
+name: resync-check
+
+# Daily drift detection. Costs nothing (no LLM): it only diffs upstream en.json
+# against the pack. When enough has piled up it opens ONE tracking issue and
+# keeps it up to date; when the pack catches up, the issue closes itself.
+# Translating is a separate, deliberate step: run `/resync` locally
+# (see docs/MAINTAINING.md).
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  # Open/refresh the issue when pending keys >= MIN_KEYS, or when anything at
+  # all is pending and the pack is at least MAX_AGE_DAYS behind.
+  MIN_KEYS: "25"
+  MAX_AGE_DAYS: "7"
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Diff against upstream
+        id: diff
+        run: |
+          python3 scripts/sync.py check --json > check.json || true
+          cat check.json
+          python3 scripts/sync.py check | tee check.txt || true
+
+      - name: Open, refresh or close the tracking issue
+        run: |
+          pending=$(jq '.pending + .untracked' check.json)
+          days=$(jq '.days_since_synced // 0' check.json)
+          warns=$(jq '.rule_warnings | length' check.json)
+          number=$(gh issue list --label resync --state open --json number --jq '.[0].number // empty')
+
+          if [ "$pending" -eq 0 ] && [ "$warns" -eq 0 ]; then
+            if [ -n "$number" ]; then
+              gh issue close "$number" --comment "Pack is back in sync with upstream $(jq -r '.upstream[0:7]' check.json)."
+            fi
+            exit 0
+          fi
+
+          if [ "$pending" -lt "$MIN_KEYS" ] && [ "$days" -lt "$MAX_AGE_DAYS" ] && [ "$warns" -eq 0 ]; then
+            echo "pending=$pending days=$days: below threshold, not opening an issue"
+            exit 0
+          fi
+
+          title="i18n: resync with upstream ($(jq -r '"+\(.add) ~\(.changed) −\(.removed)"' check.json))"
+          {
+            echo "Upstream \`stablyai/orca@$(jq -r '.upstream[0:7]' check.json)\` has moved ahead of this pack (${days} days since last sync)."
+            echo
+            echo '```'
+            cat check.txt
+            echo '```'
+            echo
+            echo "**To resync:** in a clone of this repo run \`/resync\` in Claude Code, review the diff, open a PR."
+            echo "See [docs/MAINTAINING.md](../blob/main/docs/MAINTAINING.md)."
+            echo
+            echo "_Updated automatically by the resync-check workflow._"
+          } > body.md
+
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --title "$title" --body-file body.md
+          else
+            gh label create resync --color 0E8A16 --description "Upstream en.json drift" 2>/dev/null || true
+            gh issue create --label resync --title "$title" --body-file body.md
+          fi
