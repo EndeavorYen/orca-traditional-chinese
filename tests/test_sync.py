@@ -1,5 +1,9 @@
+import io
+import json
 import sys
 import unittest
+from contextlib import redirect_stdout
+from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
@@ -134,6 +138,200 @@ class Manifests(unittest.TestCase):
 
     def test_bad_semver(self):
         self.assertTrue(V.check_manifests({**self.PLUGIN, "version": "1.1"}, None))
+
+    def test_language_pack_accepts_only_locale_and_path(self):
+        pack = {"locale": "zh-TW", "path": "locales/zh-TW.json"}
+        plugin = {**self.PLUGIN, "contributes": {"languagePacks": [pack]}}
+        self.assertEqual(V.check_manifests(plugin, None), [])
+        bad = {**pack, "displayName": "繁體中文"}
+        errs = V.check_manifests({**self.PLUGIN, "contributes": {"languagePacks": [bad]}}, None)
+        self.assertTrue(any("displayName" in e for e in errs))
+
+    def test_shipped_manifest_keeps_display_name_out(self):
+        root = Path(__file__).resolve().parents[1]
+        plugin = json.loads((root / "orca-plugin.json").read_text())
+        market = json.loads((root / "orca-marketplace.json").read_text())
+        self.assertEqual(plugin["engines"]["orca"], ">=1.4.0")
+        self.assertEqual(set(plugin["contributes"]["languagePacks"][0]), {"locale", "path"})
+        self.assertNotIn("displayName", (root / "orca-plugin.json").read_text())
+        self.assertEqual(V.check_manifests(plugin, market), [])
+
+
+class Terminology(unittest.TestCase):
+    """Error, warning, exception, and clean string through validate_catalog."""
+
+    def test_error_warning_exception_and_clean_string(self):
+        glossary = V.Glossary(
+            frozenset(),
+            {"軟件": "軟體"},
+            {"程序": "處理程序／行程"},
+            {
+                "程序": V.TermException(("處理程序",), frozenset()),
+                "軟件": V.TermException(("舊式軟件名",), frozenset({"quote.term"})),
+            },
+        )
+
+        def run(key, text):
+            head, tail = key.split(".")
+            return V.validate_catalog({head: {tail: text}}, {key: "English"}, rules(), glossary)
+
+        error = run("a.err", "這是軟件")
+        self.assertFalse(error.ok)
+        self.assertIn("banned-term", {c for c, _, _ in error.errors})
+
+        warning = run("a.warn", "結束程序")
+        self.assertTrue(warning.ok, warning.errors)
+        self.assertIn("watch-term", {c for c, _, _ in warning.warnings})
+
+        allowed = run("a.ok", "結束處理程序")
+        self.assertTrue(allowed.ok, allowed.errors)
+        self.assertFalse(any(c in ("banned-term", "watch-term") for c, _, _ in allowed.warnings))
+
+        excepted_key = run("quote.term", "引述軟件")
+        self.assertTrue(excepted_key.ok, excepted_key.errors)
+        self.assertFalse(any(c == "banned-term" for c, _, _ in excepted_key.errors))
+
+        still_error = run("a.err", "舊式軟件名與軟件")
+        self.assertFalse(still_error.ok)
+        self.assertIn("banned-term", {c for c, _, _ in still_error.errors})
+
+        clean = run("a.clean", "儲存")
+        self.assertTrue(clean.ok, clean.errors)
+        self.assertEqual(clean.warnings, [])
+
+        second = run("a.warn", "處理程序與程序")
+        self.assertTrue(second.ok, second.errors)
+        self.assertIn("watch-term", {c for c, _, _ in second.warnings})
+
+    def test_shipped_glossary_allows_established_compound(self):
+        glossary = sync.load_glossary()
+        en = {"k": "process"}
+        covered = V.validate_catalog({"k": "處理程序"}, en, rules(), glossary)
+        self.assertTrue(covered.ok, covered.errors)
+        self.assertNotIn("watch-term", {c for c, _, _ in covered.warnings})
+        bare = V.validate_catalog({"k": "應用程序"}, en, rules(), glossary)
+        self.assertTrue(bare.ok, bare.errors)
+        self.assertIn("watch-term", {c for c, _, _ in bare.warnings})
+        mainland = V.validate_catalog({"k": "安裝軟件"}, en, rules(), glossary)
+        self.assertFalse(mainland.ok)
+        self.assertIn("banned-term", {c for c, _, _ in mainland.errors})
+
+
+class ReleaseBaseline(unittest.TestCase):
+    def test_default_ref_is_newer_stable_not_rc_and_explicit_main_stays(self):
+        tags = [
+            "v1.4.210",
+            "v1.4.216",
+            "v1.4.217-rc.1",
+            {"tag_name": "v1.4.220-rc.2", "prerelease": True},
+            "v1.4.219",
+            "main",
+        ]
+        self.assertEqual(sync.resolve_ref(None, tags), "v1.4.219")
+        self.assertEqual(sync.resolve_ref("main", tags), "main")
+        self.assertEqual(sync.resolve_ref("v1.4.217-rc.1", tags), "v1.4.217-rc.1")
+        self.assertFalse(sync.is_stable_release_tag("v1.4.217-rc.1"))
+        self.assertTrue(sync.is_stable_release_tag("v1.4.219"))
+
+    def test_check_text_json_and_readme_share_release_and_counts(self):
+        sha = "20d7a7d185cd66e993dcdfd60e9e604fe26e9c40"
+        snap = sync.Snapshot(
+            sha, "2026-09-28T19:03:46Z", {"a.b": "Hi"}, {}, rules(), release="v1.4.216", ref="v1.4.216",
+        )
+        lock = {
+            "upstream": {"sha": sha, "date": "2026-09-28T19:03:46Z", "release": "v1.4.216"},
+            "sources": {"a.b": sync.h("Hi")},
+        }
+        diff = sync.compute_diff(snap, {"a.b": "嗨"}, lock["sources"])
+        payload = sync.check_payload(
+            snap, lock, diff, now=datetime(2026, 9, 29, tzinfo=timezone.utc),
+        )
+        for key in (
+            "pending", "untracked", "days_since_synced", "rule_warnings",
+            "upstream", "add", "changed", "removed", "release",
+        ):
+            self.assertIn(key, payload)
+        self.assertEqual(payload["release"], "v1.4.216")
+        self.assertEqual(payload["upstream"], sha)
+        self.assertEqual(payload["pending"], 0)
+        self.assertEqual(payload["add"], 0)
+        self.assertEqual(payload["changed"], 0)
+        self.assertEqual(payload["removed"], 0)
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            sync.print_diff(diff, snap, lock)
+        self.assertIn("v1.4.216", buf.getvalue())
+        text = (
+            "# Title\n\n"
+            "<!-- orca-badge:start -->\nold\n<!-- orca-badge:end -->\n\n"
+            "Intro prose.\n\n"
+            "<!-- sync-status:start -->\nold\n<!-- sync-status:end -->\n"
+        )
+        out = sync.apply_readme_sync(
+            text, release="v1.4.216", sha=sha, date=snap.date,
+            translated=10, total=40, protected=3, oversize=1, partial=False,
+        )
+        self.assertLess(out.index("<!-- orca-badge:start -->"), out.index("Intro prose."))
+        self.assertIn("v1.4.216", out)
+        self.assertIn("10 / 40", out.replace(",", ""))
+        self.assertIn("25%", out)
+        badge = out.split("<!-- orca-badge:end -->")[0]
+        self.assertIn("25%", badge)
+        self.assertIn("v1.4.216", badge)
+
+    def test_partial_apply_keeps_previous_release(self):
+        previous = {
+            "repo": "stablyai/orca", "sha": "aaa", "date": "2026-01-01T00:00:00Z", "release": "v1.4.210",
+        }
+        snap = sync.Snapshot("bbb", "2026-02-01T00:00:00Z", {}, {}, rules(), release="v1.4.216")
+        self.assertEqual(
+            sync.lock_upstream(snap, previous, partial=True, release="v1.4.216"),
+            previous,
+        )
+        full = sync.lock_upstream(snap, previous, partial=False, release="v1.4.216")
+        self.assertEqual(full["release"], "v1.4.216")
+        self.assertEqual(full["sha"], "bbb")
+
+
+class CommittedPack(unittest.TestCase):
+    root = Path(__file__).resolve().parents[1]
+
+    def test_lock_readme_and_catalog_share_a_stable_release(self):
+        lock = json.loads((self.root / ".sync/lock.json").read_text())
+        release = lock["upstream"]["release"]
+        self.assertTrue(sync.is_stable_release_tag(release), release)
+        self.assertTrue(lock["upstream"]["sha"])
+        zh = V.flatten(json.loads((self.root / "locales/zh-TW.json").read_text()))
+        self.assertEqual(set(lock["sources"]), set(zh))
+        keep = json.loads((self.root / ".sync/keep-english.json").read_text())
+        self.assertLessEqual(set(keep), set(zh))
+        readme = (self.root / "README.md").read_text()
+        badge = readme.index("<!-- orca-badge:start -->")
+        prose = readme.index("Traditional Chinese")
+        self.assertLess(badge, prose)
+        badge_body = readme[badge:readme.index("<!-- orca-badge:end -->")]
+        self.assertIn(release, badge_body)
+        status = readme[readme.index("<!-- sync-status:start -->"):readme.index("<!-- sync-status:end -->")]
+        self.assertIn(release, status)
+        self.assertIn(">=1.4.0", readme)
+        self.assertIn("not the badge's tested release", readme)
+        self.assertIn("patch", readme)
+
+    def test_docs_point_at_one_glossary_and_the_release_baseline(self):
+        resync = (self.root / ".claude/commands/resync.md").read_text()
+        self.assertIn("scripts/glossary.json", resync)
+        for term in ("儲存庫", "外掛程式", "智慧體", "工作樹"):
+            self.assertNotIn(term, resync)
+        maintaining = (self.root / "docs/MAINTAINING.md").read_text()
+        self.assertIn("exceptions", maintaining)
+        self.assertIn(">=1.4.0", maintaining)
+        self.assertIn("not the badge's tested release", maintaining)
+        self.assertNotIn("zero occurrences", maintaining)
+        workflow = (self.root / ".github/workflows/resync-check.yml").read_text()
+        self.assertNotIn("--ref main", workflow)
+        self.assertIn(".release", workflow)
+        self.assertNotIn("\n  release:", workflow)
+        self.assertIn("displayName", (self.root / "README.md").read_text())
 
 
 class Merge(unittest.TestCase):

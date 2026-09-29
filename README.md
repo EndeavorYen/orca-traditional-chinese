@@ -1,14 +1,22 @@
 # orca-traditional-chinese
 
+<!-- orca-badge:start -->
+[![Orca v1.4.216 · zh-TW 100%](https://img.shields.io/badge/Orca-v1.4.216_%C2%B7_zh--TW_100%25-2ea44f)](https://github.com/stablyai/orca/releases/tag/v1.4.216)
+<!-- orca-badge:end -->
+
 Traditional Chinese (zh-TW) language pack for [Orca](https://github.com/stablyai/orca).
 
 ## Status
 
 <!-- sync-status:start -->
-- **14,625 / 14,625** translatable strings translated (100%)
-- Synced against `stablyai/orca` `main` (`c8af48d`, 2026-09-29)
+- **14,556 / 14,556** translatable strings translated (100%)
+- Synced against `stablyai/orca` `v1.4.216` (`20d7a7d`, 2026-09-28)
 - 180 plugin-protected keys and 2 oversize inline-CSS keys are excluded by design and fall back to English
 <!-- sync-status:end -->
+
+`engines.orca` (`>=1.4.0`) is the minimum engine that can load this pack, not the badge's tested release.
+Syncing the catalog to an Orca release bumps the plugin patch version (`sync.py apply`);
+bump minor or major by hand only for an identity change or an `engines.orca` / `pluginApi` move.
 
 - Settings, sidebars, editor, terminal, GitHub/GitLab/Linear/Jira integrations,
   onboarding, mobile companion app, dashboard, system tray, and application menu
@@ -42,10 +50,11 @@ pack as `endeavoryen.traditional-chinese`, pinned to the `main` ref.
 
 ## Keeping it up to date
 
-Upstream `en.json` changes almost daily, so syncing is scripted rather than
-done by hand. A daily GitHub Actions job (`resync-check`) compares upstream
-against the pack and keeps one tracking issue up to date; when it says the pack
-is behind, resync from a clone of this repo:
+Upstream `en.json` changes almost daily. Syncing follows the latest stable
+Orca release (GitHub's latest release — not an `-rc` and not `main`), so the
+pack matches what users run. A daily GitHub Actions job (`resync-check`)
+compares that release against the pack and keeps one tracking issue up to date;
+when it says the pack is behind, resync from a clone of this repo:
 
 ```sh
 claude          # then run:  /resync
@@ -69,7 +78,7 @@ upstream **removed**. Full workflow, design notes, and tuning:
 
 | Command | Purpose |
 |---|---|
-| `python3 scripts/sync.py check` | Diff upstream vs. the pack; exit 1 if out of date |
+| `python3 scripts/sync.py check` | Diff the latest stable Orca release vs. the pack; exit 1 if out of date (`--ref main` tracks main) |
 | `python3 scripts/sync.py prepare` | Write translation batches to `work/todo/` |
 | `python3 scripts/sync.py apply` | Merge `work/done/`, validate, update lock, README stats and plugin version |
 | `python3 scripts/sync.py validate [--strict]` | Loader rules, placeholders, glossary, manifest identity (the CI check) |

@@ -29,7 +29,7 @@ rate limits, or pass `--upstream-dir <clone of stablyai/orca>` to work offline).
 
 | Step | Command | What it does |
 |---|---|---|
-| 1 | `python3 scripts/sync.py check` | Diff upstream vs. pack. Exit 1 when out of date. |
+| 1 | `python3 scripts/sync.py check` | Diff the latest stable Orca release vs. the pack. Exit 1 when out of date. |
 | 2 | `python3 scripts/sync.py prepare` | Write `work/todo/NNN.json` batches (new keys + reworded keys). |
 | 3 | *translate* | Write `work/done/NNN.json` as `{key: translation}`. This is the LLM step. |
 | 4 | `python3 scripts/sync.py apply` | Merge, validate, update lock/README/version. Writes nothing on error. |
@@ -65,7 +65,7 @@ a fingerprint mismatch: re-read that function, update `is_protected()`, and set
 |---|---|
 | `scripts/sync.py` | CLI: `init`, `check`, `prepare`, `apply`, `validate` |
 | `scripts/validate.py` | Loader rules, placeholder/glossary checks, manifest identity checks (pure functions) |
-| `scripts/glossary.json` | Banned/watch terms and Simplified-only characters |
+| `scripts/glossary.json` | Banned (error) and watch (warning) terms, exceptions, Simplified-only characters |
 | `.sync/lock.json` | Upstream commit + per-key hash of the English source (committed) |
 | `.sync/keep-english.json` | Keys that are correctly identical to English (committed) |
 | `work/` | Scratch for one resync run (git-ignored) |
@@ -81,10 +81,22 @@ marketplace index has no version of its own -- its schema is strict and only
 allows `name`, `owner` and `plugins`, so do not add fields to it.
 
 - `sync.py apply` bumps the **patch** version automatically (`--no-bump` to skip).
+  Syncing to an Orca release uses that same patch bump. It does not bump minor
+  just because Orca shipped a release.
 - Bump **minor** by hand for a plugin identity change or a release worth calling
   out, **major** if `engines.orca` or `pluginApi` moves.
 - Commit the bumped manifest together with the resync so the version always
   matches the catalog it ships.
+
+`engines.orca` (`>=1.4.0`) is the minimum engine that can load this pack, not the badge's tested release.
+The README badge and `.sync/lock.json` `upstream.release` name the Orca release the catalog
+was synced against (plus `upstream.sha`, that release's commit). A pack tested on a current
+release still declares `>=1.4.0`.
+
+`check` and `prepare` default to the latest stable Orca release: GitHub's latest release,
+which is not an `-rc` / prerelease and not `main`. Pass `--ref main` to track main, or
+`--ref v1.4.210` for one tag. `resync-check` calls `check` with no `--ref`, so it watches
+that same release.
 
 **Identity.** A plugin is `<publisher>.<id>`, and the marketplace entry `id` must
 equal it exactly. The two places that name the owner follow *different* rules,
@@ -120,9 +132,17 @@ new one, so say so in the README and release notes (done for
 
 - **Issue threshold**: `MIN_KEYS` / `MAX_AGE_DAYS` at the top of
   `resync-check.yml` (default: 25 pending keys, or anything pending after 7 days).
-- **Glossary**: add terms to `scripts/glossary.json`. Put a term in `banned` only
-  if it currently has zero occurrences in `locales/zh-TW.json`, otherwise use
-  `watch`.
+- **Glossary**: edit `scripts/glossary.json` only — do not keep a second list in
+  `.claude/commands/resync.md`.
+  - Add an unambiguous mainland term under `banned` (the value is the Taiwan
+    term). Hits are errors and fail `sync.py validate`. It may already occur in
+    the catalog; except the legitimate hits instead of leaving the term off the list.
+  - Add a context-sensitive term under `watch` (for example 程序). Hits are
+    warnings and do not fail validation.
+  - To keep a legitimate hit, add an `exceptions` entry for that same term.
+    `patterns` are compounds that contain it (`處理程序` is not a hit for
+    程序). `keys` are catalog paths that may use it. A term can stay in
+    `banned` while those hits are excepted.
 - **New locale**: point `orca-plugin.json` at a new `locales/<code>.json`, replace
   `scripts/glossary.json`, and run `prepare` on the empty pack -- every key is an
   "add". Then `apply`.
