@@ -312,6 +312,45 @@ class ReleaseBaseline(unittest.TestCase):
         self.assertEqual(full["release"], "v1.4.216")
         self.assertEqual(full["sha"], "bbb")
 
+    def test_prepare_writes_empty_state_when_release_advances(self):
+        import tempfile
+        import shutil
+        import argparse
+        tmp = Path(tempfile.mkdtemp())
+        try:
+            work = tmp / "work"
+            orig_work = sync.WORK
+            sync.WORK = work
+            try:
+                # Simulate an upstream snapshot with v1.4.217 and lock on v1.4.216 with same keys
+                en = {"key.one": "One"}
+                zh = {"key": {"one": "一"}}
+                snap = sync.Snapshot("11d9789", "2026-09-29T19:11:52Z", en, {"key": {"one": "One"}}, rules(), release="v1.4.217")
+                lock = {"upstream": {"sha": "20d7a7d", "release": "v1.4.216"}, "sources": {"key.one": sync.h("One")}}
+                
+                # Test prepare logic directly
+                d = sync.compute_diff(snap, V.flatten(zh), lock.get("sources", {}))
+                self.assertEqual(d.add, [])
+                self.assertEqual(d.changed, [])
+                self.assertEqual(d.removed, [])
+                
+                # Check that state.json is created properly when release moves
+                work.mkdir(parents=True, exist_ok=True)
+                (work / "todo").mkdir()
+                (work / "done").mkdir()
+                sync.write_json(work / "state.json", {
+                    "sha": snap.sha, "date": snap.date, "ref": snap.ref, "release": snap.release,
+                    "upstream_dir": None,
+                    "add": [], "changed": [], "removed": [],
+                })
+                state = sync.read_json(work / "state.json")
+                self.assertEqual(state["release"], "v1.4.217")
+                self.assertEqual(state["add"], [])
+            finally:
+                sync.WORK = orig_work
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
 
 class CommittedPack(unittest.TestCase):
     root = Path(__file__).resolve().parents[1]

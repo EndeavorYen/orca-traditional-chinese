@@ -1,9 +1,9 @@
 {
   "upstream": {
     "repo": "stablyai/orca",
-    "sha": "20d7a7d185cd66e993dcdfd60e9e604fe26e9c40",
-    "date": "2026-09-28T19:03:46Z",
-    "release": "v1.4.216"
+    "sha": "11d97896628d90c4990365127812667b00e28c82",
+    "date": "2026-09-29T19:11:52Z",
+    "release": "v1.4.217"
   },
   "sources": {
     "agentsSidebarIntro.migrated.action": "7763f072",

@@ -478,7 +478,20 @@ def cmd_prepare(args: argparse.Namespace) -> int:
     print_diff(d, snap, lock)
     todo_keys = sorted(d.add + d.changed)
     if not todo_keys and not (d.removed or d.now_excluded):
-        print("nothing to do")
+        upstream = lock.get("upstream") or {}
+        if snap.sha == upstream.get("sha") and snap.release == upstream.get("release"):
+            print("nothing to do (already in sync)")
+            return 0
+        shutil.rmtree(WORK, ignore_errors=True)
+        (WORK / "todo").mkdir(parents=True)
+        done.mkdir()
+        write_json(WORK / "state.json", {
+            "sha": snap.sha, "date": snap.date, "ref": snap.ref, "release": snap.release,
+            "upstream_dir": args.upstream_dir,
+            "add": [], "changed": [], "removed": [],
+        })
+        print(f"upstream release moved to {snap.release or snap.sha[:7]} with no string changes")
+        print("run `sync.py apply` to update lock, README, and bump patch version")
         return 0
 
     shutil.rmtree(WORK, ignore_errors=True)
