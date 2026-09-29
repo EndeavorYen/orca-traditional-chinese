@@ -321,6 +321,14 @@ def upstream_meta(snap: Snapshot, release: str | None = None) -> dict[str, Any]:
     return record
 
 
+def restore_apply_identity(snap: Snapshot, state: dict[str, Any]) -> None:
+    """Apply re-fetches by commit sha. Keep the ref and release prepare recorded."""
+    if state.get("ref"):
+        snap.ref = state["ref"]
+    if not snap.release and state.get("release"):
+        snap.release = state["release"]
+
+
 def lock_upstream(
     snap: Snapshot,
     previous: dict[str, Any] | None,
@@ -550,8 +558,7 @@ def cmd_apply(args: argparse.Namespace) -> int:
 
     write_json(locale_path(), zh_tree)
     write_json(KEEP, sorted(keep))
-    if not snap.release and state.get("release"):
-        snap.release = state["release"]
+    restore_apply_identity(snap, state)
     upstream = lock_upstream(snap, lock.get("upstream"), partial=bool(todo), release=state.get("release"))
     write_json(LOCK, {"upstream": upstream, "sources": dict(sorted(sources.items()))})
     if not args.no_bump:
@@ -629,7 +636,7 @@ def _shields_token(text: str) -> str:
     )
 
 
-def render_badge_block(release: str, translated: int, total: int) -> str:
+def render_badge_block(release: str, translated: int, total: int, sha: str = "") -> str:
     """Static badge. The same counts drive the sync-status percentage."""
     pct = coverage_pct(translated, total)
     alt = f"Orca {release} · zh-TW {pct}%"
@@ -637,6 +644,8 @@ def render_badge_block(release: str, translated: int, total: int) -> str:
     url = f"https://img.shields.io/badge/{_shields_token('Orca')}-{_shields_token(message)}-2ea44f"
     if parse_version_tag(release) is not None:
         link = f"https://github.com/{UPSTREAM_REPO}/releases/tag/{release}"
+    elif sha:
+        link = f"https://github.com/{UPSTREAM_REPO}/commit/{sha}"
     else:
         link = f"https://github.com/{UPSTREAM_REPO}"
     image = "[![" + alt + "](" + url + ")](" + link + ")"
@@ -678,7 +687,7 @@ def apply_readme_sync(
     partial: bool,
 ) -> str:
     """Rewrite the badge and the sync-status block from the same counts."""
-    badge = render_badge_block(release, translated, total)
+    badge = render_badge_block(release, translated, total, sha)
     if BADGE_START in text and BADGE_END in text:
         text = re.sub(
             re.escape(BADGE_START) + r".*?" + re.escape(BADGE_END),

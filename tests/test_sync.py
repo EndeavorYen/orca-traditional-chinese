@@ -278,6 +278,26 @@ class ReleaseBaseline(unittest.TestCase):
         badge = out.split("<!-- orca-badge:end -->")[0]
         self.assertIn("25%", badge)
         self.assertIn("v1.4.216", badge)
+        self.assertIn("https://github.com/stablyai/orca/releases/tag/v1.4.216", badge)
+
+    def test_main_ref_keeps_its_name_on_the_badge(self):
+        sha = "c8af48d8a4159feaa4bc40e8773cf730f7ab0d3c"
+        snap = sync.Snapshot(sha, "2026-09-29T00:00:00Z", {}, {}, rules(), ref=sha)
+        sync.restore_apply_identity(snap, {"ref": "main", "release": None, "sha": sha})
+        self.assertEqual((snap.ref, snap.release), ("main", None))
+        text = (
+            "# Title\n\n"
+            "<!-- orca-badge:start -->\nold\n<!-- orca-badge:end -->\n\n"
+            "Intro prose.\n\n"
+            "<!-- sync-status:start -->\nold\n<!-- sync-status:end -->\n"
+        )
+        out = sync.apply_readme_sync(
+            text, release=snap.ref, sha=sha, date=snap.date,
+            translated=1, total=1, protected=0, oversize=0, partial=False,
+        )
+        self.assertIn("`main`", out)
+        self.assertIn(f"https://github.com/stablyai/orca/commit/{sha}", out)
+        self.assertIn("Orca main · zh-TW 100%", out)
 
     def test_partial_apply_keeps_previous_release(self):
         previous = {
