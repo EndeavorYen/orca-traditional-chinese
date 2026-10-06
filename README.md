@@ -17,10 +17,13 @@
 | 項目 | 說明 |
 |---|---|
 | Plugin | `endeavoryen.traditional-chinese` |
-| 相容下限 | `engines.orca` `>=1.4.0`（徽章標示為已對齊的釋出版本） |
+| 相容下限 | `engines.orca` `>=1.4.0` |
 | 本地化原則 | 台灣繁體慣用語（非簡中直譯） |
 
-譯文採 LLM 輔助生成，並經由語彙庫、變數佔位符與載入器等自動化檢查。歡迎共同維護，詳見[貢獻](#貢獻)。
+`engines.orca` (`>=1.4.0`) is the minimum engine that can load this pack, not the badge's tested release.
+對齊 Orca release 時，`sync.py apply` 會 bump plugin **patch**；minor／major 僅在身分或 `engines.orca`／`pluginApi` 變更時手動調整。
+
+譯文採 LLM 輔助生成，並經 loader／placeholder／glossary 自動檢查。歡迎修正，見[貢獻](#貢獻)。
 
 ## 安裝
 
