@@ -1,7 +1,7 @@
 # orca-traditional-chinese
 
 <!-- orca-badge:start -->
-[![Orca v1.4.217 · zh-TW 100%](https://img.shields.io/badge/Orca-v1.4.217_%C2%B7_zh--TW_100%25-2ea44f)](https://github.com/stablyai/orca/releases/tag/v1.4.217)
+[![Orca v1.4.221 · zh-TW 100%](https://img.shields.io/badge/Orca-v1.4.221_%C2%B7_zh--TW_100%25-2ea44f)](https://github.com/stablyai/orca/releases/tag/v1.4.221)
 <!-- orca-badge:end -->
 
 Traditional Chinese (zh-TW) language pack for [Orca](https://github.com/stablyai/orca).
@@ -9,8 +9,8 @@ Traditional Chinese (zh-TW) language pack for [Orca](https://github.com/stablyai
 ## Status
 
 <!-- sync-status:start -->
-- **14,556 / 14,556** translatable strings translated (100%)
-- Synced against `stablyai/orca` `v1.4.217` (`11d9789`, 2026-09-29)
+- **14,948 / 14,948** translatable strings translated (100%)
+- Synced against `stablyai/orca` `v1.4.221` (`9dd8812`, 2026-10-05)
 - 180 plugin-protected keys and 2 oversize inline-CSS keys are excluded by design and fall back to English
 <!-- sync-status:end -->
 
