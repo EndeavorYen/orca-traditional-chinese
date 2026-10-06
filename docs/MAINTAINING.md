@@ -128,6 +128,26 @@ new one, so say so in the README and release notes (done for
    (`zh-TW — <publisher>.<id>`), and the migration note
 4. `UPSTREAM_REPO` in `scripts/sync.py` only if the *upstream* Orca repo moves
 
+
+## GitHub Release notes
+
+When shipping a pack version (`gh release create` / edit), use a short body with the useful facts only. Do **not** include a translator-credit line (for example `Translated with agy + …` or any similar model/tool attribution).
+
+Template:
+
+```markdown
+## Synced to Orca <upstream-tag>
+
+- Upstream: `stablyai/orca` `<upstream-tag>` (`<sha7>`, <YYYY-MM-DD>)
+- Catalog drift: **+N** added / **~N** changed / **-N** removed
+- zh-TW coverage: <pct>% of translatable strings
+
+Install via Orca marketplace source:
+`https://github.com/EndeavorYen/orca-traditional-chinese.git` (ref `main`)
+```
+
+`scripts/sync.py` does not auto-generate the GitHub release body; only README badge/status blocks. Keep release notes free of tool credits by hand (or in the shipping agent).
+
 ## Tuning
 
 - **Issue threshold**: `MIN_KEYS` / `MAX_AGE_DAYS` at the top of
