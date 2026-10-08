@@ -1,4 +1,37 @@
 {
+  "csv": {
+    "detectingDelimiter": "正在偵測分隔符號…",
+    "indexProgress": "正在建立 CSV 索引… {{percent}}%",
+    "loadingCell": "載入中…",
+    "nextRows": "下一批列",
+    "previousRows": "上一批列",
+    "readOnlyPreview": "大型檔案預覽 · 唯讀",
+    "resizeColumn": "調整第 {{column}} 欄大小",
+    "rowWindow": "第 {{first}}–{{last}} 列",
+    "editor": "CSV 編輯器",
+    "editCell": "編輯第 {{row}} 列，第 {{column}} 欄",
+    "filterRows": "篩選列",
+    "edit": "編輯儲存格",
+    "copy": "複製",
+    "paste": "貼上",
+    "rows": "列",
+    "insertRowAbove": "在上方插入列",
+    "insertRowBelow": "在下方插入列",
+    "deleteRows": "刪除所選列",
+    "columns": "欄",
+    "newColumn": "第 {{column}} 欄",
+    "insertColumnBefore": "在前方插入欄",
+    "insertColumnAfter": "在後方插入欄",
+    "moveColumnLeft": "將欄向左移動",
+    "moveColumnRight": "將欄向右移動",
+    "deleteColumns": "刪除所選欄",
+    "sort": "排序",
+    "sortAscending": "將所選欄遞增排序",
+    "sortDescending": "將所選欄遞減排序",
+    "originalOrder": "原始列順序",
+    "save": "儲存",
+    "inspectionOnly": "僅供檢視 · 檔案列順序未變更"
+  },
   "osDocumentOpen": {
     "failed": "無法開啟檔案。"
   },
@@ -3560,7 +3593,9 @@
           "unavailableAriaLabel": "{{value0}}，引用連結無法使用"
         },
         "richMarkdownLargeTextPaste": {
-          "tooLarge": "貼上的內容過大。"
+          "tooLarge": "貼上的內容過大。",
+          "stopped": "大量貼上在完成前已停止。",
+          "cancelled": "大量貼上已取消，因為原始目標已變更。"
         },
         "richMarkdownLinkClipboard": {
           "copiedLink": "已複製連結",
@@ -3619,6 +3654,10 @@
           "a0af0198aa": "大型差異預設不會顯示。",
           "c3d9f4a712": "這個差異的大小尚未確定，因此需要手動載入。",
           "f7fa7a40d0": "載入差異"
+        },
+        "richMarkdownImageInsertionFeedback": {
+          "importedFileKept": "影像插入已取消，因為目的地已變更。已保留匯入的檔案。",
+          "destinationChanged": "影像插入已取消，因為目的地已變更。請再試一次。"
         }
       },
       "emulator": {
@@ -6222,7 +6261,6 @@
           },
           "aiVaultSessionLogOpen": {
             "alreadyEditable": "紀錄已開啟以供編輯。",
-            "notAuthorized": "無法開啟紀錄——路徑未獲授權。",
             "workspaceGone": "無法開啟紀錄——工作區已無法使用。"
           },
           "checks": {
@@ -6866,7 +6904,8 @@
             "fca915a67a": "遠端項目會永久刪除且無法復原。本機項目會移至 {{value0}}。"
           },
           "useFileExplorerHandlers": {
-            "32cd9fd991": "無法開啟 symlink 目標"
+            "32cd9fd991": "無法開啟 symlink 目標",
+            "folderLinksOutsideProject": "此資料夾連結至專案外部，因此無法在此開啟。"
           },
           "useFileExplorerImport": {
             "132fd0e1e9": "無法匯入 {{value0}} {{value1}}。",
@@ -8425,7 +8464,6 @@
           "254a6d09e4": "已配對",
           "2e3dd0bc29": "裝置已撤銷",
           "310924ad2c": "使用 Orca 手機應用程式掃描此代碼。每個代碼都會建立唯一的裝置權杖。",
-          "35100bca5d": "當您在手機上使用終端時，Orca 會將它縮小以符合手機螢幕大小。當您關閉應用程式或切換離開時，此選項會控制終端是要維持手機尺寸（以免互動式 CLI 工具重新排版），還是調整回桌面尺寸。您隨時可以使用橫幅上的「還原此終端」或「還原所有終端」手動調整大小。",
           "3939fd062c": "撤銷裝置會立即中斷其連線。",
           "6436e56546": "手機配對用 QR Code",
           "711231348f": "複製配對碼失敗",
@@ -8440,6 +8478,7 @@
           "dd3cd78d04": "使用 Orca Mobile 掃描",
           "diagnosticsCopied": "診斷資訊已複製",
           "diagnosticsCopyFailed": "複製診斷資訊失敗",
+          "5e2c7a1f84": "當您在手機上使用終端時，Orca 會將其縮小以符合手機螢幕。當您關閉應用程式或切換離開時，這會控制終端是要維持手機尺寸（讓互動式 CLI 工具不重新排版），還是調整回桌面尺寸。您隨時可以使用橫幅上的「還原」或「全部還原」手動調整大小。",
           "e3c427e020": "產生 QR Code 失敗",
           "e778ecb209": "或將此配對碼貼到手機應用程式中：",
           "ee56f1c7e4": "當您離開手機應用程式時",
@@ -9855,7 +9894,38 @@
             "title": "捲動速度",
             "tui": "TUI",
             "tuiDescription": "全螢幕終端應用程式的離散滾輪回報。"
-          }
+          },
+          "8dbe0bc942": "Shell 引數，每行一個",
+          "f58cb71f53": "--rcfile\n/path/to/rcfile",
+          "48b91a3ed2": "自訂引數",
+          "7bd83fc1d0": "-l (預設)",
+          "5ffc4777b6": "Shell 引數模式",
+          "578ec79449": "每行輸入一個引數。留空表示不傳遞引數。",
+          "884a006065": "使用 -l 將此 Shell 作為登入 Shell 啟動。",
+          "01c600daff": "Shell 引數",
+          "e3ae5aed18": "。切換至系統 Shell 或選擇此主機上的可執行檔。",
+          "59573d0b33": "輸入 PATH 上的 Shell 名稱或可執行檔路徑。Orca 會將其作為登入 Shell 啟動。",
+          "5e06e87730": "自訂 Shell 可執行檔",
+          "c2bf02ce2f": "fish、nu 或 /bin/zsh",
+          "f51cc79784": "自訂 Shell",
+          "dd3f4c35da": "系統 Shell ({{value0}})",
+          "fd05fb109c": "終端 Shell",
+          "69724e8f0c": "選擇 Orca 為新的本機終端窗格開啟的項目。",
+          "c2ddb189e7": "rcfile",
+          "73c211e979": "包裝函式",
+          "4faf688f78": "login",
+          "44f8a56f66": "引數",
+          "af893aa433": "引數",
+          "ddc72a4860": "預設",
+          "d469840b75": "nushell",
+          "17ad899ba4": "bash",
+          "c9bc93d343": "zsh",
+          "0cbe5ad727": "fish",
+          "81694f1584": "終端",
+          "a909136b3f": "Shell",
+          "1c29734248": "新終端窗格使用的 Shell",
+          "9589abc009": "預設 Shell",
+          "5a5eac2f44": "找不到 Shell：{{value0}}"
         },
         "TerminalSettingsPreview": {
           "2c248fcc27": "預覽主題",
@@ -10204,7 +10274,11 @@
           "a42f6fbdd8": "智慧體工作期間保持此電腦與顯示器喚醒。Orca 也會在闔蓋時要求此裝置保持喚醒，實際依其電源原則而定。",
           "e5995ce268": "智慧體工作期間保持電腦喚醒",
           "modeDescriptionDefault": "可選擇開啟、智慧體或關閉。智慧體模式會在智慧體工作期間保持喚醒。Orca 也會在闔蓋時要求此裝置保持喚醒，實際依其電源原則而定。",
+          "lidNoteWindows": "闔蓋行為遵循此裝置的電源設定。",
+          "lidNoteMac": "在開啟螢幕時防止閒置睡眠；闔蓋仍會使此 Mac 進入睡眠。",
+          "lidNoteDefault": "Orca 也會在闔蓋時要求此裝置保持喚醒，實際依其電源原則而定。",
           "modeDescriptionWindows": "可選擇開啟、智慧體或關閉。智慧體模式會在智慧體工作期間保持喚醒；闔蓋行為遵循此裝置的電源設定。",
+          "modeDescriptionMac": "可選擇開啟、智慧體或關閉。智慧體模式會在智慧體工作期間防止閒置睡眠，讓長時間執行的任務在開蓋時順利完成。闔蓋仍會使此 Mac 進入睡眠。",
           "modeTitle": "保持電腦喚醒"
         },
         "agent-generated-tab-title-copy": {
@@ -12213,6 +12287,18 @@
               "dim": "暗淡",
               "colors": "顏色"
             },
+            "d31ed1ac1c": "rcfile",
+            "d9e29543a1": "wrapper",
+            "50ba80b6dd": "login",
+            "36ba1a1357": "args",
+            "5304b12d5c": "arguments",
+            "7c3ede6f12": "nushell",
+            "bf09070e31": "bash",
+            "d26257a80d": "zsh",
+            "454df22a5e": "fish",
+            "ddd5efe113": "shell",
+            "3de504994c": "新的本機互動式終端窗格使用的 Shell 與引數",
+            "1733ccd3e9": "終端 Shell",
             "warp_import": {
               "description": "將 Warp 主題匯入為 Orca 終端主題。",
               "keyword_legacy_title": "從 Warp 匯入主題",
@@ -13692,6 +13778,11 @@
           "retry": "立即重試",
           "restored": "Git 已恢復正常。工作樹已重新整理。"
         },
+        "manualSortSwitch": {
+          "title": "排序已變更為「手動」",
+          "description": "「手動」會將工作區保留在您放置的位置。",
+          "restore": "返回 {{label}}"
+        },
         "add": {
           "repo": {
             "local": {
@@ -15122,6 +15213,9 @@
             "fda8146810": "開啟 Kimi 使用詳情",
             "ff0fbe9311": "目前",
             "floatingTerminalNewActivity": "{{label}}，有新活動",
+            "4fba7dc1e7": "{{value0}} 餘額",
+            "4025a6f62f": "無限制",
+            "a95969101f": "{{value0}} 點數",
             "grokUsageAria": "開啟 Grok 使用詳情",
             "grokUsageMenu": "Grok 使用量",
             "remoteServerLabel": "遠端伺服器",
@@ -15281,6 +15375,16 @@
               }
             }
           },
+          "provider": {
+            "extra": {
+              "usage": {
+                "section": {
+                  "135d51c19f": "上限 {{value0}}",
+                  "apiKeyBalanceUnavailable": "此用量回應中不包含餘額。"
+                }
+              }
+            }
+          },
           "resource": {
             "manager": {
               "terminal": {
@@ -15327,6 +15431,14 @@
             "8418ec448d": "無法重新整理 {{value0}} 使用量。智慧體工作階段可能仍處於登入狀態。",
             "94038ad2fa": "工作階段",
             "a37e8c15d4": "在執行 Orca 的電腦的終端中執行 kimi，等待其啟動後再重試使用量。",
+            "fbc80d8be2": "Zen 餘額",
+            "c03c61f53f": "餘額",
+            "f6a27a3c0a": "{{value0}} 可用",
+            "7404abbece": "用量點數",
+            "473d45cd0f": "餘額 {{value0}}",
+            "f21b2ba897": "點數",
+            "56c0d70577": "無限制",
+            "87b5bda4d3": "可用點數：{{value0}}",
             "minimax": {
               "expired": {
                 "label": "登入已過期",
@@ -15796,18 +15908,16 @@
           },
           "MobileDriverOverlay": {
             "3eed73394f": "您的鍵盤已暫停",
-            "54f7d6f69d": "收回所有終端",
-            "7cffad954c": "摺疊",
-            "a6b1d8f3e2": "您的手機工作階段已結束。可將此終端恢復為桌面尺寸，或將手機維持在手機尺寸的所有終端恢復為桌面尺寸。",
-            "b3d8e1f42a": "恢復此終端",
             "c44659e09f": "手機操控中",
             "c6460cf584": "收回",
             "c7e4a2b8f1": "目前由手機操控",
-            "c8f2e1a4b9": "收回此終端",
-            "d9f3c6e2a4": "桌面鍵盤已暫停。收回此終端即可在此輸入、收回手機操控的所有終端，或摺疊以繼續觀看。",
-            "e8c4f2a91b": "恢復所有終端",
-            "f2a8b9c1d3": "來自手機",
-            "faa367dc74": "您的手機將此終端留在手機尺寸"
+            "4b7e1c9a20": "仍維持手機尺寸",
+            "9d2f6a3e58": "您的手機工作階段已結束。請還原以符合此視窗。",
+            "1e5c8b7d43": "還原",
+            "6a3d9f2c71": "全部還原",
+            "8c1a5e9f36": "桌面鍵盤已暫停。輸出持續串流中。",
+            "2f7b4d1e95": "全部收回",
+            "3a9c5f7e12": "最小化"
           },
           "PinnedTabCloseDialog": {
             "0b38ee2f86": "取消",
@@ -17344,6 +17454,11 @@
         }
       }
     },
+    "jiraIssueAssigneeField": {
+      "label": "負責人",
+      "automatic": "自動",
+      "assignToMe": "指派給我 ({{name}})"
+    },
     "agentSessionContinuation": {
       "agent": "智慧體",
       "agentDisabled": "{{agent}} 已在智慧體設定中停用。",
@@ -17455,6 +17570,8 @@
         "historyUnavailable": "Orca 目前無法開啟此聊天的歷程記錄。",
         "savedByNewerOrca": "聊天記錄是由較新版本的 Orca 所儲存。",
         "updateOrcaToKeepUsing": "更新 Orca 以繼續使用它們。",
+        "chatSavedByNewerOrca": "此聊天由較新版本的 Orca 儲存。",
+        "updateOrcaToOpenChat": "請更新 Orca 以開啟。",
         "unsupported": "執行此聊天的電腦需要較新版本的 Orca。請在該電腦上更新 Orca，然後再試一次。",
         "notAvailable": "此聊天中無法使用此功能。",
         "unreachable": "Orca 無法連線至智慧體。",
@@ -17531,6 +17648,7 @@
         "reason": "原因",
         "blockedPath": "被封鎖的路徑",
         "askRule": "詢問規則",
+        "needsNewerOrca": "此請求需要較新版本的 Orca。",
         "plan": {
           "file": "計畫檔案"
         },
@@ -17843,6 +17961,7 @@
       "dismissDeliveryNotice": "關閉",
       "messageNotSent": "訊息未傳送",
       "deliveryUnconfirmed": "傳送未確認 — 請在重試前檢查對話",
+      "messageSending": "傳送中…",
       "queuedMessages": {
         "behindReturnedHold": "正在等待 — 前面的訊息需要處理",
         "awaitingAnswerHold": "等待您的回答",
@@ -18136,6 +18255,16 @@
         "workspaceReadyToast": "工作區 {{name}} 已準備就緒",
         "goToWorktree": "前往工作樹",
         "goToWorkspace": "前往工作區"
+      },
+      "delete": {
+        "changes": {
+          "permanentLoss": "Git 工作區中任何未提交或未追蹤的變更都將被永久刪除。",
+          "clean": "沒有未提交或未追蹤的變更",
+          "unavailable": "無法檢查變更",
+          "checking": "正在檢查變更…",
+          "checkingDetails": "檢查中…",
+          "unavailableDetails": "無法取得詳細資料"
+        }
       }
     },
     "cmd-j": {
