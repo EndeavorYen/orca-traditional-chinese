@@ -2,12 +2,12 @@
 
 Upstream `en.json` changes almost daily, so keeping the pack current is a loop
 that has to be cheap. The loop is split so that everything mechanical is a
-script, and the only judgement call -- the translation itself -- is one command.
+script, and the only judgement call -- the translation itself -- is one step.
 
 ```
  daily, in CI (free)                      on demand, on your machine
  ┌──────────────────────┐                 ┌───────────────────────────────────┐
- │ resync-check.yml     │  opens/updates  │ /resync  (Claude Code)            │
+ │ resync-check.yml     │  opens/updates  │ resync  (scripts/sync.py)         │
  │  sync.py check       ├──── issue ─────▶│  check → prepare → translate →    │
  │                      │                 │  apply → validate → commit        │
  └──────────────────────┘                 └───────────────┬───────────────────┘
@@ -17,23 +17,25 @@ script, and the only judgement call -- the translation itself -- is one command.
 
 ## Routine: resync
 
-Someone (or the daily workflow's issue) says the pack is behind:
+When the daily workflow's issue reports drift or when syncing to a new release,
+the flow is: `python3 scripts/sync.py check` → `prepare` → translate
+`work/todo/NNN.json` into `work/done/NNN.json` (LLM-assisted, any tool;
+`.claude/commands/resync.md` is an optional ready-made prompt that follows the
+same rules) → `apply` → `validate --strict` → open a PR (`validate.yml` is the
+required check).
 
-```sh
-claude          # then:  /resync
-```
-
-That runs the steps below; you can also run them by hand. All commands are
-stdlib-only Python 3 and need network access to GitHub (set `GH_TOKEN` to avoid
-rate limits, or pass `--upstream-dir <clone of stablyai/orca>` to work offline).
+All commands are stdlib-only Python 3 and need network access to GitHub (set
+`GH_TOKEN` to avoid rate limits, or pass `--upstream-dir <clone of stablyai/orca>`
+to work offline).
 
 | Step | Command | What it does |
 |---|---|---|
 | 1 | `python3 scripts/sync.py check` | Diff the latest stable Orca release vs. the pack. Exit 1 when out of date. |
 | 2 | `python3 scripts/sync.py prepare` | Write `work/todo/NNN.json` batches (new keys + reworded keys). |
-| 3 | *translate* | Write `work/done/NNN.json` as `{key: translation}`. This is the LLM step. |
+| 3 | *translate* | Write `work/done/NNN.json` as `{key: translation}` (LLM-assisted, any tool). |
 | 4 | `python3 scripts/sync.py apply` | Merge, validate, update lock/README/version. Writes nothing on error. |
-| 5 | `python3 scripts/sync.py validate --strict` | Final gate (also the CI check). |
+| 5 | `python3 scripts/sync.py validate --strict` | Final validation gate (also the CI check). |
+| 6 | `python3 -m unittest discover -s tests` | Run the test suite. |
 
 The diff reports four kinds of drift:
 
@@ -46,6 +48,14 @@ The diff reports four kinds of drift:
 
 `apply` keeps the existing key order and inserts each new key after its
 upstream predecessor, so the git diff shows only what really changed.
+
+## Translation conventions
+
+- **Placeholders**: Placeholder-driven sentences (`{{value0}}`, `{host}`, `<tag>`)
+  keep the existing placeholder structure even when Chinese word order differs;
+  adjust wording around them for natural phrasing.
+- **Terminology**: Follow `scripts/glossary.json` for Traditional Chinese (Taiwan usage).
+  Keep brand names, code literals, and CLI commands in English.
 
 ## Why the rules are parsed, not copied
 
@@ -63,6 +73,8 @@ a fingerprint mismatch: re-read that function, update `is_protected()`, and set
 
 | Path | Role |
 |---|---|
+| `locales/zh-TW.json` | The zh-TW catalog |
+| `docs/images/` | README screenshots (retake when the UI changes noticeably) |
 | `scripts/sync.py` | CLI: `init`, `check`, `prepare`, `apply`, `validate` |
 | `scripts/validate.py` | Loader rules, placeholder/glossary checks, manifest identity checks (pure functions) |
 | `scripts/glossary.json` | Banned (error) and watch (warning) terms, exceptions, Simplified-only characters |
@@ -72,7 +84,7 @@ a fingerprint mismatch: re-read that function, update `is_protected()`, and set
 | `orca-plugin.json` / `orca-marketplace.json` | Plugin manifest and marketplace index (identity + version) |
 | `.github/workflows/resync-check.yml` | Daily drift check; one self-updating issue |
 | `.github/workflows/validate.yml` | Unit tests + `validate`, for PRs |
-| `.claude/commands/resync.md` | The `/resync` command |
+| `.claude/commands/resync.md` | Optional ready-made prompt for resync |
 
 ## Versions and plugin identity
 
@@ -119,6 +131,12 @@ see a *different* plugin: existing users must remove the old one and install the
 new one, so say so in the README and release notes (done for
 `a-lang.traditional-chinese`).
 
+**displayName.** The language menu shows `zh-TW — <publisher>.<id>`; native
+custom names are tracked in stablyai/orca [#13031](https://github.com/stablyai/orca/issues/13031) /
+PR [#13140](https://github.com/stablyai/orca/pull/13140). **Do not add `displayName`
+to `orca-plugin.json` until PR #13140 is merged** — the upstream manifest schema is
+`.strict()`, so an unknown key makes Orca reject the whole plugin.
+
 **Moving or forking the pack** -- change together, then run
 `python3 scripts/sync.py validate`:
 
@@ -127,7 +145,6 @@ new one, so say so in the README and release notes (done for
 3. `README.md`: install URL, plugin id, the language-picker label
    (`zh-TW — <publisher>.<id>`), and the migration note
 4. `UPSTREAM_REPO` in `scripts/sync.py` only if the *upstream* Orca repo moves
-
 
 ## GitHub Release notes
 
@@ -170,6 +187,5 @@ Install via Orca marketplace source:
 ## Going fully automatic later
 
 Nothing above needs an API key. If you later want unattended translation, run
-the same `/resync` steps in CI with `anthropics/claude-code-action`
-(`prompt: /resync`) after `resync-check` finds drift, then open a PR from the
-resulting branch. `validate.yml` already gates the merge.
+the resync steps in CI with any CI-capable translator after `resync-check` finds
+drift, then open a PR from the resulting branch. `validate.yml` gates the merge.
