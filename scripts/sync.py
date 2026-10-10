@@ -420,6 +420,12 @@ def merge_catalog(
     def walk(zh_node: dict[str, Any], en_node: dict[str, Any], prefix: str) -> None:
         keys = list(en_node)
         for i, key in enumerate(keys):
+            if "." in key:
+                # Upstream en.json can carry a stray dotted key (e.g. a root-level
+                # "settings.appearance.chat.title" next to the nested one). Its flat
+                # path collides with the nested key, and Orca's loader rejects the
+                # whole pack on a dotted key, so never copy it into the catalog.
+                continue
             path = f"{prefix}.{key}" if prefix else key
             val = en_node[key]
             if isinstance(val, dict):

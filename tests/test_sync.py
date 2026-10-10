@@ -411,6 +411,14 @@ class Merge(unittest.TestCase):
         sync.merge_catalog(zh, {}, {}, {"s.a": "A2"}, {"t.u.v"})
         self.assertEqual(zh, {"s": {"a": "A2", "b": "b"}})
 
+    def test_stray_dotted_upstream_key_is_not_copied(self):
+        # Upstream once shipped a root-level "a.b" next to the nested a.b; only the
+        # nested key may land in the catalog, or the loader rejects the whole pack.
+        en = {"a": {"b": "B"}, "a.b": "B"}
+        zh = {}
+        sync.merge_catalog(zh, en, {"a.b": "b"}, {}, set())
+        self.assertEqual(zh, {"a": {"b": "b"}})
+
 
 class Diff(unittest.TestCase):
     def snap(self, en):
