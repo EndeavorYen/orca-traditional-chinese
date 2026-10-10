@@ -3,7 +3,7 @@
   "id": "traditional-chinese",
   "publisher": "endeavoryen",
   "name": "繁體中文（台灣）",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Traditional Chinese (zh-TW) translations for Orca.",
   "repository": "https://github.com/EndeavorYen/orca-traditional-chinese",
   "engines": {
