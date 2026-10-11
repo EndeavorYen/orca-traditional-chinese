@@ -1,3 +1,4 @@
+import contextlib
 import io
 import json
 import sys
@@ -216,6 +217,32 @@ class Terminology(unittest.TestCase):
         self.assertFalse(mainland.ok)
         self.assertIn("banned-term", {c for c, _, _ in mainland.errors})
 
+    def test_shipped_glossary_keeps_terminal_wording_consistent(self):
+        # Taiwan usage renders "terminal" as 終端機; a bare 終端 is drift.
+        glossary = sync.load_glossary()
+        en = {"k": "terminal"}
+        drift = V.validate_catalog({"k": "重設終端"}, en, rules(), glossary)
+        self.assertFalse(drift.ok)
+        self.assertIn("banned-term", {c for c, _, _ in drift.errors})
+        drift_mid = V.validate_catalog({"k": "在終端中執行"}, en, rules(), glossary)
+        self.assertFalse(drift_mid.ok)
+        house = V.validate_catalog({"k": "重設終端機"}, en, rules(), glossary)
+        self.assertTrue(house.ok, house.errors)
+        product = V.validate_catalog({"k": "Windows 終端機"}, en, rules(), glossary)
+        self.assertTrue(product.ok, product.errors)
+        import re
+
+        def strings(node):
+            if isinstance(node, dict):
+                for value in node.values():
+                    yield from strings(value)
+            elif isinstance(node, str):
+                yield node
+
+        shipped = sync.read_json(sync.locale_path())
+        bare = [v for v in strings(shipped) if re.search(r"終端(?!機)", v)]
+        self.assertEqual(bare, [], f"{len(bare)} shipped strings use bare 終端")
+
 
 class ReleaseBaseline(unittest.TestCase):
     def test_default_ref_is_newer_stable_not_rc_and_explicit_main_stays(self):
@@ -418,6 +445,20 @@ class Merge(unittest.TestCase):
         zh = {}
         sync.merge_catalog(zh, en, {"a.b": "b"}, {}, set())
         self.assertEqual(zh, {"a": {"b": "b"}})
+
+    def test_stray_dotted_upstream_key_prints_a_warning(self):
+        # Skipping must not be silent: the maintainer should see which key was dropped.
+        en = {"a": {"b": "B"}, "a.b": "B"}
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            sync.merge_catalog({}, en, {"a.b": "b"}, {}, set())
+        self.assertIn("skipped dotted upstream key 'a.b'", err.getvalue())
+
+    def test_no_warning_without_dotted_keys(self):
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            sync.merge_catalog({}, {"a": {"b": "B"}}, {"a.b": "b"}, {}, set())
+        self.assertEqual(err.getvalue(), "")
 
 
 class Diff(unittest.TestCase):
