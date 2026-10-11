@@ -425,6 +425,8 @@ def merge_catalog(
                 # "settings.appearance.chat.title" next to the nested one). Its flat
                 # path collides with the nested key, and Orca's loader rejects the
                 # whole pack on a dotted key, so never copy it into the catalog.
+                full = f"{prefix}.{key}" if prefix else key
+                print(f"warning: skipped dotted upstream key {full!r} (not copied into the catalog)", file=sys.stderr)
                 continue
             path = f"{prefix}.{key}" if prefix else key
             val = en_node[key]
