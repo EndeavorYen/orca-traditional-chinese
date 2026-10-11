@@ -218,17 +218,30 @@ class Terminology(unittest.TestCase):
         self.assertIn("banned-term", {c for c, _, _ in mainland.errors})
 
     def test_shipped_glossary_keeps_terminal_wording_consistent(self):
-        # The catalog renders "terminal" as 終端; 終端機 slipped in for some keys once.
-        # Only Microsoft's product name "Windows 終端機" keeps the longer form.
+        # Taiwan usage renders "terminal" as 終端機; a bare 終端 is drift.
         glossary = sync.load_glossary()
         en = {"k": "terminal"}
-        drift = V.validate_catalog({"k": "重設終端機"}, en, rules(), glossary)
+        drift = V.validate_catalog({"k": "重設終端"}, en, rules(), glossary)
         self.assertFalse(drift.ok)
         self.assertIn("banned-term", {c for c, _, _ in drift.errors})
-        house = V.validate_catalog({"k": "重設終端"}, en, rules(), glossary)
+        drift_mid = V.validate_catalog({"k": "在終端中執行"}, en, rules(), glossary)
+        self.assertFalse(drift_mid.ok)
+        house = V.validate_catalog({"k": "重設終端機"}, en, rules(), glossary)
         self.assertTrue(house.ok, house.errors)
         product = V.validate_catalog({"k": "Windows 終端機"}, en, rules(), glossary)
         self.assertTrue(product.ok, product.errors)
+        import re
+
+        def strings(node):
+            if isinstance(node, dict):
+                for value in node.values():
+                    yield from strings(value)
+            elif isinstance(node, str):
+                yield node
+
+        shipped = sync.read_json(sync.locale_path())
+        bare = [v for v in strings(shipped) if re.search(r"終端(?!機)", v)]
+        self.assertEqual(bare, [], f"{len(bare)} shipped strings use bare 終端")
 
 
 class ReleaseBaseline(unittest.TestCase):
