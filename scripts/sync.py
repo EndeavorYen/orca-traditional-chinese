@@ -197,6 +197,9 @@ class Upstream:
         self.resolve()
         tree = json.loads(self.read(EN_PATH))
         try:
+            # One shape for the flat en map and for merge: a dotted key is nested
+            # before either consumer sees the tree.
+            tree = nest_dotted_keys(tree)
             en = V.flatten(tree)
             rules = V.parse_rules(self.read(ARTIFACT_PATH), self.read(CHROME_PATH))
         except (ValueError, V.RulesError) as e:
@@ -371,6 +374,117 @@ def print_diff(d: Diff, snap: Snapshot, lock: dict[str, Any]) -> None:
 # --------------------------------------------------------------------------- merge
 
 
+def _join(prefix: str, key: str) -> str:
+    return f"{prefix}.{key}" if prefix else key
+
+
+def nest_dotted_keys(tree: dict[str, Any]) -> dict[str, Any]:
+    """Rewrite keys containing '.' into nested objects and return a new tree.
+
+    ``settings.agents.save`` becomes ``tree["settings"]["agents"]["save"]``.
+    Existing nested dicts are merged into. When a dotted key names a path that
+    already holds a value, the nested value is kept, the flat key is dropped,
+    and an info line on stderr names that key. A string/object clash raises
+    ValueError naming the dotted key.
+    """
+    if not isinstance(tree, dict):
+        raise ValueError(f"expected an object, got {type(tree).__name__}")
+    return _nest_object(tree, "")
+
+
+def _nest_object(node: dict[str, Any], prefix: str) -> dict[str, Any]:
+    """Nest one object. Plain keys land first so a nested value wins over a flat one."""
+    plain: list[tuple[str, Any]] = []
+    dotted_dicts: list[tuple[str, Any]] = []
+    dotted_leaves: list[tuple[str, Any]] = []
+    for key, value in node.items():
+        if not isinstance(key, str):
+            where = prefix or "<root>"
+            raise ValueError(f"{where}: expected string key, got {type(key).__name__}")
+        if "." in key:
+            bucket = dotted_dicts if isinstance(value, dict) else dotted_leaves
+            bucket.append((key, value))
+        else:
+            plain.append((key, value))
+
+    out: dict[str, Any] = {}
+    for key, value in plain:
+        out[key] = _nest_value(value, _join(prefix, key))
+    # Dict-shaped dotted keys carry real nesting, so they beat a flat leaf on the same path.
+    for key, value in (*dotted_dicts, *dotted_leaves):
+        _place_dotted(out, key, value, prefix)
+    return out
+
+
+def _nest_value(value: Any, path: str) -> Any:
+    if isinstance(value, dict):
+        return _nest_object(value, path)
+    if isinstance(value, str):
+        return value
+    raise ValueError(f"{path}: expected string or object, got {type(value).__name__}")
+
+
+def _drop_duplicate(dotted_key: str) -> None:
+    print(
+        f"info: dropped duplicate dotted key {dotted_key!r}; keeping existing nested value",
+        file=sys.stderr,
+    )
+
+
+def _place_dotted(node: dict[str, Any], dotted_key: str, value: Any, prefix: str) -> None:
+    parts = dotted_key.split(".")
+    full_key = _join(prefix, dotted_key)
+    if any(part == "" for part in parts):
+        raise ValueError(f"dotted key {full_key!r} has an empty segment")
+    normalized = _nest_value(value, full_key)
+    cursor = node
+    walked: list[str] = [prefix] if prefix else []
+    for index, part in enumerate(parts):
+        last = index == len(parts) - 1
+        walked.append(part)
+        where = ".".join(walked)
+        if part not in cursor:
+            if last:
+                cursor[part] = normalized
+            else:
+                child: dict[str, Any] = {}
+                cursor[part] = child
+                cursor = child
+            continue
+        existing = cursor[part]
+        if not last:
+            if not isinstance(existing, dict):
+                raise ValueError(f"dotted key {full_key!r} conflicts with string value at {where!r}")
+            cursor = existing
+            continue
+        if isinstance(existing, dict) and isinstance(normalized, dict):
+            _merge_nested(existing, normalized, full_key, where)
+            return
+        if isinstance(existing, str) and isinstance(normalized, str):
+            _drop_duplicate(full_key)
+            return
+        if isinstance(existing, dict):
+            raise ValueError(f"dotted key {full_key!r} conflicts with object at {where!r}")
+        raise ValueError(f"dotted key {full_key!r} conflicts with string value at {where!r}")
+
+
+def _merge_nested(dest: dict[str, Any], src: dict[str, Any], origin: str, dest_path: str) -> None:
+    for key, value in src.items():
+        child = _join(dest_path, key)
+        if key not in dest:
+            dest[key] = value
+            continue
+        current = dest[key]
+        if isinstance(current, dict) and isinstance(value, dict):
+            _merge_nested(current, value, origin, child)
+        elif isinstance(current, str) and isinstance(value, str):
+            _drop_duplicate(origin)
+        elif isinstance(current, dict):
+            raise ValueError(f"dotted key {origin!r} conflicts with object at {child!r}")
+        else:
+            raise ValueError(f"dotted key {origin!r} conflicts with string value at {child!r}")
+
+
 def _place(node: dict[str, Any], key: str, value: Any, preceding: list[str]) -> None:
     """Insert key right after its nearest preceding upstream sibling, to keep diffs local."""
     if key in node:
@@ -421,13 +535,12 @@ def merge_catalog(
         keys = list(en_node)
         for i, key in enumerate(keys):
             if "." in key:
-                # Upstream en.json can carry a stray dotted key (e.g. a root-level
-                # "settings.appearance.chat.title" next to the nested one). Its flat
-                # path collides with the nested key, and Orca's loader rejects the
-                # whole pack on a dotted key, so never copy it into the catalog.
+                # snapshot() nests these. A dotted key here would be copied into the
+                # catalog, and Orca rejects the whole pack on one such key.
                 full = f"{prefix}.{key}" if prefix else key
-                print(f"warning: skipped dotted upstream key {full!r} (not copied into the catalog)", file=sys.stderr)
-                continue
+                raise AssertionError(
+                    f"dotted upstream key {full!r} reached merge; nest_dotted_keys should have rewritten it"
+                )
             path = f"{prefix}.{key}" if prefix else key
             val = en_node[key]
             if isinstance(val, dict):

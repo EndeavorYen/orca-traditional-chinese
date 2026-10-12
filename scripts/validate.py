@@ -260,11 +260,14 @@ def _walk_loader_rules(node: Any, rules: Rules, report: Report) -> None:
                 report.error("entries", prefix, f"catalog exceeds {rules.max_entries} entries")
                 return
             path = f"{prefix}.{key}" if prefix else key
-            if (
+            # Dotted keys are their own loader failure (Orca rejects the whole pack)
+            # and are still walked, so a dotted key nested under another is reported.
+            if "." in key:
+                report.error("dotted-key", path, f"key {key!r} must not contain '.'")
+            elif (
                 not key
                 or len(key) > 128
                 or key in ("__proto__", "prototype", "constructor")
-                or "." in key
                 or any(ord(c) <= 31 for c in key)
             ):
                 report.error("unsafe-key", path, "catalog key is not safe")

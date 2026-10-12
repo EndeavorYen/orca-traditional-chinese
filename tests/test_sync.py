@@ -439,20 +439,26 @@ class Merge(unittest.TestCase):
         self.assertEqual(zh, {"s": {"a": "A2", "b": "b"}})
 
     def test_stray_dotted_upstream_key_is_not_copied(self):
-        # Upstream once shipped a root-level "a.b" next to the nested a.b; only the
-        # nested key may land in the catalog, or the loader rejects the whole pack.
-        en = {"a": {"b": "B"}, "a.b": "B"}
+        # A flat "a.b" beside nested a.b is a duplicate. Nesting keeps the nested
+        # value; merge then places the translation at that nested path.
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            en = sync.nest_dotted_keys({"a": {"b": "B"}, "a.b": "B"})
         zh = {}
         sync.merge_catalog(zh, en, {"a.b": "b"}, {}, set())
         self.assertEqual(zh, {"a": {"b": "b"}})
+        self.assertNotIn("a.b", zh)
+        self.assertIn("info:", err.getvalue())
 
-    def test_stray_dotted_upstream_key_prints_a_warning(self):
-        # Skipping must not be silent: the maintainer should see which key was dropped.
-        en = {"a": {"b": "B"}, "a.b": "B"}
+    def test_stray_dotted_upstream_key_prints_info(self):
+        # Dropping the flat duplicate must name the key. The old skip warning is gone.
         err = io.StringIO()
         with contextlib.redirect_stderr(err):
-            sync.merge_catalog({}, en, {"a.b": "b"}, {}, set())
-        self.assertIn("skipped dotted upstream key 'a.b'", err.getvalue())
+            sync.nest_dotted_keys({"a": {"b": "B"}, "a.b": "B"})
+        text = err.getvalue()
+        self.assertIn("a.b", text)
+        self.assertIn("info:", text)
+        self.assertNotIn("skipped dotted upstream key", text)
 
     def test_no_warning_without_dotted_keys(self):
         err = io.StringIO()
@@ -477,6 +483,164 @@ class Diff(unittest.TestCase):
     def test_translated_key_that_became_protected_must_be_dropped(self):
         d = sync.compute_diff(self.snap({PFX + "PluginX.t": "T"}), {PFX + "PluginX.t": "譯"}, {})
         self.assertEqual(d.now_excluded, [PFX + "PluginX.t"])
+
+
+class DottedKeys(unittest.TestCase):
+    """Upstream en.json sometimes ships a flat key like ``settings.agents.save``.
+
+    Orca rejects the whole pack if any catalog key contains a dot, so the flat
+    key is rewritten into nested objects before diff and merge.
+    """
+
+    def test_nest_dotted_keys_merges_into_existing_dicts(self):
+        original = {
+            "settings": {"appearance": {"theme": "Dark"}},
+            "settings.appearance.chat.title": "Title",
+            "top.level": "Top",
+        }
+        untouched = json.loads(json.dumps(original))
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            nested = sync.nest_dotted_keys(original)
+            inner = sync.nest_dotted_keys({
+                "settings": {"agents.save": "Save", "agents": {"reset": "Reset"}},
+            })
+            rewritten = sync.nest_dotted_keys({"settings.agents": {"save.now": "Save"}})
+        self.assertEqual(original, untouched)
+        self.assertEqual(err.getvalue(), "")
+        self.assertEqual(nested, {
+            "settings": {"appearance": {"theme": "Dark", "chat": {"title": "Title"}}},
+            "top": {"level": "Top"},
+        })
+        self.assertNotIn("settings.appearance.chat.title", nested)
+        self.assertEqual(inner, {
+            "settings": {"agents": {"reset": "Reset", "save": "Save"}},
+        })
+        self.assertNotIn("agents.save", inner["settings"])
+        self.assertEqual(rewritten, {"settings": {"agents": {"save": {"now": "Save"}}}})
+        self.assertEqual(
+            V.flatten(nested),
+            {"settings.appearance.theme": "Dark", "settings.appearance.chat.title": "Title", "top.level": "Top"},
+        )
+
+    def test_duplicate_dotted_key_keeps_nested_value_and_prints_info(self):
+        trees = [
+            {
+                "settings": {"appearance": {"chat": {"title": "Nested"}}},
+                "settings.appearance.chat.title": "Flat",
+            },
+            {
+                "settings.appearance.chat.title": "Flat",
+                "settings": {"appearance": {"chat": {"title": "Nested"}}},
+            },
+        ]
+        for tree in trees:
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err):
+                nested = sync.nest_dotted_keys(tree)
+            self.assertEqual(nested, {
+                "settings": {"appearance": {"chat": {"title": "Nested"}}},
+            })
+            text = err.getvalue()
+            self.assertIn("info:", text)
+            self.assertIn("settings.appearance.chat.title", text)
+            self.assertIn("keeping existing nested value", text)
+
+    def test_dotted_key_conflict_raises(self):
+        with self.assertRaises(ValueError) as leaf:
+            sync.nest_dotted_keys({"settings": "Settings", "settings.agents.save": "Save"})
+        self.assertIn("settings.agents.save", str(leaf.exception))
+
+        with self.assertRaises(ValueError) as target:
+            sync.nest_dotted_keys({
+                "settings": {"agents": {"save": {"label": "Save"}}},
+                "settings.agents.save": "Save",
+            })
+        self.assertIn("settings.agents.save", str(target.exception))
+
+        with self.assertRaises(ValueError) as through:
+            sync.nest_dotted_keys({"a": {"b": "leaf"}, "a.b": {"c": "x"}})
+        self.assertIn("a.b", str(through.exception))
+
+    def test_merge_catalog_places_nested_translation_path(self):
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            en = sync.nest_dotted_keys({
+                "settings": {"agents": {"reset": "Reset"}},
+                "settings.agents.save": "Save",
+            })
+        zh = {"settings": {"agents": {"reset": "重設"}}}
+        sync.merge_catalog(zh, en, {"settings.agents.save": "儲存"}, {}, set())
+        self.assertEqual(zh, {"settings": {"agents": {"reset": "重設", "save": "儲存"}}})
+        self.assertEqual(err.getvalue(), "")
+        self.assertNotIn("settings.agents.save", zh)
+        self.assertNotIn("agents.save", zh["settings"])
+
+    def test_merge_catalog_rejects_unnested_dotted_key(self):
+        with self.assertRaises(AssertionError) as caught:
+            sync.merge_catalog({}, {"a.b": "B"}, {"a.b": "b"}, {}, set())
+        self.assertIn("a.b", str(caught.exception))
+
+    def test_validate_errors_on_dotted_key(self):
+        catalogs = [
+            ({"settings.agents.save": "儲存"}, {"settings.agents.save": "Save"}),
+            (
+                {"settings": {"appearance": {"chat.title": "標題"}}},
+                {"settings.appearance.chat.title": "Title"},
+            ),
+            ({"a.b": {"c.d": "x"}}, {"a.b.c.d": "X"}),
+        ]
+        for zh, en in catalogs:
+            for strict in (False, True):
+                report = V.validate_catalog(zh, en, rules(), V.Glossary(), strict_coverage=strict)
+                self.assertFalse(report.ok)
+                dotted = [(key, msg) for code, key, msg in report.errors if code == "dotted-key"]
+                self.assertTrue(dotted, report.errors)
+                self.assertTrue(all(code == "dotted-key" for code, _, _ in report.errors), report.errors)
+        deep = V.validate_catalog(
+            {"a.b": {"c.d": "x"}}, {"a.b.c.d": "X"}, rules(), V.Glossary(), strict_coverage=True,
+        )
+        paths = [key for code, key, _ in deep.errors if code == "dotted-key"]
+        self.assertTrue(any(path == "a.b" for path in paths), paths)
+        self.assertTrue(any("c.d" in path for path in paths), paths)
+
+    def _upstream(self, en_tree: dict) -> sync.Upstream:
+        up = sync.Upstream("v1.4.216")
+        up.sha = "abc123"
+        up.date = "2026-01-01T00:00:00Z"
+        up.resolve = lambda: None  # type: ignore[method-assign]
+        files = {
+            sync.EN_PATH: json.dumps(en_tree),
+            sync.ARTIFACT_PATH: ARTIFACT_TS,
+            sync.CHROME_PATH: CHROME_TS,
+        }
+        up.read = lambda path: files[path]  # type: ignore[method-assign]
+        return up
+
+    def test_snapshot_nests_dotted_keys_before_diff_and_merge(self):
+        # Flat duplicate is last, so a raw flatten would keep "Flat" and hide "Nested".
+        up = self._upstream({
+            "settings": {"appearance": {"chat": {"title": "Nested"}}},
+            "settings.agents.save": "Save",
+            "settings.appearance.chat.title": "Flat",
+        })
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            snap = up.snapshot()
+        self.assertEqual(snap.en["settings.appearance.chat.title"], "Nested")
+        self.assertEqual(snap.en["settings.agents.save"], "Save")
+        self.assertEqual(snap.en_tree["settings"]["appearance"]["chat"]["title"], "Nested")
+        self.assertEqual(snap.en_tree["settings"]["agents"]["save"], "Save")
+        self.assertNotIn("settings.appearance.chat.title", snap.en_tree)
+        self.assertNotIn("settings.agents.save", snap.en_tree)
+        self.assertIn("settings.appearance.chat.title", err.getvalue())
+        self.assertIn("info:", err.getvalue())
+
+    def test_snapshot_dotted_conflict_fails_loudly(self):
+        up = self._upstream({"settings": "Settings", "settings.agents.save": "Save"})
+        with self.assertRaises(sync.SyncError) as caught:
+            up.snapshot()
+        self.assertIn("settings.agents.save", str(caught.exception))
 
 
 if __name__ == "__main__":
