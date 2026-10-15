@@ -1,18 +1,27 @@
 name: auto-release
 
 # Publishes a GitHub release as soon as a version bump lands on main, so the
-# marketplace ref picks it up without a manual step. The gate is the tag: if
-# the pack's current orca-plugin.json version is already tagged, the run is a
-# no-op, so docs-only merges and review-fix commits never publish anything.
-# Notes come from scripts/release_notes.py, which reads .sync/lock.json and
-# the previous release tag's lock (the drift the last resync absorbed). One
-# release per version; safe to re-run. A hand-written Terminology line, when
+# marketplace ref picks it up without a manual step. One release per version;
+# safe to re-run. Runs on main only: a dispatch from a branch carrying an
+# untagged version would tag the release on a commit that squash-merge never
+# lands, orphaning the tag and double-counting the next drift diff. The gate
+# is the tag: if the pack's current orca-plugin.json version is already
+# tagged, the run is a no-op, so docs-only merges and review-fix commits
+# never publish anything. Notes come from scripts/release_notes.py, which
+# reads .sync/lock.json and the previous release tag's lock (the drift the
+# last resync absorbed). Dispatching with dry_run prints the generated notes
+# and stops before any tag or release. A hand-written Terminology line, when
 # one is wanted, goes in afterwards with `gh release edit`.
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Generate notes only; create no tag or release
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -23,6 +32,7 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,10 +54,10 @@ jobs:
 
       - name: Generate release notes
         if: steps.gate.outputs.skip == 'false'
-        run: python3 scripts/release_notes.py > release-notes.md
+        run: python3 scripts/release_notes.py > release-notes.md && cat release-notes.md
 
       - name: Publish the release
-        if: steps.gate.outputs.skip == 'false'
+        if: steps.gate.outputs.skip == 'false' && inputs.dry_run != true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
