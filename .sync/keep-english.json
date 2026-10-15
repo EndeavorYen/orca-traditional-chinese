@@ -706,6 +706,7 @@
   "auto.web.web.runtime.environment.07f788de83",
   "components.native-chat.backgroundTasks.groupShell",
   "components.native-chat.composer.pillAccessibleName",
+  "components.settings.nativeChat.shellEnvSearchPath",
   "components.workspace.cleanup.browse.chip.kind.git",
   "components.workspace.cleanup.browse.facet.git",
   "components.workspace.cleanup.browse.reviewPresence",
