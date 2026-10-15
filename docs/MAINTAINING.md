@@ -163,7 +163,15 @@ Install via Orca marketplace source:
 `https://github.com/EndeavorYen/orca-traditional-chinese.git` (ref `main`)
 ```
 
-`scripts/sync.py` does not auto-generate the GitHub release body; only README badge/status blocks. Keep release notes free of tool credits by hand (or in the shipping agent).
+Releases publish themselves: `.github/workflows/auto-release.yml` runs on
+every push to `main` and creates the release when the current `orca-plugin.json`
+version has no tag yet, so docs-only merges and review fixes never publish
+anything. The body comes from `scripts/release_notes.py`: upstream facts from
+`.sync/lock.json`, the drift line from diffing the previous release tag's lock,
+coverage from the pack itself. The template below is what it emits; a
+`Terminology:` line is the only hand-written addition (`gh release edit` after
+publishing). Keep release notes free of tool credits; the generator never
+writes one.
 
 ## Tuning
 
