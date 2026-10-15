@@ -16300,7 +16300,7 @@
             "liveCapDetail": "此主機上已有足夠的智慧體在執行。您的工作階段已儲存。",
             "pressureDetail": "主機負載過重。您的工作階段已儲存。",
             "deadlineDetail": "主機正在忙於恢復其他終端機。您的工作階段已儲存。",
-            "title": "睡眠中，點擊以繼續",
+            "title": "睡眠中，按一下以繼續",
             "resume": "繼續",
             "resumeAutomaticRestores": "繼續自動恢復"
           },
@@ -16757,7 +16757,7 @@
           },
           "accounts": {
             "signInHostOnly": "新增帳戶或重新登入，只能在執行 Orca 的電腦上透過桌面應用程式進行。",
-            "claudeWslDefaultUnavailable": "將 WSL lane 切換回系統預設的功能僅在桌面應用程式中提供。"
+            "claudeWslDefaultUnavailable": "將 WSL 執行環境切換回系統預設的功能僅在桌面應用程式中提供。"
           }
         }
       },
@@ -19306,8 +19306,8 @@
     },
     "paneTopBanner": {
       "openNewTerminal": "開啟新終端機",
-      "learnMore": "瞭解更多",
-      "dontShowAgain": "不要再顯示",
+      "learnMore": "深入了解",
+      "dontShowAgain": "不再顯示",
       "dismiss": "關閉"
     },
     "newerDaemonBanner": {
@@ -19441,7 +19441,7 @@
       "signInRequired": "重新登入以使用此帳戶",
       "signInAgain": "重新登入",
       "usageSignInLabel": "重新登入",
-      "usageSignInMessage": "選取的 Claude 帳戶需要您重新登入。請開啟「設定 > AI Provider Accounts」，或選擇「系統預設」。",
+      "usageSignInMessage": "選取的 Claude 帳戶需要您重新登入。請開啟「設定 > AI 提供者帳戶」，或選擇「系統預設」。",
       "signIn": "登入",
       "moreSignInOptions": "更多登入選項",
       "copySignInLink": "改為複製登入連結",
