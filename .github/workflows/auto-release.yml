@@ -1,0 +1,69 @@
+name: auto-release
+
+# Publishes a GitHub release as soon as a version bump lands on main, so the
+# marketplace ref picks it up without a manual step. One release per version;
+# safe to re-run. Runs on main only: a dispatch from a branch carrying an
+# untagged version would tag the release on a commit that squash-merge never
+# lands, orphaning the tag and double-counting the next drift diff. The gate
+# is the tag: if the pack's current orca-plugin.json version is already
+# tagged, the run is a no-op, so docs-only merges and review-fix commits
+# never publish anything. Notes come from scripts/release_notes.py, which
+# reads .sync/lock.json and the previous release tag's lock (the drift the
+# last resync absorbed). Dispatching with dry_run prints the generated notes
+# and stops before any tag or release. A hand-written Terminology line, when
+# one is wanted, goes in afterwards with `gh release edit`.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Generate notes only; create no tag or release
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # the previous release tag's lock.json drives the drift line
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Release only when v<version> is not tagged yet
+        id: gate
+        run: |
+          ver=$(python3 -c "import json; print(json.load(open('orca-plugin.json'))['version'])")
+          if git rev-parse -q --verify "refs/tags/v$ver" >/dev/null 2>&1; then
+            echo "v$ver is already tagged; nothing to release"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate release notes
+        if: steps.gate.outputs.skip == 'false'
+        run: python3 scripts/release_notes.py > release-notes.md && cat release-notes.md
+
+      - name: Publish the release
+        if: steps.gate.outputs.skip == 'false' && inputs.dry_run != true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ver=$(python3 -c "import json; print(json.load(open('orca-plugin.json'))['version'])")
+          upstream=$(python3 -c "import json; print(json.load(open('.sync/lock.json'))['upstream']['release'])")
+          gh release create "v$ver" \
+            --target "$GITHUB_SHA" \
+            --title "v$ver — Orca $upstream" \
+            --notes-file release-notes.md
