@@ -719,6 +719,7 @@
   "settings.appearance.language.japanese",
   "settings.appearance.language.korean",
   "settings.appearance.language.spanish",
+  "settings.chat.providers.searchCli",
   "settings.terminal.windows.keywordUac",
   "updates.installBlock.processId",
   "workspace.links.kind.azure_devops_pr",

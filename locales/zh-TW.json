@@ -184,6 +184,19 @@
         "saveFailed": "無法儲存聊天名稱設定。",
         "searchAgent": "智慧體",
         "searchTemplate": "命令範本"
+      },
+      "providers": {
+        "title": "提供者",
+        "description": "選擇哪些智慧體要以聊天形式開啟。關閉時，已安裝的智慧體會在終端機中開啟。",
+        "searchAgents": "智慧體",
+        "searchCli": "CLI",
+        "searchTerminal": "終端機",
+        "agentDisabled": "已在智慧體設定中關閉",
+        "installed": "已安裝",
+        "notInstalled": "未安裝",
+        "install": "安裝",
+        "toggleLabel": "以聊天形式開啟 {{value0}}",
+        "antigravityDescription": "Antigravity 聊天會執行 Orca 下載至此主機的伺服器，與 agy CLI 分開。"
       }
     },
     "terminal": {
@@ -3261,6 +3274,9 @@
           "f0fd4174b5": "以分頁開啟檔案以使用豐富的 Markdown 編輯",
           "fb8331694e": "在側邊開啟預覽"
         },
+        "EditorPanelActionsMenu": {
+          "fileActions": "檔案操作"
+        },
         "EditorPanelMarkdownActionsMenu": {
           "10c39d58c1": "隱藏 Front Matter",
           "1eef809708": "自動換行",
@@ -3369,6 +3385,7 @@
           "kernelDied": "核心已終止。",
           "localOnly": "筆記本儲存格只能對這台電腦上的檔案執行。",
           "pythonOnly": "Orca 只能執行 Python 筆記本。",
+          "ownerUnresolved": "Orca 還無法判斷這份筆記本位於哪台電腦上，因此無法執行其儲存格。",
           "781abd6926": "刪除儲存格",
           "7f0d7077c6": "取消",
           "859bf9fc21": "執行儲存格",
@@ -9305,6 +9322,10 @@
           "c8791efc45": "狀態無法取得",
           "cloudVmWorkflow": "雲端虛擬機器",
           "cloudVmWorkflowHelp": "管理由配方建立的雲端機器",
+          "accessRevoked": "{{value0}} 不再接受這台電腦。請使用新的存取連結重新配對。",
+          "repair": "重新配對…",
+          "serverAccessRevoked": "存取權已撤銷",
+          "orcaVersionLastSeen": "Orca v{{value0}}（上次出現）",
           "connect": "連線",
           "connectToRemoteServers": "連線到遠端伺服器",
           "connectToRemoteServersHelp": "配對另一個 Orca 執行環境，即可在此連線或中斷連線。",
@@ -9387,6 +9408,8 @@
           "notAttempted": "尚未嘗試",
           "saveFailed": "無法儲存主機",
           "saveFailedHelp": "主機已通過驗證，但 Orca 無法儲存它。請檢查名稱與本機設定儲存空間，然後重試。",
+          "differentServer": "此連結適用於不同的伺服器",
+          "differentServerHelp": "此配對連結適用於不同的伺服器。請在您正在重新配對的伺服器上建立連結。",
           "sshTunnel": "我正在使用 SSH 隧道連到此本機位址",
           "sshTunnelHelp": "使用此連線時請保持隧道啟用。",
           "stepChooseAddress": "選擇「其他裝置」，然後選取一個可連線的位址。",
@@ -12568,9 +12591,6 @@
             }
           }
         },
-        "NativeChatSupportedAgents": {
-          "label": "支援的智慧體："
-        },
         "contrast": {
           "title": "色彩對比",
           "description": "提升文字可讀性，或保留終端機程式所選用的顏色。",
@@ -12757,7 +12777,11 @@
           "linkedProjects_other": "此主機的 Orca 伺服器已有 {{paths}}，因此這個桌面現在改用伺服器的副本。這個桌面在該處的分頁與 {{count}} 項自動化並未被移動，且在該處建立的工作樹會顯示為外部工作樹。",
           "linkedProjects": "此主機的 Orca 伺服器已有 {{paths}}，因此這個桌面現在改用伺服器的副本。這個桌面在該處的分頁與 {{count}} 項自動化並未被移動，且在該處建立的工作樹會顯示為外部工作樹。",
           "linkedProjectsNoAutomations": "此主機的 Orca 伺服器已有 {{paths}}，因此這個桌面現在改用伺服器的副本。這個桌面在該處的分頁並未被移動，且在該處建立的工作樹會顯示為外部工作樹。",
-          "launchSessionEnded": "這台 Mac 上的終端機可能已失去區域網路存取權限，因為啟動受管理伺服器的 SSH 工作階段已結束。請重新啟動受管理的伺服器以將其還原。"
+          "launchSessionEnded": "這台 Mac 上的終端機可能已失去區域網路存取權限，因為啟動受管理伺服器的 SSH 工作階段已結束。請重新啟動受管理的伺服器以將其還原。",
+          "behindRolledBack": "執行比此應用程式更舊的受管 Orca 伺服器；上次更新已回復。請使用「更新伺服器」再試一次。",
+          "behindNoTemplate": "執行此應用程式無法更新的受管 Orca 伺服器；此建置沒有適用於此主機的伺服器。",
+          "behindMigrating": "執行受管 Orca 伺服器，會在專案移動完成後進行更新。",
+          "behindCheckFailed": "執行受管 Orca 伺服器；Orca 無法檢查它是否落後於此應用程式。"
         },
         "ZcodeCliSetupSection": {
           "title": "搭配 ZCode 使用 GLM",
@@ -12881,6 +12905,13 @@
           "confirm": "重新啟動",
           "terminalsUnknown": "Orca 無法確認此主機上是否有終端機正在執行，因此未重新啟動受管理的伺服器。",
           "terminalsRunning": "此主機上仍有 {{count}} 個終端機正在執行。請先關閉它們，然後再重新啟動受管理的伺服器。"
+        },
+        "RuntimeRepairDialog": {
+          "title": "重新配對 {{name}}",
+          "description": "{{name}} 不再接受這台電腦。請在 {{name}} 上開啟「設定 → 遠端 Orca 伺服器 → 分享此主機」，為另一個 Orca 使用者端建立連結，然後貼至此處。",
+          "submit": "重新配對",
+          "success": "已與 {{name}} 重新配對",
+          "failed": "重新配對失敗"
         },
         "shareSkills": {
           "activeLinks": "使用中的分享連結",
@@ -13321,6 +13352,7 @@
           "63f36455cc": "重新連線",
           "6b7c8d9e10": "主機操作",
           "6e7f8a9b0c": "移除主機…",
+          "repair": "重新配對…",
           "7f1a2b3c4d": "{{value0}} 可連線",
           "8d1e2f3a4b": "重新命名…",
           "9b3c1d2e44": "需要更新使用者端",
@@ -13456,6 +13488,12 @@
           "9e060f5815": "選擇資料夾",
           "f8b1deb1a4": "取消",
           "largeInputNoMatches": "沒有符合此長輸入的結果"
+        },
+        "SleepTwinWorkspaceDialog": {
+          "title": "休眠工作區",
+          "alsoSleeps": "也會將位於 {{hosts}} 上的複本休眠",
+          "cancel": "取消",
+          "confirm": "休眠"
         },
         "RemoveFolderDialog": {
           "4dc5b5065b": "移除",
@@ -13711,6 +13749,7 @@
           "1975a4e480": "任務狀態同步失敗",
           "a5b6c7d8e9": "無法同步 Linear 議題 {{value0}}。",
           "b6c7d8e9f0": "任務狀態同步無法完成。",
+          "f0a1b2c3d4": "已略過 Linear 議題 {{value0}}：此工作區位於多台主機上。",
           "c1d2e3f4a5": "無法讀取 Linear 議題 {{value0}}。",
           "c7d8e9f0a1": "已更新 {{value0}} 個",
           "d2e3f4a5b6": "沒有與 {{value0}} 相符的 Linear 工作流程狀態。",
@@ -13969,6 +14008,7 @@
           "f9dc6cc5d3": "重新命名專案群組",
           "failedNestWorkspace": "無法巢狀化工作區",
           "failedUnnestWorkspace": "無法取消巢狀化工作區",
+          "hostRepairRequired": "需要重新配對",
           "groupDeleteFailed": "刪除群組失敗",
           "groupDeleteFailedDesc": "刪除群組時發生問題。沒有移除任何專案。",
           "hostAuthNeeded": "需要驗證",
@@ -14328,6 +14368,9 @@
               },
               "legacy": {
                 "unverified": "舊版主機執行環境無法確認終端機已關閉。工作區已保持開啟；請更新主機後重試。"
+              },
+              "twin": {
+                "unattributed": "Orca 無法判斷哪台主機正在執行此工作區的終端機，因此工作區已保持開啟。請重新連線其主機後再試一次。"
               },
               "retry": "工作區已保持開啟。請重試；如果問題持續，請檢查主機連線。"
             }
@@ -15891,6 +15934,13 @@
             "last_connected": "上次連線於 {{value0}}",
             "previous_connection_closed": "先前的連線已關閉",
             "reconnect_attempt": "第 {{value0}} 次嘗試",
+            "access_revoked": "存取權已撤銷",
+            "access_revoked_summary": "此伺服器已撤銷這台電腦的存取權",
+            "access_revoked_explanation": "請使用伺服器提供的新配對連結重新配對以重新連線。",
+            "update_required": "需要更新",
+            "update_required_summary": "Orca 版本不相容",
+            "update_required_explanation": "請更新這台電腦或伺服器上的 Orca，然後重新連線。",
+            "repair": "重新配對…",
             "restoring_connection": "Orca 正在嘗試恢復連線",
             "runtime_unavailable": "SSH 傳輸已連線，但 Orca 執行階段無法使用",
             "runtime_unavailable_explanation": "遠端主機可能仍在執行；只是 Orca 執行階段的連線無法使用。",
@@ -17783,6 +17833,8 @@
           "presenceProfileOverflow": "{{names}} 及其他 {{count}} 個",
           "removeProjectFailed": "移除專案失敗",
           "wslFilesystemBoundaryDescription": "這個專案的 Git 在 {{distro}} 中執行，並透過 WSL 檔案系統橋接存取 Windows 磁碟。預期 git 會比存放在 {{distro}} 內的副本慢約 20 倍。",
+          "moveToGroupOtherHost": "無法將專案移至群組",
+          "moveToGroupOtherHostDesc": "執行此專案的電腦沒有這個群組。專案只能加入儲存在其所屬電腦上的群組。",
           "wslFilesystemBoundaryTitle": "這個專案存放在 Windows 磁碟上"
         },
         "runtime": {
@@ -17947,6 +17999,7 @@
         "loopbackPairingBlocked": "此存取連結會指回此裝置。",
         "remotePairingInvalidDetails": "此存取連結包含無效的連線詳細資料。",
         "remotePairingSaveFailed": "Orca 已驗證主機，但無法儲存。請檢查瀏覽器儲存空間後再試一次。",
+        "remotePairingRepairUnavailable": "瀏覽器中無法使用重新配對。請將此瀏覽器與伺服器重新配對。",
         "remotePairingUnreachable": "無法連線到位於 {{endpoint}} 的 Orca。",
         "runtimeEnvironmentManuallyDisconnected": "執行階段環境已手動中斷連線。"
       }
@@ -18022,6 +18075,9 @@
       "untitledSession": "目前的工作階段"
     },
     "native-chat": {
+      "install": {
+        "checking": "正在檢查此主機上的 {{agent}} 是否已就緒…"
+      },
       "reasoning": "推理",
       "failureWords": {
         "theAgent": "Agent",
@@ -18043,7 +18099,7 @@
         "signInThenSend": "登入，然後再次傳送您的訊息。",
         "historyTooLarge": "此對話的歷史記錄過大，無法在此還原。",
         "managedAccountEnvOverride": "此 Claude 啟動作業自行設定了 Anthropic 登入變數。若要使用受管理的 Claude 帳戶，請將這些變數移除。",
-        "accountSwitchInProgress": "Claude 帳戶切換正在進行中。請在完成後再試一次。",
+        "accountSwitchInProgress": "{{agent}} 在此主機上的設定正在變更。請在完成後再試一次。",
         "managedAccountUnsupported": "雖然已在 WSL 中新增 Claude 帳戶，但 Claude 對話需要 Windows Claude 帳戶。",
         "launchFolderMissing": "此聊天執行的資料夾已不存在。請還原該資料夾以繼續此聊天。",
         "historyInOtherAccount": "此對話的歷史記錄位於另一個 Claude 帳戶中。請切換回該帳戶以繼續。",
@@ -18072,6 +18128,7 @@
         "attachmentInvalid": "此訊息上的附件無法傳送給 agent。",
         "attachmentUnreadable": "無法讀取此訊息上的附件，因此未傳送此訊息。",
         "emptyMessage": "此訊息為空白，因此未傳送。",
+        "commandUnavailable": "此命令無法在 {{agent}} 聊天中使用，因此未傳送。",
         "queueFull": "等待 agent 處理的訊息過多，因此未傳送此訊息。",
         "writeFailed": "Orca 無法將此訊息傳遞給 agent，因此未傳送。",
         "cancelled": "此訊息在 agent 開始處理前已被撤回。",
@@ -18292,6 +18349,8 @@
         "removeImagesToSend": "部分圖片無法還原。請將其移除後再傳送。",
         "imageAttachAgainLabel": "再次附加",
         "pastedImageNotKeptLabel": "未保留",
+        "imageNumber": "圖片 #{{number}}",
+        "imageReferenceMissing": "圖片已移除",
         "pillAccessibleName": "{{value0}} {{value1}}",
         "placeholder": "詢問任何問題，輸入 @ 提及檔案，輸入 / 使用指令",
         "loadingFiles": "正在載入檔案…",
@@ -18337,6 +18396,7 @@
         "permissionAskSharedDescription": "在其尚未被允許進行的編輯或命令前先詢問",
         "permissionAcceptEdits": "接受編輯",
         "permissionAcceptEditsDescription": "核准檔案編輯與檔案命令；其餘則會詢問",
+        "permissionAcceptEditsAntigravityDescription": "核准檔案編輯；其餘則會詢問",
         "permissionAuto": "代我核准",
         "permissionAutoDescription": "代替您審核核准請求",
         "permissionFullAccess": "完整存取權",
@@ -18715,6 +18775,9 @@
         "editFailed": "無法編輯此訊息。",
         "editGone": "此訊息已送出或移除。您的編輯內容在對話框中。",
         "editGonePrompt": "此訊息已送出或移除。您回覆智慧體後，編輯內容就會出現在對話框中。",
+        "imageCount": "{{count}} 張圖片",
+        "imageCount_one": "{{count}} 張圖片",
+        "imageCount_other": "{{count}} 張圖片",
         "collapse": "收合",
         "expand": "展開",
         "queued": "已排入佇列",
@@ -19138,11 +19201,10 @@
       "keywordIssuePicker": "議題選擇器"
     },
     "managed-runtime": {
-      "cancel": "取消安裝",
       "cancelled": "安裝已取消。",
       "cancelling": "正在取消…",
-      "chatTitle": "安裝 {{agent}} 以開始聊天。",
       "damaged": "此 {{agent}} 副本已損壞。",
+      "downloadSize": "需下載 {{size}} MB。",
       "downloading": "正在下載 {{done}} MB。",
       "downloadingOf": "正在下載 {{done}} MB，共 {{total}} MB。",
       "external": "使用在此主機上找到的 {{agent}} 副本。",
@@ -19155,11 +19217,39 @@
       "notInstalled": "未安裝。",
       "progress": "{{agent}} 下載",
       "readFailed": "無法檢查此主機上的 {{agent}}。正在重試。",
-      "reinstall": "重新安裝 {{agent}}",
+      "reinstall": "重新安裝",
+      "remove": "移除下載的執行環境",
+      "removeConfirm": "移除",
+      "removeDescription": "執行中的 {{agent}} 聊天會停止。其歷程記錄會保留。",
+      "removeKeep": "取消",
+      "removeTitle": "要從 {{host}} 移除已下載的 {{agent}} 執行環境嗎？",
+      "removing": "正在移除…",
       "retry": "重試安裝",
+      "thisComputer": "這台電腦",
       "unavailable": "此主機上無法使用 {{agent}}。",
-      "update": "更新 {{agent}}",
-      "verifying": "正在檢查下載的執行環境。"
+      "update": "更新",
+      "verifying": "正在檢查下載的執行環境。",
+      "installTitle": "安裝 {{agent}} 以開始聊天",
+      "continueTitle": "安裝 {{agent}} 以繼續",
+      "heroBody": "一次性下載 {{size}} MB。由執行此聊天的電腦上的 {{agent}} 聊天共用。",
+      "heroBodyNoSize": "一次性下載。由執行此聊天的電腦上的 {{agent}} 聊天共用。",
+      "stripSize": "在執行此聊天的電腦上下載 {{size}} MB",
+      "settingsHint": "也位於「設定 › 聊天 › 提供者」",
+      "installShort": "安裝",
+      "tryAgain": "再試一次",
+      "cancelShort": "取消",
+      "failedTitle": "無法安裝 {{agent}}",
+      "cancelledTitle": "安裝已取消",
+      "cancelledBody": "未安裝任何內容。",
+      "downloadingTitle": "正在下載 {{agent}}",
+      "unpackingTitle": "正在解壓縮 {{agent}}",
+      "checkingTitle": "正在檢查下載",
+      "progressOf": "{{done}} / {{total}} MB",
+      "unpackingDetail": "正在解壓縮執行環境",
+      "checkingDetail": "正在檢查下載的執行環境",
+      "stepDownload": "下載",
+      "stepUnpack": "解壓縮",
+      "stepCheck": "檢查"
     },
     "jiraUserPicker": {
       "empty": "找不到使用者",
@@ -19577,6 +19667,11 @@
       "dialogDescription": "Orca 現在會將每個 Claude 帳戶保留在各自的資料夾中，新終端機裡的 claude 會遵循您選取的帳戶。",
       "dialogCause": "在此更新前開啟的終端機不會這樣做，因此這裡的 claude 會以系統預設的登入登入。請開啟新終端機以使用所選帳戶。"
     },
+    "claudeDiffPanelNotice": {
+      "title": "在寬終端機中，Claude Code 可以在聊天旁開啟自己的 diff 面板。該面板屬於 Claude，而非 Orca。",
+      "body": "若要將其隱藏，請在 Claude Code 中輸入 /diff。Claude 會在後續的工作階段中記住該選擇。",
+      "gotIt": "知道了"
+    },
     "paneTopBanner": {
       "openNewTerminal": "開啟新終端機",
       "learnMore": "深入了解",
@@ -19717,7 +19812,7 @@
     "claude": {
       "added": "已新增帳戶。選取它，下一個啟動的 Claude 就會使用它。",
       "nextLaunch": "{{value0}} → {{value1}}。下一個啟動的 Claude 會使用它。執行中的工作階段會保留原帳戶。",
-      "profileSwitching": "切換會套用至您在任何分頁啟動的下一個 Claude。執行中的工作階段會保留原帳戶。",
+      "profileSwitching": "切換會套用至您在任何分頁啟動的下一個 Claude。",
       "systemDefaultNamed": "系統預設：{{value0}}",
       "systemDefaultIsSaved": "系統預設已以 {{value0}} 登入，而該帳戶同時也是已儲存的帳戶。較舊版本的 Orca 可能已將該登入複製到那裡。如果那不是您自己的登入，請選取「系統預設」並執行 claude /login。",
       "systemDefaultIsSavedDismiss": "關閉",
@@ -19729,7 +19824,36 @@
       "moreSignInOptions": "更多登入選項",
       "copySignInLink": "改為複製登入連結",
       "signInLinkCopied": "已複製登入連結。在私密視窗中開啟，即可使用其他帳戶登入。",
-      "signInLinkCopyFailed": "無法複製連結。"
+      "signInLinkCopyFailed": "無法複製連結。",
+      "switchSessions": {
+        "title": "已切換至 {{account}}",
+        "bodyOne": "有 1 個 Claude 工作階段仍在 {{previous}} 上執行。重新啟動會在 {{next}} 上繼續對話。忙碌的工作階段會等待閒置後再重新啟動。",
+        "bodyOther": "有 {{count}} 個 Claude 工作階段仍在 {{previous}} 上執行。重新啟動會在 {{next}} 上繼續每個對話。忙碌的工作階段會等待閒置後再重新啟動。",
+        "dontAskAgain": "不再詢問（自動重新啟動）",
+        "dontAskAgainHint": "您可以在「設定 → AI 提供者帳戶」中關閉此功能。",
+        "keep": "保持原樣",
+        "restartOne": "重新啟動工作階段",
+        "restartOther": "重新啟動 {{count}} 個工作階段",
+        "listLabel": "要重新啟動的 Claude 工作階段",
+        "selectAll": "全選",
+        "selectAllSessions": "選取所有工作階段",
+        "selectedCount": "已選取 {{selected}} / {{total}}",
+        "selectWorkspace": "選取 {{workspace}} 中的所有工作階段",
+        "session": "Claude 工作階段",
+        "busy": "工作中",
+        "idle": "閒置",
+        "settingTitle": "當 Claude 正在執行時切換帳戶",
+        "settingDescription": "重新啟動會在新的帳戶上繼續每個執行中的對話。",
+        "keyword": {
+          "restart": "重新啟動",
+          "running": "執行中"
+        },
+        "settingAsk": "詢問",
+        "settingRestart": "一律重新啟動",
+        "settingKeep": "一律不重新啟動",
+        "restartingOne": "正在 {{account}} 上重新啟動 1 個 Claude 工作階段",
+        "restartingOther": "正在 {{account}} 上重新啟動 {{count}} 個 Claude 工作階段"
+      }
     },
     "managedData": {
       "description": "在 Orca 主機上的終端機中執行此命令以新增帳號。所選項目適用於該主機上新明確啟動的智慧體；直接 SSH 中繼與 Windows 代管的 WSL 啟動則使用其自身的認證。",
