@@ -172,7 +172,7 @@
   "settings": {
     "chat": {
       "permissionsTitle": "新對話的權限",
-      "permissionsDescription": "僅適用於新對話。在終端機中開啟的智慧體使用「設定 → 智慧體 → 智慧體權限」。",
+      "permissionsDescription": "僅適用於新對話。個別智慧體的預設值位於「設定 → 智慧體」。",
       "description": "選擇聊天的外觀與運作方式。",
       "names": {
         "title": "聊天名稱",
@@ -196,7 +196,10 @@
         "notInstalled": "未安裝",
         "install": "安裝",
         "toggleLabel": "以聊天形式開啟 {{value0}}",
-        "antigravityDescription": "Antigravity 聊天會執行 Orca 下載至此主機的伺服器，與 agy CLI 分開。"
+        "antigravityDescription": "Antigravity 聊天會執行 Orca 下載至此主機的伺服器，與 agy CLI 分開。",
+        "antigravityNotSignedIn": "尚未登入。聊天需要登入 Antigravity，與您的 agy 終端機帳號分開。",
+        "antigravityAccount": "帳號",
+        "antigravitySignInNeeded": "聊天需要登入 Antigravity，與您的 agy 終端機帳號分開。"
       }
     },
     "terminal": {
@@ -365,7 +368,25 @@
       "saveFailed": "無法儲存智慧體設定。請檢查主機連線後再試一次。",
       "hostDefaults": "所選主機上新智慧體的預設值。",
       "save": "儲存",
-      "clearDefault": "清除預設智慧體"
+      "clearDefault": "清除預設智慧體",
+      "autoPermissions": "自動",
+      "autoUnsupported": "「自動」在此主機上需要較新版本的 Orca。",
+      "permissionsDescription": "智慧體在不詢問您的情況下可以執行的操作範圍。具有自訂啟動引數的智慧體會保留其引數。",
+      "permissionsAutoDescription": "<agents>受支援的智慧體</agents>會自行核准安全操作。",
+      "permissionsMixed": "大部分智慧體使用 {{mode}}。選擇模式會重設標記的例外項目，但自訂引數除外。",
+      "permissionsMixedNoMajority": "各智慧體使用不同的設定。選擇模式會套用至全部。",
+      "permissionsSearchDescription": "以手動、自動或 Yolo 權限啟動智慧體。",
+      "otherAgentsPermissions": "其他智慧體",
+      "otherAgentsPermissionsLabel": "其他智慧體的權限",
+      "customArgsBadge": "自訂",
+      "customArgsTooltip": "使用自己的啟動引數。",
+      "editRowPermissions": "{{agent}} 權限：{{mode}}",
+      "rowPermissions": "權限",
+      "rowPermissionsLabel": "{{agent}} 權限",
+      "customPermissions": "自訂引數",
+      "replaceWithPermissionMode": "取代為 {{mode}}",
+      "expandAgentSettings": "展開智慧體設定",
+      "collapseAgentSettings": "收合智慧體設定"
     },
     "followSymlinkedDirectoriesKeywords": {
       "symlink": "符號連結",
@@ -1477,6 +1498,8 @@
         "69591944e7": "低",
         "6cd6b3ae6a": "上一頁",
         "6d56559467": "連線您的 Linear 帳戶",
+        "linearLoginUnreadableTitle": "重新連線 Linear",
+        "linearLoginUnreadableBody": "無法讀取已儲存的 Linear 登入資訊。請在「設定」中重新連線。",
         "6edf402e11": "總覽",
         "6ffa6be99f": "正在重新整理 GitHub 工作",
         "713179dfdc": "無優先順序",
@@ -3456,7 +3479,9 @@
           "df667919ca": "沒有相符的範本。"
         },
         "DiagramViewerModal": {
-          "title": "圖表",
+          "title": "圖表"
+        },
+        "PanZoomImageDialog": {
           "zoomOut": "縮小",
           "zoomIn": "放大",
           "fit": "符合螢幕大小",
@@ -4361,13 +4386,6 @@
           "review": {
             "animated": {
               "visual": {
-                "pr": {
-                  "view": {
-                    "styles": {
-                      "fc9a23c83d": ".ravpr-stage { position: absolute; inset: 0; overflow: hidden; } .ravpr-stack { position: absolute; inset: 0; display: flex; justify-content: flex-end; padding: 4px 34px 4px 2px; overflow: hidden; } .ravpr-sidebar, .ravpr-card { position: absolute; top: 4px; right: 2px; width: 464px; height: calc(100% - 8px); background: var(--card, #fff); border: 1px solid var(--border); border-radius: 10px; color: var(--foreground, #18181b); overflow: hidden; box-shadow: 0 1px 2px rgba(24,24,27,0.04); } .ravpr-sidebar { opacity: 0; transition: opacity 220ms ease; } .ravpr-sidebar.is-visible { opacity: 1; } .ravpr-sidebar.is-hiding { opacity: 0; } .ravpr-card { display: flex; flex-direction: column; min-width: 0; opacity: 0; transition: opacity 260ms ease; } .ravpr-card.is-visible { opacity: 1; } .ravpr-tabs { position: relative; display: flex; align-items: center; gap: 14px; height: 36px; padding: 0 14px; background: rgba(24,24,27,0.015); color: var(--muted-foreground, #71717a); } .ravpr-tab { position: relative; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; color: var(--muted-foreground, #71717a); } .ravpr-tab.is-active, .ravpr-tab.is-hovered { color: var(--foreground, #18181b); } .ravpr-tab.is-active::after { content: ''; position: absolute; left: -5px; right: -5px; bottom: -10px; height: 1px; background: var(--foreground, #18181b); } .ravpr-tooltip { position: absolute; top: 34px; left: 106px; z-index: 6; padding: 7px 11px; border-radius: 8px; background: var(--card, #fff); color: var(--foreground, #18181b); font-size: 12px; line-height: 1; box-shadow: 0 8px 22px rgba(0,0,0,0.22); opacity: 0; transform: translateY(-3px); pointer-events: none; transition: opacity 160ms ease, transform 160ms ease; } .ravpr-tooltip.is-visible { opacity: 1; transform: translateY(0); } .ravpr-explorer { padding: 10px 12px 12px; } .ravpr-heading { color: var(--muted-foreground, #71717a); font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; } .ravpr-file-list { margin-top: 8px; display: flex; flex-direction: column; gap: 2px; } .ravpr-file { display: grid; grid-template-columns: 14px minmax(0,1fr) 22px; align-items: center; gap: 8px; min-height: 28px; padding: 4px 6px; border-radius: 6px; } .ravpr-file.is-active { background: rgba(24,24,27,0.06); box-shadow: inset 0 0 0 1px rgba(24,24,27,0.06); } .ravpr-file-icon { width: 12px; height: 12px; border-radius: 3px; background: rgba(24,24,27,0.14); } .ravpr-file-name { height: 8px; border-radius: 999px; background: rgba(24,24,27,0.14); } .ravpr-file-status { width: 14px; height: 8px; border-radius: 999px; background: rgba(24,24,27,0.12); } .ravpr-body { padding: 10px 12px 18px; display: flex; flex-direction: column; gap: 5px; min-height: 0; } .ravpr-number-row { display: flex; align-items: center; gap: 7px; } .ravpr-number { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; font-weight: 700; } .ravpr-open { display: inline-flex; align-items: center; justify-content: center; height: 18px; padding: 0 7px; border-radius: 5px; background: rgba(16,185,129,0.10); border: 1px solid rgba(16,185,129,0.28); color: rgb(4 120 87); font-size: 9px; font-weight: 700; line-height: 1; } .ravpr-title { font-size: 12px; font-weight: 600; line-height: 1.35; color: var(--foreground, #18181b); margin-bottom: 2px; } .ravpr-merge { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 30px; min-height: 30px; flex: 0 0 30px; border-radius: 7px; background: rgb(22 163 74); color: #fff; font-size: 11.5px; font-weight: 700; margin-bottom: 2px; box-shadow: 0 1px 2px rgba(22,163,74,0.18); transition: box-shadow 220ms ease, filter 220ms ease; } .ravpr-merge.is-ready { box-shadow: 0 0 0 3px rgba(34,197,94,0.22), 0 1px 2px rgba(22,163,74,0.18); } .ravpr-section-row, .ravpr-check-row { display: grid; grid-template-columns: 18px minmax(0,1fr) auto; align-items: center; gap: 7px; padding: 5px 0; font-size: 11.5px; color: var(--foreground, #18181b); } .ravpr-check-row { padding: 5px 7px; font-size: 10.5px; } .ravpr-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ravpr-meta, .ravpr-check-state { color: var(--muted-foreground, #71717a); font-size: 10.5px; } .ravpr-check-state { font-size: 10px; } .ravpr-ring { display: inline-block; width: 14px; height: 14px; border-radius: 999px; border: 2px solid rgba(245,158,11,0.35); border-top-color: rgb(245 158 11); animation: ravpr-spin 1.1s linear infinite; } .ravpr-check { width: 15px; height: 15px; border-radius: 999px; display: none; align-items: center; justify-content: center; background: rgba(34,197,94,0.14); color: rgb(22 163 74); } .ravpr-section-row.is-done .ravpr-ring, .ravpr-check-row.is-done .ravpr-ring { display: none; } .ravpr-section-row.is-done .ravpr-check, .ravpr-check-row.is-done .ravpr-check { display: inline-flex; } .ravpr-reveal { display: flex; flex-direction: column; gap: 3px; opacity: 0; transform: translateY(4px); transition: opacity 260ms ease, transform 260ms ease; pointer-events: none; } .ravpr-reveal.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; } .ravpr-check-list, .ravpr-comment-list { display: flex; flex-direction: column; gap: 4px; min-height: 0; } .ravpr-comment-card { border: 1px solid var(--border); border-radius: 8px; background: var(--card, #fff); overflow: hidden; opacity: 0; transform: translateY(4px); transition: opacity 260ms ease, transform 260ms ease; } .ravpr-comment-card.is-visible { opacity: 1; transform: translateY(0); } .ravpr-comment-head { display: grid; grid-template-columns: 18px minmax(0,1fr) auto; align-items: center; gap: 7px; padding: 5px 7px; background: rgba(24,24,27,0.015); } .ravpr-avatar { width: 16px; height: 16px; border-radius: 999px; background: rgba(24,24,27,0.16); } .ravpr-author { width: 78px; height: 8px; border-radius: 999px; background: rgba(24,24,27,0.18); } .ravpr-comment-path { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9.5px; color: var(--muted-foreground, #71717a); } .ravpr-comment-body { padding: 5px 7px 6px; font-size: 11px; line-height: 1.32; color: var(--foreground, #18181b); } .ravpr-comment-body code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10.5px; padding: 1px 4px; border-radius: 4px; background: rgba(24,24,27,0.06); } .ravpr-cursor { position: absolute; z-index: 40; pointer-events: none; transition: transform 600ms cubic-bezier(.45,.05,.2,1), opacity 200ms ease; transform: translate(-30px, 220px); opacity: 0; } .ravpr-cursor.is-visible { opacity: 1; } .ravpr-ripple { position: absolute; left: -6px; top: -6px; width: 28px; height: 28px; border-radius: 999px; border: 2px solid rgba(24,24,27,0.5); opacity: 0; } .ravpr-cursor.is-clicking .ravpr-ripple { animation: ravpr-ripple 460ms ease-out forwards; } @keyframes ravpr-ripple { 0% { transform: scale(0.4); opacity: 0.9; } 100% { transform: scale(1.4); opacity: 0; } } @keyframes ravpr-spin { to { transform: rotate(360deg); } }"
-                    }
-                  }
-                },
                 "shared": {
                   "9deecb021c": "Claude",
                   "e7894927a2": "Codex"
@@ -4882,6 +4900,7 @@
           "view": {
             "surfaces": {
               "06b887d622": "顯示前",
+              "linearLoginUnreadable": "無法讀取已儲存的 Linear 登入資訊。請在「設定」中重新連線。",
               "0a6a5a7dd6": "最近更新",
               "111bef9aa8": "負責人",
               "1748d3b9af": "標籤",
@@ -5270,6 +5289,8 @@
             "jiraSiteNotConnected": "此 Jira 站點尚未連線",
             "loadingJira": "正在載入 Jira 議題…",
             "loadingLinearIssue": "正在載入 Linear 議題…",
+            "linearLoginUnreadableTitle": "重新連線 Linear",
+            "linearLoginUnreadableBody": "無法讀取已儲存的 Linear 登入資訊。請在「設定」中重新連線。",
             "openSettings": "設定",
             "placeholderNameOrLinearUrl": "輸入名稱、Linear URL 或 Jira URL",
             "placeholderSmartGitLab": "輸入名稱、#1234、GitHub、GitLab 或 Jira URL",
@@ -5725,8 +5746,8 @@
             "deleteReasonNonLocalHost": "只能刪除此裝置上的工作階段。",
             "deleteReasonSyntheticPath": "此工作階段無法從 Orca 刪除。",
             "deleteReasonUnsupportedAgent": "{{value0}} 工作階段無法從 Orca 刪除。",
-            "resumeInNewNativeChat": "在新的原生聊天中繼續",
-            "resumeInNewCli": "在新的 CLI 中繼續",
+            "resumeInNewNativeChat": "在新的聊天中繼續",
+            "resumeInNewCli": "在新的終端機中繼續",
             "resumeInNewCliTooltipFork": "將此對話派生為新的 CLI 工作階段。",
             "resumeInNewCliTooltipChat": "原生聊天保持原樣。",
             "dragToResume": "拖曳以在新分頁中繼續",
@@ -7319,6 +7340,7 @@
             }
           },
           "remoteScopeLocalAccountsKeptHostPicker": "在此桌面管理的帳戶不會變更。請在設定頂端的「主機」選單中選擇這部電腦，即可查看它們。",
+          "apiKeyUpdateFailed": "MiniMax API 金鑰更新失敗。",
           "f921d32606": "Claude 帳戶已更新。",
           "fcc4093fc1": "使用您目前在 {{value0}} 的 Codex 登入。",
           "fd62f37c24": "Codex 回報此 {{value0}} 登入已過期。",
@@ -7339,6 +7361,9 @@
           "476f302aca": "http://proxy.example.com:8080",
           "823e0f15b1": "用於 Orca 網路要求與本機終端機子處理程序的 Proxy URL。",
           "c46cdbbd4e": "網路",
+          "nodeDistMirrorLabel": "Node.js 下載鏡像站",
+          "nodeDistMirrorPlaceholder": "https://mirror.example.com/nodejs/dist",
+          "nodeDistMirrorDescription": "選用。nodejs.org/dist 的複本，Orca 在 SSH 與 WSL 伺服器上安裝 Node 時會優先使用。每個檔案仍會對照 Orca 預期的版本進行檢查。",
           "configureProxy": "設定 Proxy",
           "d93c7cd531": "設定應用程式層級的網路路由。",
           "f00daf6324": "HTTP Proxy",
@@ -7456,14 +7481,10 @@
           "959b67385b": "設為預設",
           "9b175d0f5e": "開啟新工作區時預先選取的智慧體。",
           "agentPermissions": "智慧體權限",
-          "agentPermissionsDescription": "選擇 Orca 要以較少的權限提示或手動檢查來啟動智慧體。",
-          "agentPermissionsInfo": "智慧體權限資訊",
           "agentPermissionsManual": "手動",
-          "agentPermissionsTooltip": "不適用於您已覆寫啟動引數的智慧體。",
           "agentPermissionsYolo": "Yolo",
           "c8794e622e": "已偵測",
           "c9b33eb5c0": "正在重新整理…",
-          "cea7d97be1": "摺疊指令覆寫",
           "cfb3f35775": "引數",
           "codexSessionSource": "要匯入的 Codex 家目錄",
           "codexSessionSourceInfo": "關於匯入 Codex 歷程記錄",
@@ -7471,7 +7492,6 @@
           "d4d2a45d63": "已啟用",
           "d83834f5e6": "正在偵測已安裝的智慧體…",
           "db9e9e5887": "自訂指令",
-          "dc4a2ffdc0": "展開指令覆寫",
           "df123171d1": "未安裝",
           "e8da2af684": "可供安裝",
           "ed3e110e61": "已偵測",
@@ -9263,6 +9283,7 @@
           "e57dde9d93": "未儲存的變更"
         },
         "RuntimeAccessGrantList": {
+          "sshAccessCaveat": "在此處撤銷並不會阻止具有這台電腦 SSH 存取權的人再次配對。若要徹底切斷其存取，請移除其 SSH 存取權。",
           "27cf8507ad": "重新整理共用存取",
           "434e4a6af6": "目前連結",
           "68ec21309f": "撤銷存取",
@@ -9323,6 +9344,8 @@
           "cloudVmWorkflow": "雲端虛擬機器",
           "cloudVmWorkflowHelp": "管理由配方建立的雲端機器",
           "accessRevoked": "{{value0}} 不再接受這台電腦。請使用新的存取連結重新配對。",
+          "managedAccessRevoked": "{{value0}} 不再接受這台電腦，且 Orca 無法透過 SSH 再次與其配對。請連線以再試一次。",
+          "connectAccessRevoked": "{{value0}} 不再接受這台電腦。請連線以再試一次。",
           "repair": "重新配對…",
           "serverAccessRevoked": "存取權已撤銷",
           "orcaVersionLastSeen": "Orca v{{value0}}（上次出現）",
@@ -10476,7 +10499,6 @@
             "afbf35be68": "穩定工作階段",
             "affbf130f6": "工作中",
             "agentPermissions": "智慧體權限",
-            "agentPermissionsDescription": "在 Yolo 與手動之間切換智慧體權限預設值。",
             "agentRuntime": "智慧體執行環境",
             "agentRuntimeDescription": "選擇預設要在 Windows 還是 WSL 中偵測並啟動智慧體。",
             "runtime": "執行階段",
@@ -11324,6 +11346,8 @@
             "be24c7cd67": "分割",
             "c29f23ab57": "HTTP 代理",
             "c56cb6f1c2": "網路",
+            "nodeDistMirror": "鏡像",
+            "nodeDistNodejs": "nodejs",
             "c61b14be7c": "grok",
             "c9d8c1ce66": "版本說明",
             "c9d9636f24": "Finder",
@@ -12781,7 +12805,9 @@
           "behindRolledBack": "執行比此應用程式更舊的受管 Orca 伺服器；上次更新已回復。請使用「更新伺服器」再試一次。",
           "behindNoTemplate": "執行此應用程式無法更新的受管 Orca 伺服器；此建置沒有適用於此主機的伺服器。",
           "behindMigrating": "執行受管 Orca 伺服器，會在專案移動完成後進行更新。",
-          "behindCheckFailed": "執行受管 Orca 伺服器；Orca 無法檢查它是否落後於此應用程式。"
+          "behindCheckFailed": "執行受管 Orca 伺服器；Orca 無法檢查它是否落後於此應用程式。",
+          "runtimeNoexec": "此主機不允許從 ~/.orca-remote 執行程式，因此 Orca 無法在該處啟動其伺服器。這通常表示家目錄是以 noexec 掛載。請要求主機的管理員允許在該處執行程式，然後再次連線。",
+          "setupContactLost": "Orca 在設定其伺服器時失去與此主機的連線。主機上的任何項目皆未停止。請再次連線以繼續。"
         },
         "ZcodeCliSetupSection": {
           "title": "搭配 ZCode 使用 GLM",
@@ -12837,7 +12863,11 @@
           "planLevel": "方案：{{value0}}",
           "hostOnly": "在執行 Orca 的電腦上的桌面應用程式中變更方案網站與 API 金鑰。",
           "detailsUnavailable": "方案認證詳細資訊只能在執行 Orca 的電腦上讀取。",
-          "siteUnavailable": "無法取得主機方案網站"
+          "siteUnavailable": "無法取得主機方案網站",
+          "keyStoredOnHostHelp": "儲存於 {{host}}，且僅從該處傳送至所選網站以重新整理用量。其優先順序高於 ZCode CLI 登入。",
+          "usingCliOnHostHelp": "Orca 會從 {{host}} 上的 ZCode CLI 憑證儲存區讀取所選的 Coding Plan。在下方儲存 API 金鑰即可改在該處連結方案。",
+          "notConfiguredOnHostHelp": "在下方儲存方案 API 金鑰，或在 {{host}} 上使用 ZCode CLI 登入。",
+          "keyOnHostDescription": "貼上來自所選主控台「API Keys」頁面的 API 金鑰。儲存於 {{host}}，且僅從該處傳送至該網站以重新整理用量。"
         },
         "deltaMove": {
           "action": "移動新專案…",
@@ -12912,6 +12942,20 @@
           "submit": "重新配對",
           "success": "已與 {{name}} 重新配對",
           "failed": "重新配對失敗"
+        },
+        "usageCredentialHost": {
+          "outdated": "在 {{host}} 上更新 Orca，以在該處儲存此金鑰。",
+          "unreachable": "無法連上 {{host}}，因此無法得知該處是否已儲存金鑰。",
+          "storedOnHost": "儲存於 {{host}}",
+          "miniMaxStorage": "儲存於 {{host}}，並從該處傳送至所選的 MiniMax 端點以重新整理用量。",
+          "cookieNeedsDesktop": "{{host}} 沒有可用於傳送工作階段 cookie 的 Orca 桌面應用程式。請改為儲存 API 金鑰。",
+          "checking": "正在檢查 {{host}}…",
+          "sealedElsewhereForgettable": "由 {{host}} 上的另一個 Orca 應用程式所儲存，而此應用程式無法讀取。請在該應用程式中變更，或在此處清除。",
+          "unreadableKey": "{{host}} 上的 Orca 無法讀取已儲存的金鑰。請取代它或將其清除。",
+          "miniMaxApiKeyDescription": "請從 MiniMax 主控台 → API keys 貼上 API 金鑰。儲存於 {{host}}，並從該處傳送至所選的 MiniMax 端點以重新整理用量。API 金鑰優先於 cookie。"
+        },
+        "useUsageHostSettings": {
+          "updateFailed": "無法更新 {{host}} 上的設定。"
         },
         "shareSkills": {
           "activeLinks": "使用中的分享連結",
@@ -13400,7 +13444,6 @@
           "wslLabel": "WSL 預設"
         },
         "MarkdownImageLightbox": {
-          "close": "關閉",
           "expand": "展開圖片",
           "image": "圖片"
         },
@@ -14059,6 +14102,8 @@
           "localOnly": "僅限本機",
           "remoteEditorUnsupported": "此應用程式無法開啟 SSH 工作區。",
           "remoteEditorUnsupportedDetail": "請選擇 VS Code，或在本機使用此應用程式。",
+          "remoteEditorHint": "只有 VS Code 可以在 SSH 主機上開啟資料夾。",
+          "remoteRuntimeEditorHint": "這台電腦上的應用程式只有在 Orca 透過 SSH 連上此伺服器時，才能開啟該伺服器的檔案。",
           "remoteLaunchFailed": "無法在 VS Code 中開啟此路徑。",
           "remoteLaunchFailedDetail": "請檢查此機器上設定的 VS Code 命令。",
           "remotePathInvalid": "此路徑對此 SSH 主機無效。",
@@ -14372,7 +14417,10 @@
               "twin": {
                 "unattributed": "Orca 無法判斷哪台主機正在執行此工作區的終端機，因此工作區已保持開啟。請重新連線其主機後再試一次。"
               },
-              "retry": "工作區已保持開啟。請重試；如果問題持續，請檢查主機連線。"
+              "retry": "工作區已保持開啟。請重試；如果問題持續，請檢查主機連線。",
+              "chat": {
+                "partial": "主機無法確認聊天已停止。其他面板可能已關閉；請檢查連線後再試一次。"
+              }
             }
           }
         },
@@ -15667,7 +15715,11 @@
             "97957ad3a3": "連結您的 AI 提供者帳戶，即可即時檢視使用量，並輕鬆在帳戶之間切換。",
             "9a542f46c7": "從狀態列隱藏",
             "caa0f39811": "支援：",
-            "d663430cf9": "設定使用量追蹤"
+            "d663430cf9": "設定使用量追蹤",
+            "remoteLabel": "{{host}} 上沒有用量",
+            "remoteTitle": "{{host}} 上的用量",
+            "remoteBody": "此工作區在 {{host}} 上執行，因此狀態列會顯示該主機的用量。請在該處登入智慧體，或將焦點移至本機工作區以查看這台電腦的用量。",
+            "remoteOpenAccounts": "開啟 {{host}} 帳戶"
           },
           "UpdateStatusSegment": {
             "2201df6987": "更新失敗 — 按一下以檢視詳細資料",
@@ -15919,6 +15971,10 @@
             "f8b8dbed85": "使用量無法使用",
             "remoteOwnerUnreachable": "無法取得使用量 — 無法連線至 {{server}}",
             "remoteOwnerNoUsage": "無法取得使用量 — {{server}} 未回報使用量。請更新該主機上的 Orca。",
+            "remoteOwnerNotConfigured": "未在 {{server}} 上設定",
+            "claudeNoUsageFromHost": "沒有來自 {{server}} 的用量",
+            "claudeUnknownOnHost": "無法從 {{server}} 取得 Claude 用量。該處可能尚未登入，或者可能使用 API 金鑰計費。",
+            "remoteOwnerSignInSavedHere": "其登入資訊僅儲存在這台電腦上。",
             "f8f0f9d8cc": "網路問題",
             "f90b3d7a16": "執行 Kimi 以重新整理"
           },
@@ -15937,6 +15993,8 @@
             "access_revoked": "存取權已撤銷",
             "access_revoked_summary": "此伺服器已撤銷這台電腦的存取權",
             "access_revoked_explanation": "請使用伺服器提供的新配對連結重新配對以重新連線。",
+            "managed_access_revoked_explanation": "Orca 無法透過 SSH 再次與其配對。請連線以再試一次。",
+            "connect_access_revoked_explanation": "請連線以再試一次。",
             "update_required": "需要更新",
             "update_required_summary": "Orca 版本不相容",
             "update_required_explanation": "請更新這台電腦或伺服器上的 Orca，然後重新連線。",
@@ -15992,7 +16050,7 @@
             "911542656f": "釘選分頁",
             "96354ed249": "向上分割",
             "966feb9ad5": "向右分割",
-            "9dd880bd56": "關閉右側的分頁",
+            "9dd880bd56": "關閉右側所有分頁",
             "c5aaee8c39": "取消釘選分頁"
           },
           "EditorFileTab": {
@@ -16013,7 +16071,7 @@
             "ba1369dd24": "關閉所有編輯器分頁",
             "bfd5797ef4": "開啟 Markdown 預覽",
             "e3ff145b98": "向左分割",
-            "e5ff31ccaf": "關閉右側的分頁",
+            "e5ff31ccaf": "關閉右側所有分頁",
             "f7c3d7d5af": "向右分割",
             "fdd29eb669": "釘選分頁"
           },
@@ -16023,6 +16081,16 @@
             "8dea9b5cdf": "沒有已啟用的智慧體",
             "needsServerUpdate": "請在此伺服器上更新 Orca，才能列出此工作區的智慧體",
             "hostUnreachable": "無法連上此工作區的主機，無法列出其智慧體",
+            "chatNotInstalled": "未安裝",
+            "chatNotOverSsh": "無法透過 SSH 使用聊天",
+            "chatNotInWsl": "WSL 中無法使用聊天",
+            "chatNotOnHost": "此主機上無法使用聊天",
+            "chatCheckFailed": "無法檢查聊天可用性",
+            "chatLoading": "正在檢查聊天支援…",
+            "chatUnavailableAfterSelection": "無法啟動 {{value0}} 聊天。",
+            "startChat": "開始與 {{value0}} 聊天",
+            "cliTag": "(CLI)",
+            "agentsLoading": "正在載入智慧體",
             "e518f544b1": "未偵測到智慧體",
             "ec2adf093e": "在新終端機中啟動 {{value0}}"
           },
@@ -16055,7 +16123,7 @@
             "a47629b3cf": "橘色",
             "af80ed83c1": "向下分割",
             "be905e9b0a": "綠色",
-            "c1ee099c7e": "關閉右側的分頁",
+            "c1ee099c7e": "關閉右側所有分頁",
             "c2d8b0991f": "紫色",
             "cb3eadefd2": "藍色",
             "splitTerminalDown": "向下分割終端機",
@@ -16444,6 +16512,7 @@
             "retry": "重試",
             "retrying": "重試中…",
             "retryUnavailable": "重試尚未成功重新連線。請稍後再試一次。",
+            "openNewTerminal": "開啟新終端機",
             "sourceRestoring": "正在重新連接這個終端機 — 其輸出正在重新建立。工作階段仍在執行中。"
           },
           "TerminalLinkActionPopover": {
@@ -16463,6 +16532,8 @@
             "systemBrowser": "系統瀏覽器",
             "terminalLinkSettings": "終端機連結設定",
             "downloadOpenFailed": "下載「{{value0}}」失敗。",
+            "openInThisGroup": "在此群組中開啟",
+            "openInThisGroupRefused": "無法在此群組中開啟 {{value0}}",
             "downloadOpenWithDefaultApp": "下載並以預設應用程式開啟"
           },
           "TerminalPane": {
@@ -16503,7 +16574,9 @@
             "disconnectedTitle": "遠端執行階段已中斷連線",
             "reconnectButton": "重新連線",
             "retryingBody": "Orca 正在自動重試。若連線恢復，此終端機就會繼續。",
-            "retryingTitle": "正在重新連線至遠端執行階段"
+            "retryingTitle": "正在重新連線至遠端執行階段",
+            "pairingRefusedTitle": "此主機不再接受這台電腦",
+            "pairingRefusedBody": "Orca 無法透過 SSH 再次與其配對。主機上的任何項目皆未停止。請重新連線以再試一次。"
           },
           "TerminalSessionStateSaveFailureDialog": {
             "38c282a2c4": "分析器會直接從這裡開啟。您之後也可以從左下角的工具箱選單中選擇「空間分析器」來開啟。",
@@ -16902,6 +16975,26 @@
           "externalLinkCancel": "取消",
           "externalLinkConfirm": "開啟連結",
           "externalLinkTitle": "要開啟前往 {{host}} 的連結嗎？"
+        },
+        "externalApp": {
+          "title": "要開啟 {{app}} 嗎？",
+          "schemeTitle": "要開啟此 {{scheme}} 連結嗎？",
+          "description": "{{origin}} 想要開啟另一個應用程式。",
+          "anonymousDescription": "瀏覽器中的頁面想要開啟另一個應用程式。",
+          "confirm": "開啟 {{app}}",
+          "confirmLink": "開啟連結",
+          "cancel": "取消",
+          "launchFailed": "無法為此 {{scheme}} 連結開啟應用程式。可能尚未安裝。"
+        },
+        "httpAuth": {
+          "title": "登入",
+          "description": "{{origin}} 要求輸入使用者名稱和密碼。",
+          "insecure": "您與此網站的連線不是私人連線。",
+          "retry": "該使用者名稱或密碼不正確。",
+          "username": "使用者名稱",
+          "password": "密碼",
+          "confirm": "登入",
+          "cancel": "取消"
         }
       },
       "ComposerParentWorktreePicker": {
@@ -17011,6 +17104,14 @@
         "a62f9db53d": "取消",
         "c77189bc0c": "更新篩選條件",
         "19af906d12": "儲存篩選條件"
+      },
+      "OrcaSignInProgress": {
+        "waiting": "正在等待於瀏覽器中登入",
+        "copyLink": "複製登入連結",
+        "copied": "已複製登入連結",
+        "copyFailed": "無法複製連結。",
+        "signingIn": "正在登入…",
+        "cancel": "取消"
       },
       "linear-issue-attribute-filter-coverage-notice": {
         "labelsAtIdLimit": "已達可篩選的上限：{{value0}} 個團隊標籤。超出的選取項目不會納入。",
@@ -17751,7 +17852,8 @@
         "updaterTimeout": "等待伺服器更新程式逾時。"
       },
       "webRuntimeSession": {
-        "remoteHostDisconnected": "工作區未連線到遠端 Orca 主機。"
+        "remoteHostDisconnected": "工作區未連線到遠端 Orca 主機。",
+        "terminalCreateUnconfirmed": "Orca 無法確認新終端機是否已在主機上開啟。"
       },
       "gitlabIpcTimeout": {
         "timedOut": "與 GitLab 通訊逾時。"
@@ -17814,6 +17916,7 @@
             "a37b5e6d37": "已登出設定檔",
             "d6e764e7db": "重新連線此設定檔",
             "f03ae7f27b": "轉移專案失敗",
+            "signInTimedOut": "登入逾時",
             "f0c9e11a6d": "建立雲端設定檔失敗",
             "f518e89aa5": "該專案已存在於該設定檔中"
           }
@@ -18087,12 +18190,15 @@
         "sendAgainToTryOnceMore": "再次傳送您的訊息以再試一次。",
         "couldNotStart": "{{agent}} 無法啟動。",
         "couldNotRestart": "{{agent}} 無法重新啟動。",
+        "startTimedOut": "{{agent}} 啟動時間過長（在 {{seconds}} 秒後對 {{method}} 沒有回應）。",
+        "startTimedOutKeepsHappening": "如果這種情況持續發生，執行此聊天的電腦可能負載過重。",
         "codexCliTooOld": "Codex {{installedVersion}} 版本過舊，無法用於對話。請更新至 {{minimumVersion}} 或更新版本。",
         "notSignedIn": "{{agent}} 尚未登入。",
         "claudeSystemNotSignedIn": "Claude 尚未登入。請執行 `{{loginCommand}}`，或在 Claude 帳戶設定中選擇帳戶。",
         "claudeManagedNotSignedIn": "此 Claude 帳戶尚未登入。請在 Claude 帳戶設定中重新登入。",
         "codexSystemNotSignedIn": "Codex 尚未登入。請執行 `{{loginCommand}}`。",
         "codexManagedNotSignedIn": "此 Codex 帳戶尚未登入。請在 Codex 帳戶設定中重新登入。",
+        "antigravityNotSignedIn": "Antigravity 尚未登入。請在「設定 → AI 提供者帳戶 → Antigravity」中登入，然後再傳送一次訊息。",
         "cliMissing": "在執行此聊天的電腦上找不到 {{agent}}。請安裝它，或在「設定 → 智慧體」中檢查其指令。",
         "signInFirst": "請先登入。",
         "signInThenRunCommand": "登入，然後再次執行 /{{command}}。",
@@ -18159,6 +18265,14 @@
         "providerRetryNumber": "重試第 {{attempt}} 次。",
         "providerRetryNumberOf": "重試第 {{attempt}} 次（共 {{maxRetries}} 次）。",
         "providerRetryLastError": "上次錯誤：{{detail}}。",
+        "usageLimitReached": "{{agent}} 已達其用量限制。",
+        "usageLimitReachedNamed": "{{agent}} 已達其 {{window}} 限制。",
+        "usageLimitWindowSession": "工作階段",
+        "usageLimitWindowWeekly": "每週",
+        "usageLimitWindowWeeklyModel": "每週模型",
+        "usageLimitWindowCredits": "額外用量",
+        "usageLimitResetsAt": "將於 {{when}} 重設。",
+        "usageLimitSendAfterReset": "重設後傳送訊息即可繼續。",
         "previousExitUnverifiable": "無法停止先前的 {{agent}}。",
         "sessionNotRestored": "{{agent}} 無法重新開啟先前的工作階段，因此此聊天將在新的工作階段中繼續。{{agent}} 不記得先前的訊息。",
         "argumentsUnsupportedOption": "已儲存的引數包含不支援的選項（{{option}}）。",
@@ -18189,6 +18303,7 @@
         "capacity": "執行此聊天的電腦上的 Orca 已達請求上限。請在該電腦上更新 Orca，然後再試一次。",
         "outcomeUnknown": "Orca 無法確認狀況。請檢查聊天。",
         "sendOutcomeLost": "Orca 無法確認您的訊息是否已送達智慧體。請檢查聊天，並視需要重新傳送。",
+        "continuationSuperseded": "此聊天已有新進展。請在繼續之前檢查最新訊息。",
         "questionChanged": "此問題已回答或已變更。",
         "cancelNotSaved": "無法取消此問題或核准。",
         "historyUnreadable": "Orca 無法讀取此聊天已儲存的歷程記錄。",
@@ -18379,7 +18494,6 @@
         "toggleOption": "切換 {{value0}}",
         "worktreeNotReady": "工作樹尚未就緒 — 請稍後再試。",
         "pasteUnavailable": "無法貼上 — 此對話目前不接受輸入。",
-        "imagePreview": "全尺寸圖片預覽",
         "imagePreviewUnavailable": "無法預覽",
         "copyImage": "複製圖片",
         "copyImageFailed": "無法複製圖片",
@@ -18540,6 +18654,8 @@
         "showTerminal": "顯示終端機"
       },
       "resumeInNewChat": {
+        "exitUnconfirmedFromTerminal": "Orca 無法確認 {{agent}} 是否已在其終端機中結束。請停止該處正在執行的項目或關閉終端機，然後從工作階段記錄開啟此對話。",
+        "exitUnconfirmed": "Orca 無法確認 {{agent}} 是否已在其終端機中結束。請停止該處正在執行的項目或關閉終端機，然後再試一次。",
         "notSavedYet": "{{agent}} 尚未儲存此對話。請在它回覆後再試一次。",
         "cannotResume": "此 {{agent}} 對話無法在原生對話中恢復。"
       },
@@ -18785,6 +18901,9 @@
       },
       "thought": "已思考",
       "thoughtForDuration": "已思考 {{duration}}",
+      "explicitChatWsl": "無法在 WSL 中使用聊天。請改在終端機中開啟智慧體。",
+      "explicitChatSsh": "無法透過 SSH 使用聊天。請改在終端機中開啟智慧體。",
+      "explicitChatUnavailable": "此工作區無法執行聊天。請檢查智慧體的安裝狀態，或改在終端機中開啟。",
       "structuredSessionHostDeclined": "已在終端機中開啟 {{value0}}",
       "structuredSessionHostDeclinedDescription": "此伺服器無法在此工作區中執行 {{value0}} 對話。",
       "structuredSessionHostUnreachable": "無法連線至 {{value0}}",
@@ -18797,10 +18916,23 @@
       "interruptedContinue": {
         "continue": "繼續",
         "failed": "無法繼續此聊天。請重試，或傳送一則訊息。",
-        "explanation": "繼續，智慧體會先檢查其上一個步驟是否已完成。"
+        "explanation": "繼續，智慧體會先檢查其上一個步驟是否已完成。",
+        "unconfirmed": "無法確認 {{agent}} 是否收到「繼續」。請先檢查聊天，然後再試一次。",
+        "usageLimitExplanation": "要求智慧體從中斷處繼續。請在限制重設後使用。"
+      },
+      "antigravitySignIn": {
+        "sentence": "Antigravity 尚未登入。請在 <settings>設定 → AI 提供者帳戶 → Antigravity</settings> 中登入，然後再傳送一次訊息。"
       },
       "claudeSignIn": {
         "signingIn": "正在登入…"
+      },
+      "resumeCommand": {
+        "description": "開啟智慧體工作階段記錄",
+        "argumentHint": "[搜尋]",
+        "workspaceUnavailable": "尚未載入此聊天的工作區。請稍後再試一次 /resume。",
+        "replaceTitle": "要取代此聊天嗎？",
+        "replaceDescription": "在此處繼續「{{title}}」將會停止 {{agent}} 在此聊天中正在執行的工作。",
+        "replace": "取代"
       },
       "hostPermission": {
         "checking": "正在檢查此主機的聊天權限…",
@@ -18820,21 +18952,29 @@
       "bar": {
         "BrowserTab": {
           "closeOthers": "關閉其他",
-          "closeTabsToLeft": "關閉左側的分頁"
+          "closeTabsToLeft": "關閉左側所有分頁"
         },
         "EditorFileTabContextMenu": {
           "closeOthers": "關閉其他",
-          "closeTabsToLeft": "關閉左側的分頁"
+          "closeTabsToLeft": "關閉左側所有分頁"
         },
         "CopyTabIdMenuItem": {
           "copied": "已複製分頁 ID",
           "failed": "無法複製分頁 ID",
           "copy": "複製分頁 ID"
         },
+        "bulkClose": {
+          "others": "要關閉其他分頁嗎？",
+          "right": "要關閉右側的分頁嗎？",
+          "left": "要關閉左側的分頁嗎？",
+          "editors": "要關閉所有編輯器分頁嗎？",
+          "description": "所選的分頁將會關閉。釘選的分頁將保持開啟。",
+          "confirm": "關閉分頁"
+        },
         "SortableTabContextMenu": {
-          "closeTabsToLeft": "關閉左側的分頁",
-          "switchToChatView": "切換到對話檢視",
-          "switchToTerminalView": "切換到終端機檢視"
+          "closeTabsToLeft": "關閉左側所有分頁",
+          "switchToChatView": "切換到聊天",
+          "switchToTerminalView": "切換到終端機"
         }
       }
     },
@@ -19213,12 +19353,14 @@
       "cancelFailed": "無法取消安裝。請再試一次。",
       "install": "安裝 {{agent}}",
       "installManaged": "安裝 Orca 的副本",
-      "installed": "已安裝。",
+      "installed": "已安裝",
       "notInstalled": "未安裝。",
       "progress": "{{agent}} 下載",
       "readFailed": "無法檢查此主機上的 {{agent}}。正在重試。",
-      "reinstall": "重新安裝",
+      "reinstall": "重新安裝 {{agent}}",
+      "reinstallShort": "重新安裝",
       "remove": "移除下載的執行環境",
+      "moreActions": "{{agent}} 的更多操作",
       "removeConfirm": "移除",
       "removeDescription": "執行中的 {{agent}} 聊天會停止。其歷程記錄會保留。",
       "removeKeep": "取消",
@@ -19594,6 +19736,10 @@
       "openInSidebarCopy": "輸入您記得的內容，或請智慧體：「找出我們修好登入逾時的那個工作階段」。",
       "open": "開啟",
       "enableOnAll": "在所有電腦上啟用"
+    },
+    "dialog": {
+      "select": "選取",
+      "open": "開啟"
     }
   },
   "aiVault": {
@@ -19781,6 +19927,27 @@
       "description": "在 WSL 中的 Orca 更新之前，該處的智慧體會使用該發行版的預設 Claude 與 Codex 帳戶。"
     },
     "antigravity": {
+      "chatTitle": "Antigravity 聊天",
+      "chatDescription": "聊天會使用自己的 Antigravity 登入，與上方的 agy 帳號分開。在此裝置上登入一次即可。",
+      "chatSignIn": "登入",
+      "chatChangeAccount": "變更帳號",
+      "chatRetry": "重試登入",
+      "chatCancel": "取消",
+      "chatCopyLink": "複製登入連結",
+      "chatCopyFailed": "無法複製連結。",
+      "chatStarting": "正在開始登入…",
+      "chatWaiting": "在瀏覽器中完成登入。",
+      "chatOpenFailed": "複製連結並在瀏覽器中開啟。",
+      "chatVerifying": "正在完成登入…",
+      "chatPasteHelp": "如果登入後的最後一個頁面未載入，請從瀏覽器複製其完整網址並貼至此處。",
+      "chatContinue": "繼續",
+      "chatSignedInOn": "已在 {{host}} 上登入。",
+      "chatCancelled": "已取消登入。",
+      "chatExpired": "登入逾時。請再試一次。",
+      "chatFailed": "登入失敗。請再試一次。",
+      "chatNotSignedIn": "尚未在 {{host}} 上登入。",
+      "chatOtherClient": "另一個使用者端正在進行登入。",
+      "chatReadFailed": "無法檢查 {{host}} 上的登入狀態。",
       "scope": "管理 {{host}} 上的原生 agy 帳號。",
       "signIn": "在此主機上啟動 agy 並完成其瀏覽器登入，然後儲存目前帳號。若要新增其他帳號，請在 agy 中使用 /logout 並重新登入。",
       "docs": "登入說明",
@@ -20129,9 +20296,9 @@
     }
   },
   "workspaceSpace": {
-    "deleteOne": "刪除 {{value0}}",
     "table": {
-      "lastActive": "上次活動"
+      "lastActive": "上次活動",
+      "actions": "操作"
     },
     "breakdown": {
       "viewAll": "顯示更多資料夾詳細資料"
@@ -20166,6 +20333,26 @@
     "window": {
       "errorTitle": "「空間」發生錯誤。",
       "errorDescription": "關閉並重新開啟「空間」以再試一次。"
-    }
+    },
+    "changes": {
+      "count": "變更的檔案 ({{count}})",
+      "description": "未提交的檔案 · 按一下檔案即可在 Orca 中檢視其變更。",
+      "search": "篩選變更的檔案",
+      "conflict": "衝突",
+      "staged": "已暫存",
+      "untracked": "未追蹤",
+      "unstaged": "未暫存",
+      "empty": "沒有相符的檔案。",
+      "unavailable": "工作區擁有者已無法使用。",
+      "stale": "此檔案已不在未提交的變更中。請重新整理 Space 以更新清單。",
+      "openFailed": "無法開啟變更"
+    },
+    "delete": {
+      "pending": "刪除正在進行中。",
+      "main": "主要工作樹受保護。",
+      "unmanaged": "此工作區不再由 Orca 管理。",
+      "unavailable": "此工作區受保護或無法使用。"
+    },
+    "rowActions": "{{name}} 的操作"
   }
 }
