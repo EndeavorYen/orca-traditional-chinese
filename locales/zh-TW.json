@@ -176,7 +176,7 @@
       "description": "選擇聊天的外觀與運作方式。",
       "names": {
         "title": "聊天名稱",
-        "description": "使用智慧體根據新聊天的第一則訊息命名。若未產生名稱，聊天將維持為 Claude Chat 或 Codex Chat。",
+        "description": "使用智慧體根據新聊天的第一則訊息命名。在產生名稱之前，聊天會顯示其第一則訊息。",
         "enable": "自動命名聊天",
         "recipe": "聊天名稱",
         "recipeDescription": "從新聊天的第一則訊息產生簡短名稱。",
@@ -13716,6 +13716,7 @@
         },
         "PendingWorktreeRow": {
           "188f6922a0": "取消",
+          "creatingWorkspace": "正在建立工作區…",
           "af21e953d1": "取消建立工作樹"
         },
         "PreservedBranchBatchReviewDialog": {
@@ -18535,6 +18536,7 @@
         "notDoneOption": "設定未變更。",
         "notDoneCommand": "命令未執行。",
         "notDoneGoal": "目標未變更。",
+        "notDoneQueuedEdit": "您的編輯未儲存。",
         "restartFailed": "智慧體無法重新啟動。",
         "capacity": "執行此聊天的電腦上的 Orca 已達請求上限。請在該電腦上更新 Orca，然後再試一次。",
         "outcomeUnknown": "Orca 無法確認狀況。請檢查聊天。",
@@ -18729,6 +18731,8 @@
         "thinking": "思考中",
         "toggleOption": "切換 {{value0}}",
         "worktreeNotReady": "工作樹尚未就緒 — 請稍後再試。",
+        "sessionAttachmentsStarting": "{{agent}} 聊天仍在開啟中。請等待其開啟，然後再次附加檔案。",
+        "sessionAttachmentsFailed": "{{agent}} 聊天無法開啟。請在聊天中使用「重試」，然後再次附加檔案。",
         "pasteUnavailable": "無法貼上 — 此對話目前不接受輸入。",
         "imagePreviewUnavailable": "無法預覽",
         "copyImage": "複製圖片",
@@ -18912,6 +18916,9 @@
         "ranCommandsManyToolsSummary": "執行了 {{commandCount}} 個指令並使用了 {{toolCount}} 個工具",
         "ranCommandsOneToolSummary": "執行了 {{commandCount}} 個指令並使用了 {{toolCount}} 個工具",
         "runningCommand": "正在執行指令",
+        "showFullOutput": "顯示完整輸出",
+        "fullOutputFailed": "無法載入完整輸出。",
+        "fullOutputPartial": "顯示 {{shown}} / {{total}}。",
         "runningNamed": "正在執行 {{toolName}}",
         "runningNamedPreview": "正在執行 {{toolName}} {{preview}}",
         "runningPreview": "正在執行 {{preview}}",
@@ -19038,6 +19045,7 @@
         "action": "倒回至此"
       },
       "drop": {
+        "messageTitle": "拖放以附加到此訊息",
         "title": "拖放以附加到此聊天",
         "subtitle": "檔案會以智慧體可讀取的路徑形式加入您的訊息。"
       },
@@ -19124,6 +19132,7 @@
         "cancelEditing": "取消編輯",
         "editChanged": "當您編輯時，此訊息已變更。您的編輯內容在對話框中。",
         "editChangedPrompt": "當您編輯時，此訊息已變更。您回覆智慧體後，編輯內容就會出現在對話框中。",
+        "editChangedNotSaved": "當您編輯時，此訊息已變更。您的編輯未儲存。",
         "editFailed": "無法編輯此訊息。",
         "editGone": "此訊息已送出或移除。您的編輯內容在對話框中。",
         "editGonePrompt": "此訊息已送出或移除。您回覆智慧體後，編輯內容就會出現在對話框中。",
@@ -19133,7 +19142,9 @@
         "collapse": "收合",
         "expand": "展開",
         "queued": "已排入佇列",
-        "clearAll": "全部清除"
+        "clearAll": "全部清除",
+        "pasteOrDropImages": "貼上或拖放圖片",
+        "saveNeedsContent": "新增文字或圖片以儲存"
       },
       "thought": "已思考",
       "thoughtForDuration": "已思考 {{duration}}",
@@ -19141,7 +19152,8 @@
       "explicitChatSsh": "無法透過 SSH 使用聊天。請改在終端機中開啟智慧體。",
       "explicitChatUnavailable": "此工作區無法執行聊天。請檢查智慧體的安裝狀態，或改在終端機中開啟。",
       "structuredSessionHostDeclined": "已在終端機中開啟 {{value0}}",
-      "structuredSessionHostDeclinedDescription": "此伺服器無法在此工作區中執行 {{value0}} 對話。",
+      "structuredSessionTerminalNotVisible": "Orca 已在終端機中開啟 {{value0}}，但在完成啟動時無法在此顯示。您的聊天草稿已保留。",
+      "structuredSessionHostDeclinedDescription": "此工作區無法執行 {{value0}} 聊天。",
       "structuredSessionHostUnreachable": "無法連線至 {{value0}}",
       "structuredSessionHostUnreachableDescription": "Orca 未開啟 {{value0}} 聊天。請檢查與伺服器的連線，然後再試一次。",
       "hostOutage": {
@@ -19171,10 +19183,11 @@
         "replace": "取代"
       },
       "hostPermission": {
+        "checkAgain": "重新檢查",
         "checking": "正在檢查此主機的聊天權限…",
         "launchRefused": "Orca 未啟動 {{value0}} 聊天",
         "outdatedHost": "此主機執行的 Orca 版本較舊，會忽略聊天權限，因此 {{value0}} 會在此直接執行而不進行詢問。請更新此主機上的 Orca 以使用 {{value1}}。",
-        "unverified": "Orca 無法確認此主機是否套用聊天權限。請重新連線以進行傳送。"
+        "unverified": "Orca 無法確認此主機對 {{value0}} 的權限。"
       }
     },
     "status": {
@@ -19209,8 +19222,8 @@
         },
         "SortableTabContextMenu": {
           "closeTabsToLeft": "關閉左側所有分頁",
-          "switchToChatView": "切換到聊天",
-          "switchToTerminalView": "切換到終端機"
+          "switchToChatView": "切換到 Chat UI",
+          "switchToTerminalView": "切換到終端機智慧體"
         }
       }
     },
