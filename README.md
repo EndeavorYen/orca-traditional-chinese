@@ -1,7 +1,7 @@
 # orca-traditional-chinese
 
 <!-- orca-badge:start -->
-[![Orca v1.4.230 · zh-TW 100%](https://img.shields.io/badge/Orca-v1.4.230_%C2%B7_zh--TW_100%25-2ea44f)](https://github.com/stablyai/orca/releases/tag/v1.4.230)
+[![Orca v1.4.232 · zh-TW 100%](https://img.shields.io/badge/Orca-v1.4.232_%C2%B7_zh--TW_100%25-2ea44f)](https://github.com/stablyai/orca/releases/tag/v1.4.232)
 <!-- orca-badge:end -->
 
 [Orca](https://github.com/stablyai/orca) 的繁體中文（台灣）語言包，涵蓋設定、側邊欄、編輯器、終端機與選單等介面。每天由 CI 偵測與上游 **stable** 版本的落差，再按需同步翻譯。
@@ -21,9 +21,9 @@
 ## 現況
 
 <!-- sync-status:start -->
-- **16,129 / 16,129** translatable strings translated (100%)
-- Synced against `stablyai/orca` `v1.4.230` (`b2879bd`, 2026-10-19)
-- 180 plugin-protected keys and 2 oversize inline-CSS keys are excluded by design and fall back to English
+- **16,296 / 16,296** translatable strings translated (100%)
+- Synced against `stablyai/orca` `v1.4.232` (`49109f3`, 2026-10-20)
+- 180 plugin-protected keys and 0 oversize inline-CSS keys are excluded by design and fall back to English
 <!-- sync-status:end -->
 
 `engines.orca` (`>=1.4.0`) is the minimum engine that can load this pack, not the badge's tested release.
