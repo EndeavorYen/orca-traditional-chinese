@@ -551,6 +551,12 @@
       "pluginCommandFailed": "無法執行外掛程式命令。"
     },
     "components": {
+      "hostPicker": {
+        "searchHosts": "搜尋主機…",
+        "noHostsMatch": "沒有符合的主機。",
+        "moreHosts_one": "還有 {{count}} 個主機。請依名稱搜尋以找到它。",
+        "moreHosts_other": "還有 {{count}} 個主機。請依名稱搜尋以找到所需主機。"
+      },
       "BrowserCookieImportDisclosure": {
         "description": "直接在 Orca 中登入 Google。",
         "title": "不會匯入 Google 登入資訊"
@@ -5756,8 +5762,8 @@
             "deleteReasonUnsupportedAgent": "{{value0}} 工作階段無法從 Orca 刪除。",
             "resumeInNewNativeChat": "在新的聊天中繼續",
             "resumeInNewCli": "在新的終端機中繼續",
-            "resumeInNewCliTooltipFork": "將此對話派生為新的 CLI 工作階段。",
-            "resumeInNewCliTooltipChat": "原生聊天保持原樣。",
+            "resumeInNewCliTooltipFork": "以此對話的副本啟動新的終端機智慧體工作階段。",
+            "resumeInNewCliTooltipChat": "此聊天會保持原樣。",
             "dragToResume": "拖曳以在新分頁中繼續",
             "hideDetails": "隱藏詳細資料",
             "jumpToOriginalPane": "跳到原始窗格",
@@ -12727,7 +12733,7 @@
         "sshManagedHostRemove": {
           "description": "Orca 正在 {{label}} 上執行。在「SSH 主機上的 Orca」下，使用「停止…」從主機移除 Orca，或在主機不存在時使用「從此桌面移除…」。之後您就可以移除此 SSH 主機。",
           "open": "開啟「SSH 主機上的 Orca」",
-          "descriptionServers": "Orca 正在 {{label}} 上執行。在「遠端 Orca 伺服器」中，開啟「{{label}} 上的 Orca」旁的 ⋯ 選單，並選擇「停止…」以從主機移除 Orca，或在主機不存在時選擇「從此桌面移除…」。之後您就可以移除此 SSH 主機。",
+          "descriptionServerHost": "Orca 正在 {{label}} 上執行。在「遠端 Orca 伺服器」中，開啟 {{label}} 的 ⋯ 選單，並選擇「停止…」以從主機移除 Orca，或在主機不存在時選擇「從此桌面移除…」。之後您就可以移除此 SSH 主機。",
           "openServers": "開啟「遠端 Orca 伺服器」"
         },
         "managedServers": {
@@ -12751,7 +12757,6 @@
             "confirmForget": "從此桌面移除",
             "keepLinked": "保持連結",
             "forgetDescription": "取消在此處與此伺服器的連結，而不與其主機進行通訊。若該主機恢復連線，伺服器可能仍會在該處執行。",
-            "title": "{{host}} 上的 Orca",
             "orcaVersion": "此主機上的 Orca：{{version}}",
             "stopOrcaDescription": "停止 SSH 主機上的 Orca 並將其從此清單中移除。",
             "updateOrcaOnHost": "更新此主機上的 Orca"
@@ -13136,9 +13141,6 @@
           "emptyDescription": "配對開發機器、雲端機器或家中的桌上型電腦。當這台電腦進入睡眠時，其工作階段仍會在該處持續執行。",
           "movePaused": "移動已暫停",
           "shareTitle": "分享這台電腦",
-          "shareDescriptionNamed": "讓瀏覽器、手機或其他 Orca 在 {{name}} 上運作。",
-          "shareDescription": "讓瀏覽器、手機或其他 Orca 在這台電腦上運作。",
-          "shareButton": "分享…",
           "done": "完成",
           "unreachableLead": "Orca 無法連線至此伺服器。",
           "updateFailedLead": "上次更新未完成。",
@@ -15856,6 +15858,12 @@
             "connectedHostCount_one": "{{count}} 個主機",
             "connectedHostCount_other": "{{count}} 個主機",
             "connecting": "正在連線…",
+            "searchSshHosts": "搜尋 SSH 主機…",
+            "noMatchingSshHosts": "沒有符合的 SSH 主機。",
+            "moreSshHostMatches_one": "還有 {{count}} 個符合項目。請繼續輸入以縮小範圍。",
+            "moreSshHostMatches_other": "還有 {{count}} 個符合項目。請繼續輸入以縮小範圍。",
+            "moreSshHosts_one": "尋找另外 {{count}} 個 SSH 主機…",
+            "moreSshHosts_other": "在另外 {{count}} 個 SSH 主機中尋找…",
             "d09ec41831": "遠端主機",
             "fbb3f9f05e": "衝突",
             "fd9a3c600e": "錯誤",
@@ -18758,6 +18766,7 @@
         "permissionFullAccessCodexDescription": "永不詢問；可編輯任何檔案並使用網路",
         "permissionFullAccessSharedDescription": "編輯或執行命令前永不詢問",
         "pasteFailed": "貼上失敗。",
+        "tooManySkills": "您的訊息未傳送給 {{agent}}。請最多保留 {{limit}} 個已選取的技能檔案，然後再試一次。",
         "commandAttachmentsUnsupported": "使用聊天工作階段指令前，請先移除附件。",
         "optionValueShort": {
           "minimal": "最小",
@@ -19222,8 +19231,8 @@
         },
         "SortableTabContextMenu": {
           "closeTabsToLeft": "關閉左側所有分頁",
-          "switchToChatView": "切換到 Chat UI",
-          "switchToTerminalView": "切換到終端機智慧體"
+          "switchToChatView": "在 Chat UI 中繼續",
+          "switchToTerminalView": "以終端機智慧體繼續"
         }
       }
     },
@@ -19993,6 +20002,7 @@
   },
   "aiVault": {
     "antigravityReferenceDescription": "使用此記錄作為參考，在新的 Antigravity CLI 對話中繼續。",
+    "searchHitSourceHost": "在 {{value0}} 上找到",
     "antigravityIdeToCli": "IDE → CLI",
     "antigravity2ToCli": "2.0 → CLI",
     "continueInCli": "在 CLI 中繼續",
@@ -20417,7 +20427,17 @@
   "tabHoverCard": {
     "browser": "瀏覽器",
     "editor": "編輯器",
-    "terminal": "終端機"
+    "terminal": "終端機",
+    "namingFailure": {
+      "regenerating": "正在重新產生…",
+      "regenerate": "重新產生名稱",
+      "title": "無法為此聊天命名",
+      "description": "聊天命名智慧體因錯誤而停止，因此聊天會沿用其第一則訊息作為名稱。",
+      "viewError": "檢視錯誤",
+      "dialogTitle": "聊天自動命名失敗",
+      "dialogDescriptionStart": "Orca 無法根據第一則訊息為",
+      "dialogDescriptionEnd": "產生名稱。"
+    }
   },
   "updates": {
     "installBlock": {
