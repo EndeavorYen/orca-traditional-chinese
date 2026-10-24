@@ -61,7 +61,6 @@
       "title": "瀏覽器頁面已停止"
     },
     "loadFailure": {
-      "addressCopied": "已複製目前頁面位址。",
       "cantLoadPage": "無法載入此頁面",
       "cantReachHost": "無法連線至 {{value0}}",
       "certificateAuthorityInvalid": "Orca 不信任簽發 {{value0}} 憑證的機構。",
@@ -74,13 +73,26 @@
       "certificateVerificationFailed": "Orca 無法驗證 {{value0}} 的憑證。",
       "connecting": "連線中…",
       "connectionNotSecure": "連線不安全",
-      "copyAddress": "複製位址",
       "openExternally": "在外部開啟",
       "proceedUnsafe": "仍要繼續（不安全）",
       "retry": "重試",
-      "trustedCertificateGuidance": "進行本機開發時，請盡可能使用受信任的本機憑證。",
-      "tryHttps": "嘗試 HTTPS",
       "recheckSshRoute": "執行連線檢查",
+      "notRunningTitle": "{{host}} 上目前尚未執行任何內容",
+      "notRunningDescription": "為此位址啟動開發伺服器。",
+      "refusedTitle": "{{host}} 拒絕連線",
+      "refusedDescription": "網站可能已關閉，或位址可能有誤。",
+      "dnsTitle": "找不到 {{host}}",
+      "dnsDescription": "檢查位址是否有拼寫錯誤。",
+      "offlineTitle": "您已離線",
+      "timeoutTitle": "{{host}} 回應時間過長",
+      "resetTitle": "與 {{host}} 的連線已中斷",
+      "routeDownTitle": "無法連線至 SSH 主機",
+      "routeDownDescription": "這個頁面透過工作區的 SSH 主機載入，該主機目前尚未連線。",
+      "waiting": "伺服器回應時重新載入",
+      "waitingForHost": "SSH 主機重新連線時重新載入",
+      "waitingForNetwork": "恢復連線時重新載入",
+      "notRunningSshDescription": "在工作區的 SSH 主機上啟動開發伺服器。",
+      "waitingForServer": "伺服器啟動時重新載入",
       "sshRoutedHint": "這個頁面透過工作區的 SSH 主機瀏覽 — 該主機可能已中斷連線，或無法連上這個網站。"
     },
     "clientHosted": {
@@ -145,6 +157,9 @@
         "pending": "檢查進行中"
       },
       "runningElsewhere": "{{count}} 個正在其他工作區中執行"
+    },
+    "managedProfile": {
+      "createFailed": "無法建立此工作區的瀏覽器設定檔。請關閉此分頁並開啟新分頁後再試一次。"
     },
     "remoteEgress": {
       "clientHostedDetail": "頁面在這台裝置上呈現。網路流量與 DNS 則經過遠端主機。",
@@ -221,7 +236,8 @@
         "antigravityNotSignedIn": "尚未登入。聊天需要登入 Antigravity，與您的 agy 終端機帳號分開。",
         "antigravityAccount": "帳號",
         "antigravitySignInNeeded": "聊天需要登入 Antigravity，與您的 agy 終端機帳號分開。"
-      }
+      },
+      "permissionsDescriptionOwnAgents": "適用於在「設定 → 智慧體」中設定為自己設定之智慧體的新聊天。其他智慧體則使用該處設定的權限啟動聊天。"
     },
     "terminal": {
       "optionLayoutAlt": "ABC 或 U.S. — Option 傳送 Alt/Esc 序列",
@@ -371,6 +387,20 @@
           "clipboard": "剪貼簿"
         }
       },
+      "profileScope": {
+        "optionShared": "共用",
+        "optionSharedTooltip": "新分頁會使用預設設定檔（或在「工作階段與 Cookie」下選取的設定檔）。",
+        "optionRepo": "依儲存庫",
+        "optionRepoTooltip": "每個儲存庫的工作區共用同一個設定檔，於首次使用時建立。",
+        "optionWorktree": "依工作區",
+        "optionWorktreeTooltip": "每個工作區都有各自的設定檔，並隨工作區一併刪除。",
+        "title": "新分頁的設定檔",
+        "description": "在所有位置共用一個預設設定檔，或為每個儲存庫或工作區提供各自的 Cookie 與儲存空間，讓本機開發伺服器不再共用登入資訊。",
+        "keywordRepo": "儲存庫",
+        "keywordIsolate": "隔離",
+        "repoProfileLabel": "儲存庫：{{name}}",
+        "worktreeProfileLabel": "工作區：{{name}}"
+      },
       "sshWorkspaceRouting": {
         "description": "SSH 工作區中的瀏覽器頁面會將流量送經工作區的 SSH 主機，DNS 也在該處解析。關閉時，頁面會從這台機器瀏覽。",
         "disabledHosts": "改從這台裝置瀏覽的主機：",
@@ -401,6 +431,7 @@
       "savedEnvironment": "已儲存的值 · 按 Enter 取代",
       "newEnvironment": "值",
       "removeEnvironment": "移除",
+      "environmentUnclosedQuote": "閉合引號以儲存環境變數。",
       "loadingHost": "正在載入智慧體設定…",
       "updateHost": "更新此伺服器，即可編輯其智慧體啟動設定。",
       "readFailed": "無法讀取智慧體設定。請檢查主機連線後再試一次。",
@@ -429,7 +460,23 @@
       "customPermissions": "自訂引數",
       "replaceWithPermissionMode": "取代為 {{mode}}",
       "expandAgentSettings": "展開智慧體設定",
-      "collapseAgentSettings": "收合智慧體設定"
+      "collapseAgentSettings": "收合智慧體設定",
+      "permissionArgsTerminalOnly": "這些引數可能會控制 {{agent}} 的終端機權限，因此 Orca 不會新增旗標。聊天則使用上方的「權限」選擇。",
+      "localSaveFailed": "無法儲存智慧體設定。請再試一次。",
+      "localSaveFailedAgent": "無法儲存 {{agent}} 設定。請再試一次。",
+      "permissionFromArgs": "{{agent}} 在終端機與新聊天中設定為 {{mode}}。",
+      "permissionFromArgsTerminals": "{{agent}} 在終端機中設定為 {{mode}}。",
+      "permissionOwnAgent": "使用 {{agent}} 自己的設定",
+      "permissionOwnAll": "智慧體自己的設定",
+      "permissionOwnDescription": "Orca 在終端機中不會新增權限旗標；聊天則使用「設定 → 聊天」。",
+      "permissionChoiceDescription": "套用於各個支援此模式的智慧體。可在下方變更個別智慧體。",
+      "permissionOwnShort": "自己的設定",
+      "permissionWithoutAuto": "沒有「代我核准」的智慧體",
+      "permissionSurfaceDifference": "終端機使用智慧體自己的設定；新聊天則使用 {{mode}}。",
+      "permissionSameAsAll": "與所有智慧體相同",
+      "permissionChipRemove": "移除 {{flag}} 並使用 {{agent}} 自己的設定",
+      "permissionChipTooltip": "由「權限」新增。移除它以使用 {{agent}} 自己的設定。",
+      "permissionResetsOwnChoices": "在此處選擇模式會重設標記為個別設定的智慧體。"
     },
     "followSymlinkedDirectoriesKeywords": {
       "symlink": "符號連結",
@@ -2765,7 +2812,6 @@
             "a2164a6e5a": "{{value0}} 條註記已就緒。請選擇另一個元素，或複製所有回饋。",
             "a3508d7e6e": "{{value0}} 條註記{{value1}}已就緒。請選擇另一個元素，或複製所有回饋。",
             "a5dcd0fd1d": "確認中",
-            "a8f37f70c3": "檢查頁面",
             "ac39b9366b": "傳送",
             "acbe79fd01": "擷取頁面元素 ({{value0}})",
             "cc4a071d3a": "標註頁面元素 ({{value0}})",
@@ -2800,7 +2846,21 @@
             "fa6ea61de3": "取消",
             "fc9be38f6f": "為頁面元素加上註記",
             "fdfc7fe0ef": "擷取頁面元素",
-            "fileUrlUnsupported": "這個瀏覽器分頁無法開啟本機檔案。請改用檔案上的「在側邊開啟預覽」。"
+            "fileUrlUnsupported": "這個瀏覽器分頁無法開啟本機檔案。請改用檔案上的「在側邊開啟預覽」。",
+            "addToDictionary": "新增至字典",
+            "undo": "復原",
+            "redo": "重做",
+            "cut": "剪下",
+            "paste": "貼上",
+            "pasteAndMatchStyle": "貼上並符合樣式",
+            "pasteAsPlainText": "貼上為純文字",
+            "selectAll": "全選",
+            "openImageInNewTab": "在新分頁中開啟圖片",
+            "saveImage": "儲存圖片",
+            "copyImage": "複製圖片",
+            "copyImageAddress": "複製圖片位址",
+            "searchSelection": "使用 {{value0}} 搜尋「{{value1}}」",
+            "inspect": "檢查"
           },
           "BrowserToolbarMenu": {
             "2293adf620": "匯入 Cookie",
@@ -2974,10 +3034,10 @@
                 "newMarkdownFile": "新增 Markdown 檔案",
                 "newQuickCommand": "新增快速命令",
                 "splitChatRight": "向右分割聊天",
-                "moveChatRight": "將聊天右移",
+                "newChatRight": "在右側新增聊天",
                 "chatPaneRight": "右側聊天窗格",
                 "splitChatDown": "向下分割聊天",
-                "moveChatDown": "將聊天下移",
+                "newChatBelow": "在下方新增聊天",
                 "chatPaneBelow": "下方聊天窗格",
                 "newShell": "新增 Shell",
                 "newTerminal": "新增終端機",
@@ -2989,9 +3049,9 @@
                 "trashWorktree": "丟棄工作樹"
               },
               "splitChatRight": "向右分割聊天",
-              "splitChatRightDescription": "在右側的分割窗格中開啟目前的聊天。",
+              "splitChatRightDescription": "在右側的分割窗格中開啟新的聊天。",
               "splitChatDown": "向下分割聊天",
-              "splitChatDownDescription": "在下方的分割窗格中開啟目前的聊天。"
+              "splitChatDownDescription": "在下方的分割窗格中開啟新的聊天。"
             }
           }
         }
@@ -3338,6 +3398,7 @@
           "e4b074749d": "Front Matter"
         },
         "EditorPanelHeader": {
+          "readOnlyBadge": "唯讀",
           "146cb5473c": "目錄可在豐富模式或預覽模式中使用",
           "1bb1e226ec": "重新命名檔案 {{value0}}",
           "2076ecfc9c": "上一個變更",
@@ -3762,7 +3823,13 @@
               "notice": "自載入此區段後，此檔案在磁碟上已變更。"
             },
             "notUtf8": {
-              "notice": "由於 {{name}} 不是 UTF-8 文字，已暫停自動儲存。請手動儲存以將其轉換為 UTF-8。"
+              "notice": "由於 {{name}} 不是 UTF-8 文字，已暫停自動儲存。自行儲存會將其重寫為 UTF-8，並取代所有非有效 UTF-8 的字元。",
+              "refused": "此檔案不是 UTF-8 文字，因此未儲存。",
+              "confirm": {
+                "title": "要將 {{name}} 儲存為 UTF-8 嗎？",
+                "description": "此檔案不是 UTF-8 文字。將其儲存為 UTF-8 會將所有非有效 UTF-8 的字元取代為 �，且無法復原原始位元組。",
+                "action": "儲存為 UTF-8"
+              }
             }
           }
         },
@@ -3940,9 +4007,7 @@
           },
           "MobileEmulatorAgentSetupGuideSteps": {
             "21f5687c07": "Orca CLI 技能",
-            "5c59ea96ca": "行動模擬器 Orca CLI 技能設定",
-            "64fb057667": "教導智慧體此工作樹的 orca 模擬器指令。",
-            "bff5341ac3": "行動模擬器 Orca CLI 技能安裝終端機"
+            "64fb057667": "教導智慧體此工作樹的 orca 模擬器指令。"
           },
           "MobileEmulatorTabIntroCallout": {
             "1924982130": "關閉",
@@ -4062,6 +4127,10 @@
             "ab94e16d44": "建立工作樹「{{value0}}」",
             "d20ccf1e61": "完成"
           },
+          "CliSkillSetupPanel": {
+            "title": "技能設定",
+            "description": "為您的智慧體安裝 Orca CLI 與編排技能。"
+          },
           "CmdJPaletteTipDialog": {
             "8241897205": "可隨時在以下位置重新綁定捷徑",
             "c0bb9f869b": "設定 → 捷徑"
@@ -4087,11 +4156,9 @@
         "wall": {
           "AgentCapabilitiesSetupAction": {
             "1aa657d8f4": "部分能力設定需要注意",
-            "allInstalled": "已安裝所有技能",
             "installSkills": "安裝技能",
             "1b51644c2d": "讓智慧體控制桌面、移動游標、按一下，並在任何應用程式中輸入文字。",
             "362a07517d": "電腦操作",
-            "3a59452a67": "技能指令已複製並插入下方供審閱。",
             "5e8fe5a72d": "讓智慧體直接存取 Orca 的瀏覽器，以便測試頁面、擷取螢幕截圖，並根據所見採取行動。",
             "ac07f8887f": "智慧體編排",
             "b8dc9dd8a2": "已安裝",
@@ -4197,7 +4264,6 @@
             "b7345c18db": "發生未預期的錯誤。",
             "c9728107c5": "試試看",
             "c9eb68b474": "此工作樹尚無可用的工作區群組。",
-            "d6d15077df": "技能命令已複製並插入下方供檢視。",
             "e02b11e6b0": "瀏覽器設定已就緒"
           },
           "FeatureWallModal": {
@@ -7543,6 +7609,9 @@
           "failedToCopyCommand": "複製指令失敗。",
           "installLabel": "安裝",
           "retrySetup": "重試",
+          "installing": "正在安裝…",
+          "hostUnavailable": "Orca 目前還無法在此工作區的機器上安裝技能。",
+          "replaceWithOrcaCopy": "以 Orca 的副本取代",
           "runCommandDescription": "按 Enter 執行指令。",
           "setupCommandFailed": "設定指令以代碼 {{value0}} 結束。成功重試後此錯誤即會清除。",
           "setupFailed": "設定失敗。",
@@ -7734,6 +7803,10 @@
           "titleOrca": "按住 Shift 以在 Orca 中開啟",
           "titleSystem": "按住 Shift 以在您的網頁瀏覽器中開啟"
         },
+        "BrowserLinkRoutingBackgroundSetting": {
+          "title": "在背景開啟連結",
+          "description": "來自終端機、聊天與 Markdown 的連結會在瀏覽器中開啟，而不會將焦點從您按一下的位置移開。"
+        },
         "BrowserLinkRoutingSetting": {
           "description": "在 Orca 內建瀏覽器中開啟來自終端機、Markdown 與編輯器的 http(s) 連結。{{shortcut}} 一律使用您的系統瀏覽器。",
           "descriptionBase": "在 Orca 內建瀏覽器中開啟來自終端機、Markdown 與編輯器的 http(s) 連結。"
@@ -7881,16 +7954,10 @@
         "CliSkillRuntimeSetup": {
           "04325573f8": "WSL",
           "0c9f3cf9da": "選擇 Orca 檢查與安裝全域智慧體技能的位置。",
-          "0ed08febc5": "無法註冊 WSL shell 命令。",
-          "3728a94fb6": "WSL shell 命令需要處理",
-          "775a4cfbb8": "WSL shell 命令註冊目前無法使用",
           "7c776ff9d8": "wsl",
           "a58ba464ad": "技能位置",
           "c47127f222": "WSL 預設",
-          "f00d6aa9b5": "這台電腦上無法使用 WSL。",
-          "fc0fcf72fd": "請在技能設定前註冊 WSL shell 命令。",
-          "refreshCliRegistration": "請重新整理 CLI 註冊狀態後再試一次。",
-          "windowsPathUnknown": "無法檢查 WSL shell 命令 PATH"
+          "f00d6aa9b5": "這台電腦上無法使用 WSL。"
         },
         "CloudVmSetupGuide": {
           "createWorkspace": "建立工作區，然後在「執行於」中選擇該配方。",
@@ -8141,8 +8208,6 @@
           "checking": "正在檢查配方...",
           "cloudVmRefresh": "重新整理雲端虛擬機器配方",
           "cloudVmSkillTitle": "雲端虛擬機器設定技能",
-          "cloudVmTerminalAriaLabel": "雲端虛擬機器技能安裝終端機",
-          "cloudVmTerminalTitle": "雲端虛擬機器設定",
           "copied": "已複製",
           "copy": "複製",
           "copyError": "無法複製提示詞。",
@@ -8578,8 +8643,6 @@
           "manageConnectionHint": "可在此檢視已連線的 Linear 工作區與 API 金鑰：",
           "manageConnectionLink": "整合",
           "skillTitle": "Linear 技能",
-          "terminalAriaLabel": "Linear 技能安裝終端機",
-          "terminalTitle": "Linear 技能設定",
           "title": "Linear"
         },
         "ManageSessionKillDialog": {
@@ -8878,7 +8941,6 @@
           "2aacdb0517": "協調編碼智慧體的交接、工作樹移交與子智慧體工作。",
           "52e0634e2c": "要求協調智慧體使用編排來處理交接、工作樹移交，以及依序或並行執行的子智慧體。",
           "7bc082f4de": "複製安裝指令",
-          "832f1f3ee6": "偏好使用自己的終端機？",
           "9bedd2a6e5": "讓智慧體能夠透過 Orca 交接內容並協調工作。",
           "ae79504732": "使用方法",
           "nestedWorkerDepthDescription": "已派送的工作者可以再往下衍生幾層自己的工作者。設為 1 會讓智慧體樹保持扁平：協調者派送工作者，而這些工作者不再往下派送。",
@@ -8907,6 +8969,44 @@
           "b99f375eb2": "在終端機中執行此指令，即可為您的智慧體安裝編排技能。",
           "d3dc559225": "複製安裝指令失敗。",
           "f08d45293d": "複製命令"
+        },
+        "bundledSkillSetupCopy": {
+          "installForAgent": "為 {{value0}} 安裝",
+          "installForMore": "為另外 {{value0}} 個智慧體安裝",
+          "installedForAgent": "已為 {{value0}} 安裝",
+          "installedForMore": "已為另外 {{value0}} 個智慧體安裝",
+          "installedForAgents": "已為 {{value0}} 個智慧體安裝",
+          "replacedWithBackup": "已取代 · 您的副本已儲存為備份",
+          "attentionUnwritable": "需要注意 · Orca 無法寫入 {{folder}}",
+          "attentionBusy": "需要注意 · 此處有另一個技能安裝仍在完成中",
+          "attentionUnreadable": "需要注意 · Orca 無法讀取此副本中的每個檔案",
+          "attentionEdited": "需要注意 · 您已編輯此副本",
+          "attentionOther": "需要注意 · 已有不同的技能使用此名稱",
+          "attentionSharedNotCurrent": "需要注意 · 此資料夾使用的共用副本不是 Orca 的版本",
+          "resultUpdateSkippedPlaces": "{{result}} · 已略過 {{places}} 處的更新：{{reason}}",
+          "resultUpdateSkippedAgent": "{{result}} · 已略過 {{agent}} 中的更新：{{reason}}"
+        },
+        "recoverServer": {
+          "title": "復原 Orca 伺服器",
+          "description": "此主機上的 Orca 伺服器無法啟動，因為之前執行的鎖定仍然存在。",
+          "checking": "正在檢查鎖定…",
+          "confirmCheck": "沒有其他共用此家目錄的機器正在執行 Orca",
+          "cancel": "取消",
+          "confirm": "清除鎖定並重新啟動",
+          "eligible": "這台機器在其舊位址上沒有任何回應，但 Orca 無法排除有另一台同名機器共用此家目錄。",
+          "host": "主機",
+          "lockBoot": "開機時寫入",
+          "currentBoot": "本次開機",
+          "warning": "只有在沒有其他共用此家目錄的機器以此設定檔執行 Orca 時，才可繼續。",
+          "none": "已沒有需要清除的鎖定。請重新連線以啟動此主機的 Orca 伺服器。",
+          "manualCommand": "在主機上執行此命令，或刪除「詳細資料」中顯示的鎖定檔：",
+          "manualDelete": "一旦確定沒有其他機器使用它，請刪除「詳細資料」中顯示的鎖定檔。",
+          "action": "復原伺服器…",
+          "written": "寫入時間",
+          "manualDeleteCommand": "手動刪除主機上的鎖定：",
+          "manualDeleteWarning": "只有在沒有其他共用此家目錄的機器以此設定檔執行 Orca 時，才可執行此操作。",
+          "close": "關閉",
+          "reclaimedNotStarted": "鎖定已清除，但 Orca 伺服器並未啟動。"
         },
         "PluginDevelopmentSection": {
           "add": "新增路徑",
@@ -9993,9 +10093,7 @@
           "skillBlocked": "請先連線 Linear，再為智慧體安裝技能。",
           "skillDescription": "讓智慧體可使用 /orca-linear 讀取議題、張貼更新、變更狀態，以及附加拉取或合併請求。",
           "skillPanelTitle": "Linear 技能",
-          "skillTitle": "安裝 Linear 智慧體技能",
-          "terminalAriaLabel": "Linear 技能安裝終端機",
-          "terminalTitle": "Linear 技能設定"
+          "skillTitle": "安裝 Linear 智慧體技能"
         },
         "TaskSourceProviderCard": {
           "collapseSetup": "收合 {{provider}} 的設定步驟",
@@ -10508,7 +10606,7 @@
             "7e2a4b8c1d": "海外",
             "cursor": {
               "title": "Cursor 使用量",
-              "description": "從這台電腦上已有的 Cursor 登入（cursor-agent login）讀取每月方案使用量。",
+              "description": "從這台電腦上已有的 Cursor 登入（cursor-agent login）讀取方案使用量。",
               "kw": {
                 "cursor": "cursor",
                 "usage": "使用量",
@@ -10833,7 +10931,7 @@
             },
             "cursor": {
               "title": "Cursor 使用量",
-              "description": "顯示這台電腦上 Cursor 登入所對應的每月方案使用量。",
+              "description": "顯示這台電腦上 Cursor 登入所對應的方案使用量。",
               "kw": {
                 "cursor": "cursor"
               }
@@ -11072,6 +11170,11 @@
               "opposite": "相反",
               "routing": "路由"
             },
+            "linkRoutingBackground": {
+              "background": "背景",
+              "focus": "焦點",
+              "tab": "分頁"
+            },
             "terminalLinkActions": {
               "actions": "動作",
               "click": "按一下",
@@ -11096,7 +11199,6 @@
               "614c756ab1": "匯入瀏覽器 Cookie",
               "62e2a790c0": "現有工作階段",
               "63a66da648": "系統瀏覽器",
-              "6ea88e5206": "npx",
               "96ce3d2de2": "驗證",
               "9d97446873": "智慧體",
               "a1414dcefb": "安裝瀏覽器使用技能",
@@ -11434,7 +11536,6 @@
             "5baf51c4d9": "開啟 Claude",
             "5d9ba08673": "copilot",
             "5fdf1dc2d1": "omp",
-            "6382fe9724": "npx",
             "660528b048": "成本",
             "68d03d9980": "vscode",
             "694613d47f": "在富文字編輯器模式中顯示本機 Markdown 審查筆記控制項。",
@@ -12789,7 +12890,7 @@
             "desktop": "Cursor IDE"
           },
           "title": "Cursor",
-          "subtitle": "根據這台電腦上已有的登入狀態，顯示您 Cursor 方案的每月使用量。Orca 僅讀取，絕不會更改您的 Cursor 登入。",
+          "subtitle": "根據這台電腦上已有的登入狀態，顯示您 Cursor 方案的使用量。Orca 僅讀取，絕不會更改您的 Cursor 登入。",
           "dashboardLink": "Cursor 儀表板",
           "loading": "載入中…",
           "signedIn": "已登入",
@@ -12799,7 +12900,7 @@
           "signedOut": "這台電腦上找不到 Cursor 登入資訊",
           "signedOutHelp": "請使用 Cursor IDE 登入，或在終端機中執行 cursor-agent login，然後在此按一下「重新整理使用量」。",
           "refreshUsage": "重新整理使用量",
-          "usageTitle": "每月方案使用量",
+          "usageTitle": "方案使用量",
           "usageDescription": "Cursor 依兩個額度池計費，額度會隨計費週期重設，用完後再計入隨用隨付的花費。",
           "planTotal": "方案",
           "resets": "{{when}}重設",
@@ -13271,6 +13372,10 @@
           "lan": "區域網路 · {{address}}",
           "loopback": "這台電腦 · {{address}}"
         },
+        "BundledSkillInstallStatus": {
+          "updateServer": "更新伺服器上的 Orca 以安裝其技能。",
+          "connectHost": "連線至此 SSH 主機以安裝其技能。"
+        },
         "shareSkills": {
           "activeLinks": "使用中的分享連結",
           "activeLinksDescription": "只有取得連結的人才能開啟。取消分享連結可阻擋日後的檢視與安裝。",
@@ -13736,7 +13841,6 @@
           "hostCopy": "安裝此項目，以便從已連結的 Linear 工作進行主機智慧體交接。",
           "missingBoth": "缺少 Orca CLI 與 Linear 智慧體技能。",
           "missingSkill": "缺少 Linear 智慧體技能。",
-          "modalDescription": "從終端機安裝 Linear 技能。",
           "modalPrompt": "讓智慧體可以讀取與編輯附加的 Linear 議題。",
           "modalTitle": "啟用 Linear 議題存取",
           "panelDescription": "安裝主機智慧體技能，用於已連結的 Linear 任務交接。",
@@ -13749,13 +13853,12 @@
           "successDescriptionWsl": "WSL 智慧體現在可以從此工作區使用已連結的 Linear 議題。",
           "successStatus": "Linear 議題存取已就緒",
           "successTitle": "Linear 議題存取已就緒",
-          "terminalAria": "Linear 智慧體技能安裝程式終端機",
-          "terminalTitle": "安裝 Linear 智慧體技能",
           "title": "設定 Linear 智慧體技能",
           "toastInstallSkillDescription": "安裝 Linear 技能，讓您的智慧體可以透過 Orca CLI 讀取與編輯 Linear 任務。",
           "toastMissingSkill": "缺少 Linear 技能",
           "toastRemoteDescription": "{{value0}} 遠端智慧體環境可能需要自己的設定。",
           "toastWslDescription": "{{value0}} 此設定會在所選的 WSL 智慧體執行環境中執行。",
+          "modalInstallDescription": "為您的智慧體安裝 Linear 技能。",
           "wslCopy": "安裝此項目，以便從已連結的 Linear 工作進行 WSL 智慧體交接。",
           "wslLabel": "WSL 預設"
         },
@@ -14737,6 +14840,9 @@
               "retry": "工作區已保持開啟。請重試；如果問題持續，請檢查主機連線。",
               "chat": {
                 "partial": "主機無法確認聊天已停止。其他面板可能已關閉；請檢查連線後再試一次。"
+              },
+              "vm": {
+                "running": "此工作區的終端機已停止，但其機器無法暫停，目前仍在執行中。"
               }
             }
           }
@@ -14838,36 +14944,10 @@
           "updateMany": "更新技能",
           "updateOne": "更新技能"
         },
-        "SkillFreshnessRow": {
-          "cantUpdateReason": "Orca 已將此技能排除於更新指令之外。",
-          "chipBrokenLink": "失效連結",
-          "chipCurrent": "最新",
-          "chipDuplicate": "重複",
-          "chipExternalLink": "外部連結",
-          "chipInRepo": "位於儲存庫中",
-          "chipInaccessible": "無法存取",
-          "chipPluginCache": "外掛程式快取",
-          "chipReadOnly": "唯讀",
-          "skippedReasonBrokenLink": "此副本是通往已不存在項目的捷徑，因此 Orca 將它排除 — 您可以放心刪除。",
-          "skippedReasonDuplicate": "這是獨立副本，因此更新不會觸及它 — 指令只會重新整理主要副本。請移除這個副本並重新安裝技能，讓此位置跟隨主要副本。",
-          "skippedReasonExternalLink": "此副本是指向 Orca 技能資料夾之外的捷徑，因此 Orca 將它排除在更新之外。",
-          "skippedReasonInRepo": "這是專案技能，不是全域技能 — Orca 只更新您的全域技能，因此將它排除在更新之外。",
-          "skippedReasonInaccessible": "Orca 無法讀取此副本，因此將該技能排除在更新之外。",
-          "skippedReasonPluginCache": "此技能由外掛程式管理，因此 Orca 將它排除在更新之外 — 請改為更新外掛程式。",
-          "skippedReasonReadOnly": "此副本位於唯讀位置，因此 Orca 將它排除在更新之外。請變更其權限，讓 Orca 能更新它。",
-          "statusCantUpdate": "已略過",
-          "statusUpdateAvailable": "有可用更新",
-          "tipBrokenLink": "指向已不存在項目的捷徑。",
-          "tipCurrent": "此副本符合目前的官方版本。",
-          "tipDuplicate": "此技能除主要副本外另行安裝的獨立副本。",
-          "tipExternalLink": "指向 Orca 技能資料夾之外的捷徑。",
-          "tipInRepo": "此副本位於專案內，而非您的全域技能。",
-          "tipInaccessible": "Orca 無法讀取此副本（權限或檔案錯誤）。",
-          "tipPluginCache": "此副本由外掛程式管理。",
-          "tipReadOnly": "此副本位於唯讀位置。"
-        },
         "SkillFreshnessStatusPill": {
           "checkFailed": "檢查失敗",
+          "updateServer": "更新伺服器上的 Orca",
+          "connectHost": "連線至 SSH 主機",
           "checking": "正在檢查...",
           "details": "詳細資料",
           "installed": "已安裝",
@@ -14876,37 +14956,19 @@
           "updateAvailable": "有可用更新"
         },
         "SkillFreshnessUpdateDialog": {
-          "attention": "部分已安裝的 Orca 技能被排除在更新之外。",
-          "blockedMany": "有 {{value0}} 個技能無法自動更新。",
-          "blockedOne": "有 1 個技能無法自動更新。",
           "checkNow": "重新檢查",
           "checking": "正在檢查已安裝的 Orca 技能…",
           "close": "關閉",
-          "copied": "已複製",
-          "copyCommand": "複製命令",
+          "finishedWithProblems": "部分技能需要注意",
+          "repair": "先前的更新已中斷。請更新以進行修復。",
+          "hideFolders": "隱藏資料夾",
+          "showFolders": "顯示資料夾",
+          "upToDateMany": "{{value0}} 個技能已是最新。",
+          "upToDateOne": "{{value0}} 已是最新。",
           "done": "完成",
           "errorTitle": "更新未完成",
           "none": "找不到已安裝的 Orca 技能。",
           "progressAria": "正在更新技能",
-          "retry": "重試",
-          "runningDescription": "您可以關閉此視窗 — 它會在背景繼續執行。",
-          "runningMany": "正在更新 {{value0}} 個技能…",
-          "runningOne": "正在更新 1 個技能…",
-          "scanCandidateLimit": "Orca 找到的同名技能資料夾數量超過它能安全檢查的上限。",
-          "scanDepthLimit": "Orca 在檢查此資料夾前達到外掛程式掃描深度上限。",
-          "scanEntryLimit": "Orca 在檢查此快取其餘內容前達到外掛程式掃描條目上限。",
-          "scanIncomplete": "Orca 無法完成對外掛程式管理技能的檢查。",
-          "scanIoError": "Orca 無法讀取此外掛程式路徑。",
-          "scanIoErrorWithCode": "Orca 無法讀取此外掛程式路徑 ({{value0}})。",
-          "scanIssueLimit": "被略過的外掛程式資料夾過多，Orca 無法逐一列出。",
-          "unselectedForeignOne": "1 個非由 Orca 安裝的技能已取消選取。",
-          "unselectedForeignMany": "{{value0}} 個非由 Orca 安裝的技能已取消選取。",
-          "scanManifestLimit": "此外掛程式資訊清單超出安全限制，Orca 已將它略過。",
-          "scanOutsideRoot": "此路徑指向外掛程式快取之外，Orca 已將它略過。",
-          "showLog": "顯示紀錄",
-          "stop": "停止",
-          "stopping": "正在停止…",
-          "stoppingHeadline": "正在停止更新…",
           "success": "所有已安裝的 Orca 技能均已是最新。",
           "title": "更新技能",
           "updateActionMany": "更新 {{value0}} 個技能",
@@ -14915,19 +14977,16 @@
           "updateOne": "有 1 個更新可用",
           "updatedMany": "已更新 {{value0}} 個技能",
           "updatedOne": "已更新 1 個技能",
-          "updatedPartial": "已更新 {{value1}} 個技能中的 {{value0}} 個",
+          "updatedSkipped": "{{value0}} · 已略過 {{value1}}",
+          "currentOne": "1 個技能已是最新",
+          "currentMany": "{{value0}} 個技能已是最新",
+          "noUpdates": "沒有可用的更新",
+          "updateServer": "更新伺服器上的 Orca 以更新其 Orca 技能。",
+          "connectHost": "連線至此 SSH 主機以檢查其 Orca 技能。",
           "updating": "正在更新…"
         },
-        "SkillUpdateResultRows": {
-          "stillOutdated": "更新執行後仍已過期。"
-        },
         "SkillUpdateRow": {
-          "manyLocations": "{{value0}} 個位置",
-          "notFromOrca": "非來自 Orca",
-          "notFromOrcaSourceTip": "從 {{value0}} 安裝。選取它會以 Orca 的版本取代。",
-          "notFromOrcaNoRecordTip": "此副本沒有 Orca 安裝紀錄。選取它會以 Orca 的版本取代。",
-          "includeSkill": "包含 {{value0}}",
-          "oneLocation": "1 個位置"
+          "replaceWithOrca": "以 Orca 的副本取代（保留備份）"
         },
         "count": {
           "deletedOne": "已刪除 {{count}} 個技能",
@@ -15160,6 +15219,34 @@
           "statusFailed": "失敗 — 沒有任何變更",
           "statusPartial": "部分移除 — 部分檔案仍以隱藏名稱留在磁碟上",
           "statusSkipped": "已略過"
+        },
+        "skillPlanOpCopy": {
+          "busy": "另一個安裝仍在執行中",
+          "edited": "技能已在 Orca 外部編輯",
+          "install": "安裝",
+          "installFor": "為 {{value0}} 安裝",
+          "installed": "已安裝",
+          "keep": "無變更",
+          "leftAsIs": "此副本已保持原樣",
+          "link": "連結",
+          "linked": "已連結",
+          "needsAttention": "需要注意",
+          "other": "有不同的技能使用此名稱",
+          "replace": "取代",
+          "replacedWithBackup": "已取代 · 您的副本已儲存為備份",
+          "sharedNotCurrent": "共用副本不是 Orca 的版本",
+          "unwritable": "Orca 無法寫入此資料夾",
+          "unreadable": "Orca 無法讀取每個檔案",
+          "update": "更新",
+          "updated": "已更新",
+          "write": "安裝",
+          "keepLink": "連結，無變更",
+          "repair": "修復",
+          "sharedFolder": "共用資料夾",
+          "updateSkipped": "已略過更新：{{value0}}",
+          "updateAvailable": "可更新",
+          "repairAvailable": "可修復",
+          "installAvailable": "可安裝"
         },
         "SkillDetailDialog": {
           "agents": "智慧體",
@@ -15910,17 +15997,14 @@
             "fa6d36758d": "終止工作階段 {{value0}}"
           },
           "SkillUpdateStatusSegment": {
-            "errorAria": "技能更新失敗。按一下以開啟詳細資料。",
-            "errorLabel": "更新失敗",
-            "errorTooltip": "技能更新失敗 — 按一下以檢視詳細資料",
             "runningAria": "正在更新技能。按一下以開啟詳細資料。",
             "runningLabel": "正在更新技能",
             "runningMany": "正在更新 {{value0}} 個技能…",
             "runningOne": "正在更新 {{value0}}…",
-            "stoppingAria": "正在停止技能更新。按一下以開啟詳細資料。",
-            "stoppingLabel": "正在停止更新",
-            "stoppingTooltip": "正在停止技能更新…",
             "successAria": "技能已更新。按一下以開啟詳細資料。",
+            "attentionAria": "已略過部分技能更新。按一下以開啟詳細資料。",
+            "attentionLabel": "技能需要注意",
+            "attentionTooltip": "已略過部分技能更新 — 按一下以查看詳細資料",
             "successLabel": "技能已更新",
             "successMany": "已更新 {{value0}} 個技能",
             "successOne": "已更新 {{value0}}"
@@ -16402,6 +16486,8 @@
             "8dea9b5cdf": "沒有已啟用的智慧體",
             "needsServerUpdate": "請在此伺服器上更新 Orca，才能列出此工作區的智慧體",
             "hostUnreachable": "無法連上此工作區的主機，無法列出其智慧體",
+            "terminalListNeedsServerUpdate": "更新此伺服器上的 Orca 以列出終端機智慧體",
+            "terminalListFailed": "無法列出此工作區的終端機智慧體",
             "chatNotInstalled": "未安裝",
             "chatNotOverSsh": "無法透過 SSH 使用聊天",
             "chatNotInWsl": "WSL 中無法使用聊天",
@@ -16855,6 +16941,10 @@
             "downloadOpenFailed": "下載「{{value0}}」失敗。",
             "openInThisGroup": "在此群組中開啟",
             "openInThisGroupRefused": "無法在此群組中開啟 {{value0}}",
+            "fileInOtherWorkspace": "此檔案位於 {{value0}}",
+            "fileInAnotherWorkspace": "此檔案位於另一個工作區",
+            "openInOwningWorkspace": "在該處開啟",
+            "openedHereReadOnly": "在此處以唯讀方式開啟",
             "downloadOpenWithDefaultApp": "下載並以預設應用程式開啟"
           },
           "TerminalPane": {
@@ -16871,12 +16961,15 @@
             "restoring": "正在還原終端機…"
           },
           "AgentLaunchPaneNotice": {
-            "commandNotFound": "在此電腦上找不到其指令。",
+            "agent": "此智慧體",
+            "commandNotFound": "{{agent}} 無法啟動，因為在此電腦上找不到其指令。",
             "copyPrompt": "複製提示",
-            "exitedDuringStart": "它在啟動時已結束。",
-            "notStarted": "智慧體無法啟動。",
-            "unconfirmed": "無法確認智慧體是否已啟動。",
-            "workspaceGone": "其工作區已無法使用。"
+            "exitedDuringStart": "{{agent}} 在啟動時已結束。",
+            "notStarted": "{{agent}} 無法啟動。",
+            "restoreWorkspace": "還原工作區資料夾或開啟可用的工作區，然後再試一次。",
+            "tryInTerminal": "在此資料夾的終端機中執行它以查看原因，然後再試一次。",
+            "unconfirmed": "無法確認 {{agent}} 是否已啟動。請在重試前檢查其終端機。",
+            "workspaceGone": "{{agent}} 無法啟動，因為其工作區已無法使用。"
           },
           "TerminalSleepingPaneOverlay": {
             "pausedDetail": "因主機意外停止，自動恢復已暫停。您的工作階段已儲存。",
@@ -17525,6 +17618,8 @@
         "nativeDropTooManyPaths": "拖放的內容包含過多檔案。",
         "nativeDropTooManyPathsDescription": "每次最多拖放 {{value0}} 個檔案。",
         "ownerChanged": "無法確認哪個主機擁有此工作區。請在其重新連線後再試。",
+        "hostMismatch": "此編輯器位於不同的主機上。請從其來源工作區開啟檔案。",
+        "workspaceOpenFailed": "無法開啟 {{fileName}}。請從其來源工作區開啟它，然後再試一次。",
         "nativeDropUnresolvedPathsDescription": "請先將它們儲存到磁碟，再拖放已儲存的檔案。",
         "nativeDropUnresolvedPaths": "Orca 無法讀取所拖放檔案的路徑。",
         "nativeDropTempCopyFailed": "Orca 無法複製 {{count}} 個拖放的檔案。",
@@ -18170,6 +18265,21 @@
       },
       "duplicatePairedServers": {
         "ambiguousSameServer": "{{value0}} 與 {{value1}} 是重複配對的同一台伺服器。請在「設定 > 遠端 Orca 伺服器」中移除其中一個。"
+      },
+      "bundled": {
+        "skill": {
+          "install": {
+            "error": {
+              "message": {
+                "homeUnavailable": "Orca 找不到要安裝技能的家目錄。",
+                "wslUnavailable": "這台電腦上無法使用 WSL，因此 Orca 無法在該處安裝技能。",
+                "environmentMismatch": "這台電腦無法將技能安裝到 WSL。",
+                "wslDetectionFailed": "Orca 無法檢查 WSL 中安裝了哪些智慧體。請確認發行版已啟動，然後重試。",
+                "unknown": "Orca 無法安裝技能。"
+              }
+            }
+          }
+        }
       }
     },
     "main": {
@@ -19800,6 +19910,7 @@
     },
     "jiraUserPicker": {
       "empty": "找不到使用者",
+      "useKnownId": "使用已知的使用者 ID「{{value0}}」",
       "search": "搜尋使用者",
       "select": "選取 {{value0}}"
     }
