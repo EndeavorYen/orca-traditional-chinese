@@ -161,6 +161,28 @@
     "managedProfile": {
       "createFailed": "無法建立此工作區的瀏覽器設定檔。請關閉此分頁並開啟新分頁後再試一次。"
     },
+    "history": {
+      "clear": "清除瀏覽紀錄",
+      "clearAllTime": "全部時間",
+      "clearLastHour": "過去 1 小時",
+      "clearRange": "清除紀錄的時間範圍",
+      "clearToday": "今天",
+      "cleared": "已清除瀏覽紀錄",
+      "close": "關閉",
+      "description": "搜尋並管理瀏覽紀錄",
+      "empty": "您造訪的頁面會顯示在這裡",
+      "enterKey": "Enter",
+      "escKey": "Esc",
+      "menuItem": "瀏覽紀錄",
+      "noMatches": "沒有符合您搜尋的頁面",
+      "open": "開啟",
+      "remove": "從瀏覽紀錄中移除",
+      "removeShort": "移除",
+      "search": "搜尋瀏覽紀錄",
+      "title": "瀏覽紀錄",
+      "today": "今天",
+      "yesterday": "昨天"
+    },
     "remoteEgress": {
       "clientHostedDetail": "頁面在這台裝置上呈現。網路流量與 DNS 則經過遠端主機。",
       "clientHostedTooltip": "透過 {{value0}} 瀏覽",
@@ -3398,7 +3420,6 @@
           "e4b074749d": "Front Matter"
         },
         "EditorPanelHeader": {
-          "readOnlyBadge": "唯讀",
           "146cb5473c": "目錄可在豐富模式或預覽模式中使用",
           "1bb1e226ec": "重新命名檔案 {{value0}}",
           "2076ecfc9c": "上一個變更",
@@ -7492,7 +7513,9 @@
               "description": "選用的覆寫設定。否則 Orca 會使用您執行 /connect 時 OpenCode 儲存的金鑰，其次是 OPENCODE_API_KEY。",
               "label": "OpenCode Go API 金鑰",
               "placeholder": "留空即使用 /connect 或 OPENCODE_API_KEY 儲存的金鑰",
-              "help": "用於狀態列中的 OpenCode Go 使用量。下方的工作階段 cookie 僅供舊版主控台（OpenCode Black）帳戶使用。"
+              "help": "用於狀態列中的 OpenCode Go 使用量。下方的工作階段 cookie 僅供舊版主控台（OpenCode Black）帳戶使用。",
+              "checking": "檢查中…",
+              "unavailable": "無法取得狀態"
             }
           },
           "remoteScopeLocalAccountsKeptHostPicker": "在此桌面管理的帳戶不會變更。請在設定頂端的「主機」選單中選擇這部電腦，即可查看它們。",
@@ -8944,6 +8967,11 @@
           "9bedd2a6e5": "讓智慧體能夠透過 Orca 交接內容並協調工作。",
           "ae79504732": "使用方法",
           "nestedWorkerDepthDescription": "已派送的工作者可以再往下衍生幾層自己的工作者。設為 1 會讓智慧體樹保持扁平：協調者派送工作者，而這些工作者不再往下派送。",
+          "chatErrorEscalationTitle": "向協調者回報聊天錯誤",
+          "chatErrorEscalationDescription": "當已派送的智慧體遇到結束其回合的錯誤時，將確切的錯誤傳送給派送它的協調者。任務仍會指派給該智慧體。僅適用於在 Chat UI 中執行的智慧體。",
+          "chatErrorEscalationNeedsChat": "在「實驗性」設定中開啟 Chat UI 即可使用。",
+          "chatErrorEscalationKeywordError": "錯誤",
+          "chatErrorEscalationKeywordChat": "聊天",
           "nestedWorkerDepthTitle": "巢狀工作者深度"
         },
         "OrchestrationSetupCard": {
@@ -10055,6 +10083,8 @@
           "47e082bc17": "deploy",
           "4a342f44c1": "進階連線",
           "53e9aabfc0": "可用時會使用 OpenSSH 多工連線。若主機有自訂 SSH 限制，請關閉此選項。",
+          "proxyConnectionReuse": "重複使用單一 Proxy 連線",
+          "proxyConnectionReuseHelp": "加快透過較慢的 ProxyCommand 或 ProxyJump 主機連線的速度。僅在您的 ssh_config 不依賴特定主機的 Match 或 %h 規則時啟用。",
           "allowRemoteCliControl": "允許此主機的 orca CLI 控制 Orca",
           "allowRemoteCliControlHelp": "新主機預設開啟。允許在此主機上執行的 orca 命令在此桌面上開啟並控制 Orca 瀏覽器分頁（僅限此主機的工作區，且僅在連線時），並允許在此主機上由較舊版本 Orca 啟動的終端機為其受監督的工作執行編排命令 (check、inbox、send、ask、reply)。它們無法讀取您的檔案、剪貼簿或 Cookie。關閉時，它們只能存取此主機本身的 Orca 伺服器。",
           "63c0c145c1": "身分檔案",
@@ -16941,10 +16971,6 @@
             "downloadOpenFailed": "下載「{{value0}}」失敗。",
             "openInThisGroup": "在此群組中開啟",
             "openInThisGroupRefused": "無法在此群組中開啟 {{value0}}",
-            "fileInOtherWorkspace": "此檔案位於 {{value0}}",
-            "fileInAnotherWorkspace": "此檔案位於另一個工作區",
-            "openInOwningWorkspace": "在該處開啟",
-            "openedHereReadOnly": "在此處以唯讀方式開啟",
             "downloadOpenWithDefaultApp": "下載並以預設應用程式開啟"
           },
           "TerminalPane": {
@@ -16987,8 +17013,23 @@
             "disconnectedBody": "自動重試已停止。請重新連線以繼續此終端機工作階段。",
             "disconnectedTitle": "遠端執行階段已中斷連線",
             "reconnectButton": "重新連線",
-            "retryingBody": "Orca 正在自動重試。若連線恢復，此終端機就會繼續。",
-            "retryingTitle": "正在重新連線至遠端執行階段",
+            "signInTitle": "正在等待 SSH 登入",
+            "signInBody": "一旦您登入主機，此終端機便會自動繼續。",
+            "signInButton": "登入",
+            "serverRestartingTitle": "{{server}} 正在重新啟動",
+            "serverRestartingBody": "伺服器恢復時 Orca 會重新連線，屆時終端機就會繼續。",
+            "streamStalledTitle": "終端機已停止回應",
+            "streamStalledBody": "{{server}} 已停止傳送此終端機的輸出。Orca 正在自動將其重新附加。",
+            "sessionEndedTitle": "正在重新附加終端機",
+            "sessionEndedBody": "{{server}} 已關閉此終端機的串流。Orca 正在自動將其重新附加。",
+            "waitingTitle": "正在等待 {{server}}",
+            "waitingBody": "當伺服器再次提供或連線變更時，Orca 會重新附加此終端機。請重新連線以立即嘗試。",
+            "downFor": "已中斷 {{duration}}",
+            "tailscaleHint": "檢查 Tailscale 路徑：",
+            "fallbackServerName": "伺服器",
+            "connectionLostTitle": "正在重新連線至 {{server}}",
+            "connectionLostBody": "與伺服器的連線已中斷。Orca 正在自動重試，連線恢復時終端機就會繼續。",
+            "reattachingBody": "Orca 正在自動將此終端機重新附加至 {{server}}。",
             "pairingRefusedTitle": "此主機不再接受這台電腦",
             "pairingRefusedBody": "Orca 無法透過 SSH 再次與其配對。主機上的任何項目皆未停止。請重新連線以再試一次。"
           },
@@ -18329,6 +18370,7 @@
       },
       "webRuntimeSession": {
         "remoteHostDisconnected": "工作區未連線到遠端 Orca 主機。",
+        "splitSourceUnpublished": "窗格未分割：其終端機尚未在主機上啟動。",
         "terminalCreateUnconfirmed": "Orca 無法確認新終端機是否已在主機上開啟。"
       },
       "gitlabIpcTimeout": {

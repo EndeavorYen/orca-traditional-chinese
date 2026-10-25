@@ -703,6 +703,8 @@
   "auto.lib.worktree.palette.search.ca40ffcbec",
   "auto.web.WebConnect.27393856e4",
   "auto.web.web.runtime.environment.07f788de83",
+  "browser.history.enterKey",
+  "browser.history.escKey",
   "components.RepositoryJiraProjectSection.keywordJira",
   "components.native-chat.backgroundTasks.groupShell",
   "components.native-chat.composer.pillAccessibleName",
