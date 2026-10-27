@@ -327,6 +327,8 @@
       "chat": {
         "fontFamily": "字型家族",
         "fontFamilyDescription": "訊息、活動與訊息輸入框使用的字型。",
+        "fontKeywordTypeface": "字體",
+        "fontKeywordTypography": "字體排印",
         "inheritFont": "與 IDE 字型相同",
         "fontPreviewLabel": "聊天字型預覽",
         "fontPreview": "敏捷的棕色狐狸跳過懶惰的狗。",
@@ -448,7 +450,6 @@
     },
     "agents": {
       "permissionsTitle": "權限",
-      "permissionsResetExplanation": "在此處選擇模式會重設您個別設定的智慧體。",
       "permissionsChoiceExplanation": "所有智慧體在不詢問的情況下可以執行的操作。您可以在下方為個別智慧體進行不同設定。",
       "permissionEachOwn": "各智慧體自己的設定",
       "permissionEachOwnDescription": "Orca 不會新增任何項目；各 CLI 使用自己的設定",
@@ -511,7 +512,17 @@
       "permissionSameAsAll": "與所有智慧體相同",
       "permissionChipRemove": "移除 {{flag}} 並使用 {{agent}} 自己的設定",
       "permissionChipTooltip": "由「權限」新增。移除它以使用 {{agent}} 自己的設定。",
-      "permissionResetsOwnChoices": "在此處選擇模式會重設標記為個別設定的智慧體。"
+      "permissionOverridesKept": "{{count}} 個智慧體仍使用自己的權限設定：",
+      "permissionOverridesKept_one": "{{count}} 個智慧體仍使用自己的權限設定：",
+      "permissionOverridesKept_other": "{{count}} 個智慧體仍使用自己的權限設定：",
+      "permissionOverridesFollow": "{{count}} 個智慧體現在會遵循 {{mode}}",
+      "permissionOverridesFollow_one": "{{count}} 個智慧體現在會遵循 {{mode}}",
+      "permissionOverridesFollow_other": "{{count}} 個智慧體現在會遵循 {{mode}}",
+      "permissionOverrideFollows": "{{agent}} 現在會遵循 {{mode}}",
+      "permissionOverrideMore": "還有 {{count}} 個",
+      "permissionOverrideMore_one": "還有 {{count}} 個",
+      "permissionOverrideMore_other": "還有 {{count}} 個",
+      "permissionOverridesUse": "使用 {{mode}}"
     },
     "followSymlinkedDirectoriesKeywords": {
       "symlink": "符號連結",
@@ -714,7 +725,6 @@
       "GitHubItemDialog": {
         "00ccdf9b5a": "狀態",
         "038b3d39b1": "已複製",
-        "03d7216d62": "{{value0}} PR #{{value1}}？",
         "03e542fcfe": "無法為失敗的檢查啟動 AI 智慧體：{{value0}}",
         "04539beb48": "議題",
         "06482d6190": "無法自動建立修復工作區。",
@@ -1247,6 +1257,16 @@
         "createWorkspace": "建立工作區",
         "createWorktree": "建立工作樹"
       },
+      "PullRequestConfirmation": {
+        "closeTitle": "關閉 PR #{{number}}？",
+        "mergeLabel": "建立合併提交",
+        "mergeTitle": "使用合併提交合併 PR #{{number}}？",
+        "rebaseLabel": "Rebase 並合併",
+        "rebaseTitle": "Rebase 並合併 PR #{{number}}？",
+        "reopenTitle": "重新開啟 PR #{{number}}？",
+        "squashLabel": "壓縮並合併",
+        "squashTitle": "壓縮並合併 PR #{{number}}？"
+      },
       "PullRequestPage": {
         "2560588245": "邀請審查者失敗",
         "3450247584": "評論",
@@ -1410,7 +1430,6 @@
         "e6996f4024": "· 已更新",
         "eb722a5a8c": "全部展開",
         "eca289e593": "合併需要已註冊的本機儲存庫",
-        "eec3706a6a": "{{value0}} PR #{{value1}}？",
         "eff839f438": "已新增審查評論。",
         "f01bf79a79": "檢查 #",
         "f119e5f5ef": "回覆",
@@ -1662,7 +1681,6 @@
         "837bb901ec": "已移除審查者",
         "8396825a14": "動作",
         "83bce6be5c": "連線至 Jira",
-        "844dc193c7": "{{value0}} PR #{{value1}}？",
         "851017590d": "新增 Linear 存取權限",
         "8675cd6188": "Linear",
         "887efe9140": "連線",
@@ -1877,7 +1895,8 @@
         "e57db40c11": "無法為 {{value0}} 建立啟動命令。",
         "f0600556b3": "建立未命名 Markdown 檔案失敗。",
         "f82e9f02df": "取消",
-        "quitSnapshotSaveFailed": "已取消結束：無法儲存工作階段快照（{{value0}}）。"
+        "quitSnapshotSaveFailed": "已取消結束：無法儲存工作階段快照（{{value0}}）。",
+        "reloadSnapshotSaveFailed": "已取消重新載入：無法儲存工作階段快照（{{value0}}）。"
       },
       "TerminalSearch": {
         "0f3066256e": "上一個相符項目",
@@ -5789,6 +5808,7 @@
             "resumePastSessions": "繼續先前的工作階段",
             "searchSessions": "搜尋工作階段",
             "sessionDeleteFailed": "無法刪除工作階段",
+            "sessionDeleteCheckingHost": "正在檢查 {{value0}}…",
             "resumeInChatConflict": "另一個聊天已在使用此對話。",
             "resumeInChatTranscriptMissing": "無法載入此對話的歷史紀錄，因此無法在聊天中繼續。",
             "resumeInChatFailed": "無法在新的聊天中繼續此工作階段。",
@@ -5839,6 +5859,7 @@
           "AiVaultSessionDeleteDialog": {
             "confirm": "刪除",
             "description": "「{{value0}}」將被刪除。刪除後，也將無法再從 {{value1}} 自己的命令列繼續。",
+            "remoteDescription": "「{{value0}}」將從 {{value2}} 刪除。刪除後，也將無法再從 {{value1}} 自己的命令列繼續。",
             "title": "要刪除此工作階段嗎？"
           },
           "AiVaultSessionDetails": {
@@ -5928,6 +5949,7 @@
             "copySessionId": "複製工作階段 ID",
             "delete": "刪除",
             "deleteReasonNonLocalHost": "只能刪除此裝置上的工作階段。",
+            "deleteReasonHostUpdateRequired": "更新 {{value0}} 以從此處刪除其工作階段。",
             "deleteReasonSyntheticPath": "此工作階段無法從 Orca 刪除。",
             "deleteReasonUnsupportedAgent": "{{value0}} 工作階段無法從 Orca 刪除。",
             "resumeInNewNativeChat": "在新的聊天中繼續",
@@ -7188,6 +7210,31 @@
               "dropdown": {
                 "items": {
                   "04d709801d": "從遠端擷取但不合併",
+                  "checkingBranchStatus": "正在檢查分支狀態…",
+                  "titleCheckingPrStatus": "正在檢查 PR 狀態…",
+                  "titlePrAlreadyMerged": "PR 已合併",
+                  "titleCheckOutBranchToSync": "同步提交前請先簽出分支",
+                  "titlePublishBranchFirst": "請先發布分支以同步提交",
+                  "titleUseForcePush": "使用「提交並強制推送」— 遠端只有本機提交的較舊複本",
+                  "titleCommitThenPullPush": "提交，然後提取並推送",
+                  "rebaseFromNamedBase": "從 {{baseRef}} Rebase",
+                  "rebaseFromBase": "從基準 Rebase",
+                  "rebaseChooseRemoteBase": "選擇要作為 Rebase 來源的遠端基準分支",
+                  "rebaseDirtyHint": "請嘗試 Rebase；Git 可能會要求先提交或 stash 本機變更",
+                  "rebaseWithLatestFrom": "使用來自 {{baseRef}} 的最新提交 Rebase 目前分支",
+                  "blockedCommitFirst": "請先提交變更",
+                  "blockedCheckOutBranchFirst": "請先簽出分支",
+                  "blockedSwitchToFeatureBranch": "切換至功能分支",
+                  "blockedPublishBranch": "發布分支",
+                  "blockedPushFirst": "請先推送",
+                  "blockedForcePushFirst": "請先強制推送",
+                  "blockedSyncFirst": "請先同步",
+                  "blockedAuthRequired": "在此環境中{{authInstruction}}",
+                  "blockedUnsupportedProvider": "不支援的提供者",
+                  "blockedExistingReview": "已存在 {{reviewLabel}}",
+                  "blockedForkHeadUnsupported": "不支援 Fork head",
+                  "blockedBaseNotOnRemote": "基準分支不在遠端上",
+                  "blockedBranchNotReady": "分支尚未就緒",
                   "226b85a3a7": "擷取",
                   "2b8e6595fd": "提交",
                   "323bb614aa": "提交並同步",
@@ -9072,6 +9119,17 @@
           "close": "關閉",
           "reclaimedNotStarted": "鎖定已清除，但 Orca 伺服器並未啟動。"
         },
+        "claudeSubagentNavigation": {
+          "title": "Claude 子智慧體導覽",
+          "description": "從側邊欄開啟 Claude 子智慧體。在 Claude 的 keybindings.json 中新增捷徑，並在新的 Orca 窗格中載入 Orca 模組。需要 Claude 2.1.300+ 與狀態鉤子。關閉會移除 Orca 的捷徑；您刪除的捷徑仍會保持刪除狀態。",
+          "search": {
+            "subagent": "子智慧體",
+            "navigation": "導覽",
+            "plugin": "外掛程式",
+            "mod": "模組",
+            "shortcut": "捷徑"
+          }
+        },
         "PluginDevelopmentSection": {
           "add": "新增路徑",
           "pathLabel": "開發用外掛程式資料夾路徑",
@@ -10122,6 +10180,8 @@
           "53e9aabfc0": "可用時會使用 OpenSSH 多工連線。若主機有自訂 SSH 限制，請關閉此選項。",
           "proxyConnectionReuse": "重複使用單一 Proxy 連線",
           "proxyConnectionReuseHelp": "加快透過較慢的 ProxyCommand 或 ProxyJump 主機連線的速度。僅在您的 ssh_config 不依賴特定主機的 Match 或 %h 規則時啟用。",
+          "reconnectOnLaunch": "啟動時重新連線",
+          "reconnectOnLaunchHelp": "關閉時，Orca 在啟動時會讓此主機以及透過它存取的任何 Orca 伺服器保持中斷連線，直到您連線為止。",
           "allowRemoteCliControl": "允許此主機的 orca CLI 控制 Orca",
           "allowRemoteCliControlHelp": "新主機預設開啟。允許在此主機上執行的 orca 命令在此桌面上開啟並控制 Orca 瀏覽器分頁（僅限此主機的工作區，且僅在連線時），並允許在此主機上由較舊版本 Orca 啟動的終端機為其受監督的工作執行編排命令 (check、inbox、send、ask、reply)。它們無法讀取您的檔案、剪貼簿或 Cookie。關閉時，它們只能存取此主機本身的 Orca 伺服器。",
           "63c0c145c1": "身分檔案",
@@ -13143,7 +13203,9 @@
           "nodeDownloadBlockedNoMirror": "這台電腦與此主機皆無法下載 Orca 伺服器所需的 Node.js。請檢查兩台機器的網路或 Proxy，然後再次連線。",
           "nodeDownloadBlockedMirrorTried": "這台電腦與此主機皆無法下載 Node.js（包括從 Node.js 下載鏡像站）。請檢查鏡像站設定，然後再次連線。",
           "reassurance": "在 {{host}} 上執行，透過您自己的 SSH 連線存取。您的程式碼與檔案會留在原處。只有 Orca 的專案、分頁與終端機清單會移至 {{host}}。",
-          "refusedBlockedReason": "尚未在此主機上設定 Orca。{{reason}}"
+          "refusedBlockedReason": "尚未在此主機上設定 Orca。{{reason}}",
+          "windowsBuildUnsupported": "此主機執行的 Windows 版本早於 Windows 10 與 Windows Server 2016，因此無法執行 Orca 伺服器。請使用執行較新 Windows 版本的主機，或是 Linux 或 macOS 主機。",
+          "windowsNoExtractor": "此 Windows 主機既沒有 tar.exe，也沒有 PowerShell 的 Expand-Archive，因此 Orca 無法在該處解壓縮其伺服器。請在主機上安裝 Windows PowerShell 5.1，然後再次連線。"
         },
         "ZcodeCliSetupSection": {
           "title": "搭配 ZCode 使用 GLM",
@@ -14020,7 +14082,9 @@
           "971d85cc84": "會在此主機上以專案形式開啟 · {{value0}}",
           "9e060f5815": "選擇資料夾",
           "f8b1deb1a4": "取消",
-          "largeInputNoMatches": "沒有符合此長輸入的結果"
+          "largeInputNoMatches": "沒有符合此長輸入的結果",
+          "entriesLabel": "資料夾項目",
+          "inputLabel": "篩選條件或路徑"
         },
         "SleepTwinWorkspaceDialog": {
           "title": "休眠工作區",
@@ -14591,17 +14655,17 @@
           "f387af445b": "工作區路徑不是有效的本機路徑。",
           "localOnly": "僅限本機",
           "remoteEditorUnsupported": "此應用程式無法開啟 SSH 工作區。",
-          "remoteEditorUnsupportedDetail": "請選擇 VS Code，或在本機使用此應用程式。",
-          "remoteEditorHint": "只有 VS Code 可以在 SSH 主機上開啟資料夾。",
+          "remoteEditorUnsupportedDetail": "請選擇 VS Code、Cursor 或 Zed，或在本機使用此應用程式。",
+          "remoteEditorHint": "只有 VS Code、Cursor 與 Zed 可以在 SSH 主機上開啟資料夾。",
           "remoteRuntimeEditorHint": "這台電腦上的應用程式只有在 Orca 透過 SSH 連上此伺服器時，才能開啟該伺服器的檔案。",
-          "remoteLaunchFailed": "無法在 VS Code 中開啟此路徑。",
-          "remoteLaunchFailedDetail": "請檢查此機器上設定的 VS Code 命令。",
+          "remoteLaunchFailed": "無法在編輯器中開啟此路徑。",
+          "remoteLaunchFailedDetail": "請檢查此機器上設定的編輯器命令。",
           "remotePathInvalid": "此路徑對此 SSH 主機無效。",
           "remotePathInvalidDetail": "請先重新整理工作區，再重試。",
           "remoteRuntimeUnsupported": "無法在本機應用程式中開啟此路徑。",
           "remoteRuntimeUnsupportedDetail": "請切換至本機或 SSH 工作區，然後重試。",
           "remoteSsh": "遠端 SSH",
-          "sshAliasRequired": "VS Code 需要此主機的 SSH 設定別名。",
+          "sshAliasRequired": "此編輯器需要此主機的 SSH 設定別名。",
           "sshAliasRequiredDetail": "請在本機 SSH 設定中為 {{host}}:{{port}} 新增 Host 別名，重新連線工作區，然後重試。",
           "sshTargetInvalid": "SSH 主機設定不完整。",
           "sshTargetInvalidDetail": "請編輯或重新連線 SSH 主機，然後重試。",
@@ -16370,7 +16434,8 @@
               "metric": {
                 "rssDescription": "常駐集大小（RSS）的總和。共用頁或別名頁可能會出現在多個處理程序中。",
                 "workingSetDescription": "工作集（WS）的總和。共用頁可能會出現在多個處理程序中。",
-                "privateBytesDescription": "private bytes 總和：這些處理程序已認可的記憶體，無論常駐或已置換出去都會計入。這是主機用來計算認可上限的依據，因此當分頁置換使上方的工作集縮小時，它仍會持續上升。"
+                "privateBytesDescription": "private bytes 總和：這些處理程序已認可的記憶體，無論常駐或已置換出去都會計入。這是主機用來計算認可上限的依據，因此當分頁置換使上方的工作集縮小時，它仍會持續上升。",
+                "footprintDescription": "記憶體空間（Footprint）總和，與活動監視器顯示的數值相同：每個處理程序所擁有的記憶體，包含圖形記憶體。處理程序之間共用的分頁不會重複計算。"
               }
             }
           },
@@ -17648,6 +17713,11 @@
         "terminalUnavailable": "Orca 無法在此開啟終端機。",
         "openHint": "在 Orca 無法於該主機完成設定期間，讓您仍可在主機上繼續工作。"
       },
+      "ClaudeAgentViewIndicator": {
+        "viewing": "目前正在檢視",
+        "viewingChild": "正在檢視子智慧體 {{name}}",
+        "returnHint": "按一下上層列以返回。Esc 可停止此子智慧體。Enter 可將您的草稿傳送給此子智慧體。"
+      },
       "linear-issue-attribute-filter-coverage-notice": {
         "labelsAtIdLimit": "已達可篩選的上限：{{value0}} 個團隊標籤。超出的選取項目不會納入。",
         "labelsPartialTeamCoverage": "正在篩選 {{value1}} 個團隊標籤中的 {{value0}} 個 — 其餘團隊的議題不會納入。",
@@ -18303,6 +18373,15 @@
       "clipboardWriteFailure": {
         "tooLarge": "文字太大，無法複製。"
       },
+      "dropFailureReason": {
+        "tooLarge": "檔案過大，無法上傳至此主機。",
+        "noSpace": "主機磁碟空間不足。",
+        "changed": "檔案在上傳時發生變更。請重試。",
+        "hostUnreachable": "與主機的連線已變更或中斷。請重試。",
+        "disconnected": "主機已中斷連線。",
+        "unknownOne": "無法上傳此檔案。",
+        "unknownMany": "無法上傳這些檔案。"
+      },
       "dropSkipReason": {
         "missing": "已不在原始路徑。",
         "symlink": "無法附加符號連結。",
@@ -18364,6 +18443,13 @@
             }
           }
         }
+      },
+      "claudeAgentRowView": {
+        "restartRequired": "在此窗格中重新啟動 Claude 以啟用子智慧體導覽。需要包含 Orca 鉤子的最新 Claude 版本。",
+        "permissionPrompt": "切換智慧體前，請先回應 Claude 的權限提示。",
+        "agentUnavailable": "Claude 無法開啟此智慧體。它可能已無法使用。",
+        "closeDialog": "Claude 未切換檢視。請關閉所有開啟的對話方塊，然後重試。",
+        "hostUnavailable": "此主機上無法使用子智慧體導覽。請更新 Orca 並在此窗格中重新啟動 Claude。"
       }
     },
     "main": {
@@ -18786,6 +18872,7 @@
         "claudeAccountSetupFailed": "無法設定所選的 Claude 帳戶。請再試一次或選擇其他帳戶。",
         "agentCommandNotRunnable": "在「設定 → 智慧體」中，{{agent}} 的指令必須是 Orca 找得到的程式路徑或名稱，且不含任何引數或變數。請進行變更或重設。",
         "runtimeNotInstalled": "在執行此聊天的電腦上未安裝 {{agent}}。請在目前版本的 Orca 中從聊天進行安裝。",
+        "fullAccessAsRoot": "當 {{agent}} 以 root 身分執行時，不會使用「完整存取權」。請在執行此聊天的電腦上，前往「設定 → 智慧體」為 {{agent}} 選擇其他權限，然後開始新的聊天。",
         "conversationOpenElsewhere": "Codex 仍保持開啟此對話。請稍後再試，或關閉其他 Codex 終端機。",
         "conversationOpenInTerminal": "{{agent}} 已在另一個終端機中執行此對話。請在該處結束 {{agent}} 或關閉該終端機，以在此繼續。",
         "chooseClaudeAccount": "在 Claude 帳戶設定中選擇或新增帳戶。",
@@ -19094,7 +19181,6 @@
         "permissions": "權限",
         "permissionAsk": "要求核准",
         "permissionAskDescription": "在您的設定不允許的編輯與命令前先詢問",
-        "permissionAskCodexDescription": "在此工作區中編輯檔案並執行命令；其他動作前會先詢問",
         "permissionAskSharedDescription": "在其尚未被允許進行的編輯或命令前先詢問",
         "permissionAcceptEdits": "接受編輯",
         "permissionAcceptEditsDescription": "核准檔案編輯與檔案命令；其餘則會詢問",
@@ -19246,6 +19332,7 @@
         "showTerminal": "顯示終端機"
       },
       "resumeInNewChat": {
+        "hostUpdateRequired": "更新此主機上的 Orca 以在 Chat UI 中繼續。",
         "exitUnconfirmedFromTerminal": "{{agent}} 已在另一個終端機中執行此對話。請在該處結束 {{agent}} 或關閉該終端機，然後從工作階段記錄開啟此對話。",
         "exitUnconfirmed": "{{agent}} 已在另一個終端機中執行此對話。請在該處結束 {{agent}} 或關閉該終端機，然後從工作階段記錄開啟此對話。",
         "notSavedYet": "{{agent}} 尚未儲存此對話。請在它回覆後再試一次。",
@@ -19523,8 +19610,7 @@
         "continue": "繼續",
         "failed": "無法繼續此聊天。請重試，或傳送一則訊息。",
         "explanation": "繼續，智慧體會先檢查其上一個步驟是否已完成。",
-        "unconfirmed": "無法確認 {{agent}} 是否收到「繼續」。請先檢查聊天，然後再試一次。",
-        "usageLimitExplanation": "要求智慧體從中斷處繼續。請在限制重設後使用。"
+        "unconfirmed": "無法確認 {{agent}} 是否收到「繼續」。請先檢查聊天，然後再試一次。"
       },
       "antigravitySignIn": {
         "sentence": "Antigravity 尚未登入。請在 <settings>設定 → AI 提供者帳戶 → Antigravity</settings> 中登入，然後再傳送一次訊息。"
@@ -19550,6 +19636,12 @@
       "imagePreview": {
         "fileActions": "檔案操作",
         "linkActions": "連結操作"
+      },
+      "goalControl": {
+        "settingsRejected": "Codex 無法套用所選的模型與推理強度。此目標變更尚未傳送。請檢查所選項目並重試。",
+        "settingsUnconfirmed": "Codex 未確認所選的模型與推理強度。此目標變更尚未傳送。請檢查聊天內容並重試。",
+        "pauseUnconfirmed": "Codex 已停止執行，但尚未確認暫停目標。繼續之前請先檢查目標。",
+        "stopUnconfirmed": "Codex 無法確認「停止」。繼續之前請先檢查聊天內容。"
       }
     },
     "status": {
@@ -20228,7 +20320,8 @@
       "refreshFailed": "預覽更新失敗。正在顯示前一版本；請開啟原始碼檢視以查看目前內容。"
     },
     "fileLoad": {
-      "hostUnresolved": "主機找不到此檔案所屬的工作區。它可能已被移除，或主機尚未得知它。請重試，或從分頁列關閉此分頁。"
+      "hostUnresolved": "主機找不到此檔案所屬的工作區。它可能已被移除，或主機尚未得知它。請重試，或從分頁列關閉此分頁。",
+      "remoteTooLarge": "此檔案過大，無法從其主機開啟。"
     }
   },
   "quickOpen": {
@@ -20634,10 +20727,6 @@
         "restartOne": "重新啟動工作階段",
         "restartOther": "重新啟動 {{count}} 個工作階段",
         "listLabel": "要重新啟動的 Claude 工作階段",
-        "selectAll": "全選",
-        "selectAllSessions": "選取所有工作階段",
-        "selectedCount": "已選取 {{selected}} / {{total}}",
-        "selectWorkspace": "選取 {{workspace}} 中的所有工作階段",
         "session": "Claude 工作階段",
         "busy": "工作中",
         "idle": "閒置",
@@ -20653,7 +20742,20 @@
         "restartingOne": "正在 {{account}} 上重新啟動 1 個 Claude 工作階段",
         "restartingOther": "正在 {{account}} 上重新啟動 {{count}} 個 Claude 工作階段",
         "uncheckedOne": "無法檢查 1 個終端機是否有 Claude。若 Claude 正在該處執行，在重新啟動前會保留在 {{previous}}。",
-        "uncheckedOther": "無法檢查 {{count}} 個終端機是否有 Claude。該處執行的任何 Claude 在重新啟動前都會保留在 {{previous}}。"
+        "uncheckedOther": "無法檢查 {{count}} 個終端機是否有 Claude。該處執行的任何 Claude 在重新啟動前都會保留在 {{previous}}。",
+        "groupOnAccount": "在 {{account}} 上執行",
+        "groupElsewhere": "不在 {{account}} 上",
+        "groupCantMove": "無法移動",
+        "selectGroup": "選取 {{group}} 中的所有工作階段",
+        "reasonWsl": "WSL 終端機",
+        "reasonOwnFolder": "使用您自己的 Claude 資料夾",
+        "reasonUnknownAccount": "帳戶未知",
+        "reasonNoSession": "無法繼續",
+        "reviewBodyOne": "還有 1 個 Claude 工作階段未移動至 {{next}}。",
+        "reviewBodyOther": "還有 {{count}} 個 Claude 工作階段未移動至 {{next}}。",
+        "notMovedOne": "還有 1 個工作階段未移動。",
+        "notMovedOther": "還有 {{count}} 個工作階段未移動。",
+        "review": "檢視"
       }
     },
     "managedData": {
