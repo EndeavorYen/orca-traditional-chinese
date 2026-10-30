@@ -22,6 +22,58 @@ function protectedTranslation(path: string): boolean {
 }
 if (value.length > 8192) {}
 """
+# v1.4.245: component prefixes plus isProtectedPluginTranslationPath.
+# The function body is the upstream text; its whitespace-normalised fingerprint is 3ab1fe55.
+NEW_ARTIFACT_TS = """
+export const PLUGIN_LANGUAGE_CATALOG_MAX_ENTRIES = 50_000
+export const PLUGIN_LANGUAGE_CATALOG_MAX_DEPTH = 16
+const PROTECTED_TRANSLATION_ROOT = 'auto.components.settings.'
+const PROTECTED_TRANSLATION_MODULE = /^plugin/i
+const PROTECTED_TRANSLATION_COMPONENTS = [
+  'auto.components.pluginCatalog.PluginListRow.official',
+  'auto.components.editor.PluginFileTypeSuggestion',
+  'components.native-chat.approval',
+  'auto.components.sidebar.OrcaYamlTrustDialog',
+  'auto.components.editor.IpynbViewer',
+  'browser.loadFailure',
+  'auto.components.browserPane.sitePermission',
+  'settings.browser.sitePermissions'
+]
+export function isProtectedPluginTranslationPath(path: string): boolean {
+  if (
+    PROTECTED_TRANSLATION_COMPONENTS.some(
+      (component) => path === component || path.startsWith(`${component}.`)
+    )
+  ) {
+    return true
+  }
+  if (!path.startsWith(PROTECTED_TRANSLATION_ROOT)) {
+    return false
+  }
+  if (translatablePluginChrome(path)) {
+    return false
+  }
+  return PROTECTED_TRANSLATION_MODULE.test(path.slice(PROTECTED_TRANSLATION_ROOT.length))
+}
+if (value.length > 8192) {}
+"""
+# Exact protectedTranslation body from v1.4.244 (fingerprint d8929abb).
+OLD_PROTECTED_FN = """
+function protectedTranslation(path: string): boolean {
+  if (!path.startsWith(PROTECTED_TRANSLATION_ROOT)) {
+    return false
+  }
+  if (translatablePluginChrome(path)) {
+    return false
+  }
+  return PROTECTED_TRANSLATION_MODULE.test(path.slice(PROTECTED_TRANSLATION_ROOT.length))
+}
+"""
+EN_JSON_PATH = "src/renderer/src/i18n/locales/en.json"
+NEW_ARTIFACT_PATH = "src/shared/plugins/artifacts/plugin-language-pack-artifact.ts"
+OLD_ARTIFACT_PATH = "src/shared/plugins/plugin-language-pack-artifact.ts"
+NEW_CHROME_PATH = "src/shared/plugins/languages/plugin-translatable-chrome.ts"
+OLD_CHROME_PATH = "src/shared/plugins/plugin-translatable-chrome.ts"
 CHROME_TS = """
 const TRANSLATABLE_PLUGIN_CHROME = new Set([
   // Plugins pane frame: it's a comment with an apostrophe
@@ -641,6 +693,173 @@ class DottedKeys(unittest.TestCase):
         with self.assertRaises(sync.SyncError) as caught:
             up.snapshot()
         self.assertIn("settings.agents.save", str(caught.exception))
+
+
+class ProtectedComponents(unittest.TestCase):
+    """v1.4.245 protects whole components outside the settings/plugin prefix."""
+
+    COMPONENTS = frozenset({
+        "auto.components.pluginCatalog.PluginListRow.official",
+        "auto.components.editor.PluginFileTypeSuggestion",
+        "components.native-chat.approval",
+        "auto.components.sidebar.OrcaYamlTrustDialog",
+        "auto.components.editor.IpynbViewer",
+        "browser.loadFailure",
+        "auto.components.browserPane.sitePermission",
+        "settings.browser.sitePermissions",
+    })
+
+    def test_v245_rules_match_is_protected_plugin_translation_path(self):
+        parsed = V.parse_rules(NEW_ARTIFACT_TS, CHROME_TS)
+        self.assertEqual(parsed.max_entries, 50000)
+        self.assertEqual(getattr(parsed, "components", None), self.COMPONENTS)
+        self.assertEqual(parsed.warnings, ())
+        self.assertTrue(V.is_protected("auto.components.pluginCatalog.PluginListRow.official", parsed))
+        self.assertTrue(V.is_protected("auto.components.pluginCatalog.PluginListRow.official.badge", parsed))
+        self.assertTrue(V.is_protected("browser.loadFailure", parsed))
+        self.assertTrue(V.is_protected("settings.browser.sitePermissions.ask", parsed))
+        self.assertTrue(V.is_protected("components.native-chat.approval.allow", parsed))
+        self.assertFalse(V.is_protected("browser.loadFailureExtra", parsed))
+        self.assertFalse(V.is_protected("auto.components.PluginBadge.title", parsed))
+        self.assertFalse(V.is_protected(PFX + "PluginsSettingsSection.title", parsed))
+        self.assertTrue(V.is_protected(PFX + "PluginConsentDialog.title", parsed))
+        zh = {"browser": {"loadFailure": "載入失敗"}}
+        report = V.validate_catalog(zh, {"browser.loadFailure": "Load failed"}, parsed, V.Glossary())
+        self.assertIn("protected", {code for code, _, _ in report.errors})
+
+    def test_v244_rules_have_no_component_list(self):
+        parsed = rules()
+        self.assertEqual(getattr(parsed, "components", None), frozenset())
+        self.assertFalse(V.is_protected("browser.loadFailure", parsed))
+        self.assertFalse(V.is_protected("auto.components.pluginCatalog.PluginListRow.official", parsed))
+        exact = ARTIFACT_TS.replace(
+            "function protectedTranslation(path: string): boolean {\n"
+            "  if (!path.startsWith(PROTECTED_TRANSLATION_ROOT)) { return false }\n"
+            "}",
+            OLD_PROTECTED_FN.strip() + "\n",
+        )
+        silent = V.parse_rules(exact, CHROME_TS)
+        self.assertEqual(silent.warnings, ())
+
+    def test_unknown_protected_function_body_warns(self):
+        mutated = NEW_ARTIFACT_TS.replace("return true", "return false", 1)
+        parsed = V.parse_rules(mutated, CHROME_TS)
+        self.assertTrue(any("fingerprint" in warning for warning in parsed.warnings), parsed.warnings)
+
+    def test_new_function_without_component_list_fails(self):
+        broken = NEW_ARTIFACT_TS.replace("PROTECTED_TRANSLATION_COMPONENTS", "RENAMED_COMPONENTS")
+        with self.assertRaises(V.RulesError):
+            V.parse_rules(broken, CHROME_TS)
+
+
+class UpstreamLayouts(unittest.TestCase):
+    """sync reads the v1.4.245 paths, then the v1.4.244 paths on a missing-file error."""
+
+    def _upstream(self, read):
+        up = sync.Upstream("v1.4.245")
+        up.sha = "abc123"
+        up.date = "2026-01-01T00:00:00Z"
+        up.resolve = lambda: None  # type: ignore[method-assign]
+        up.read = read  # type: ignore[method-assign]
+        return up
+
+    def test_prefers_v245_paths_when_both_layouts_exist(self):
+        def read(path):
+            files = {
+                EN_JSON_PATH: '{"a": "b"}',
+                NEW_ARTIFACT_PATH: NEW_ARTIFACT_TS,
+                OLD_ARTIFACT_PATH: ARTIFACT_TS,
+                NEW_CHROME_PATH: CHROME_TS,
+                OLD_CHROME_PATH: CHROME_TS,
+            }
+            if path not in files:
+                raise sync.SyncError(f"GET https://example.invalid/{path} -> HTTP 404")
+            return files[path]
+
+        snap = self._upstream(read).snapshot()
+        self.assertEqual(snap.en, {"a": "b"})
+        self.assertEqual(snap.rules.max_entries, 50000)
+        self.assertTrue(V.is_protected("browser.loadFailure", snap.rules))
+
+    def test_falls_back_to_v244_paths_after_404(self):
+        calls = []
+
+        def read(path):
+            calls.append(path)
+            files = {
+                EN_JSON_PATH: '{"a": "b"}',
+                OLD_ARTIFACT_PATH: ARTIFACT_TS,
+                OLD_CHROME_PATH: CHROME_TS,
+            }
+            if path not in files:
+                raise sync.SyncError(f"GET https://example.invalid/{path} -> HTTP 404")
+            return files[path]
+
+        snap = self._upstream(read).snapshot()
+        self.assertEqual(snap.rules.max_entries, 20000)
+        self.assertEqual(getattr(snap.rules, "components", None), frozenset())
+        self.assertFalse(V.is_protected("browser.loadFailure", snap.rules))
+        self.assertTrue(V.is_protected(PFX + "PluginX.t", snap.rules))
+        self.assertIn(NEW_ARTIFACT_PATH, calls)
+        self.assertIn(NEW_CHROME_PATH, calls)
+        self.assertLess(calls.index(NEW_ARTIFACT_PATH), calls.index(OLD_ARTIFACT_PATH))
+        self.assertLess(calls.index(NEW_CHROME_PATH), calls.index(OLD_CHROME_PATH))
+
+    def test_falls_back_when_git_reports_the_path_missing(self):
+        calls = []
+
+        def read(path):
+            calls.append(path)
+            files = {
+                EN_JSON_PATH: '{"k": "v"}',
+                OLD_ARTIFACT_PATH: ARTIFACT_TS,
+                OLD_CHROME_PATH: CHROME_TS,
+            }
+            if path not in files:
+                if path == NEW_CHROME_PATH:
+                    raise sync.SyncError(
+                        f"fatal: path '{path}' exists on disk, but not in 'abc123'"
+                    )
+                raise sync.SyncError(f"fatal: path '{path}' does not exist in 'abc123'")
+            return files[path]
+
+        snap = self._upstream(read).snapshot()
+        self.assertEqual(snap.en["k"], "v")
+        self.assertEqual(snap.rules.max_entries, 20000)
+        self.assertIn(NEW_ARTIFACT_PATH, calls)
+        self.assertIn(NEW_CHROME_PATH, calls)
+        self.assertLess(calls.index(NEW_ARTIFACT_PATH), calls.index(OLD_ARTIFACT_PATH))
+        self.assertLess(calls.index(NEW_CHROME_PATH), calls.index(OLD_CHROME_PATH))
+
+    def test_http_500_on_the_new_path_does_not_read_the_old_path(self):
+        calls = []
+
+        def read(path):
+            calls.append(path)
+            if path == EN_JSON_PATH:
+                return '{"a": "b"}'
+            if path == NEW_ARTIFACT_PATH:
+                raise sync.SyncError(f"GET https://example.invalid/{path} -> HTTP 500")
+            if path == OLD_ARTIFACT_PATH:
+                return ARTIFACT_TS
+            raise sync.SyncError(f"GET https://example.invalid/{path} -> HTTP 404")
+
+        with self.assertRaises(sync.SyncError) as caught:
+            self._upstream(read).snapshot()
+        self.assertIn("HTTP 500", str(caught.exception))
+        self.assertNotIn(OLD_ARTIFACT_PATH, calls)
+
+    def test_missing_artifact_names_both_paths(self):
+        def read(path):
+            if path == EN_JSON_PATH:
+                return '{"a": "b"}'
+            raise sync.SyncError(f"GET https://example.invalid/{path} -> HTTP 404")
+
+        with self.assertRaises(sync.SyncError) as caught:
+            self._upstream(read).snapshot()
+        message = str(caught.exception)
+        self.assertIn(NEW_ARTIFACT_PATH, message)
+        self.assertIn(OLD_ARTIFACT_PATH, message)
 
 
 if __name__ == "__main__":

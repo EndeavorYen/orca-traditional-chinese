@@ -41,9 +41,20 @@ MARKETPLACE = ROOT / "orca-marketplace.json"
 README = ROOT / "README.md"
 
 UPSTREAM_REPO = "stablyai/orca"
-EN_PATH = "src/renderer/src/i18n/locales/en.json"
-ARTIFACT_PATH = "src/shared/plugins/plugin-language-pack-artifact.ts"
-CHROME_PATH = "src/shared/plugins/plugin-translatable-chrome.ts"
+# en.json did not move in v1.4.245. The loader sources did: try the new path,
+# then the flat src/shared/plugins/ path used by tags <= v1.4.244.
+EN_PATHS = ("src/renderer/src/i18n/locales/en.json",)
+ARTIFACT_PATHS = (
+    "src/shared/plugins/artifacts/plugin-language-pack-artifact.ts",
+    "src/shared/plugins/plugin-language-pack-artifact.ts",
+)
+CHROME_PATHS = (
+    "src/shared/plugins/languages/plugin-translatable-chrome.ts",
+    "src/shared/plugins/plugin-translatable-chrome.ts",
+)
+EN_PATH = EN_PATHS[0]
+ARTIFACT_PATH = ARTIFACT_PATHS[0]
+CHROME_PATH = CHROME_PATHS[0]
 
 STATUS_START, STATUS_END = "<!-- sync-status:start -->", "<!-- sync-status:end -->"
 BADGE_START, BADGE_END = "<!-- orca-badge:start -->", "<!-- orca-badge:end -->"
@@ -56,6 +67,19 @@ _RELEASE_TAG_RE = re.compile(
 
 class SyncError(RuntimeError):
     pass
+
+
+def _missing_upstream_file(exc: SyncError) -> bool:
+    """True when a fetch failed because that path is not in the tree.
+
+    HTTP 404 is the raw.githubusercontent.com miss. `git show <rev>:<path>`
+    says the path does not exist in the revision, or exists on disk but not in it.
+    Other failures (auth, 5xx, a bad ref) must not fall through to an older path.
+    """
+    text = str(exc).lower()
+    if "http 404" in text:
+        return True
+    return "does not exist in" in text or "exists on disk, but not in" in text
 
 
 def parse_version_tag(tag: str) -> tuple[int, int, int, str | None] | None:
@@ -193,15 +217,27 @@ class Upstream:
         url = f"https://raw.githubusercontent.com/{UPSTREAM_REPO}/{self.sha}/{path}"
         return self._http(url).decode("utf-8")
 
+    def read_first(self, paths: tuple[str, ...]) -> str:
+        """Return the first path that exists. A missing file tries the next path."""
+        misses: list[str] = []
+        for path in paths:
+            try:
+                return self.read(path)
+            except SyncError as exc:
+                if len(paths) == 1 or not _missing_upstream_file(exc):
+                    raise
+                misses.append(f"{path} ({exc})")
+        raise SyncError("upstream file not found; tried " + "; ".join(misses))
+
     def snapshot(self) -> Snapshot:
         self.resolve()
-        tree = json.loads(self.read(EN_PATH))
+        tree = json.loads(self.read_first(EN_PATHS))
         try:
             # One shape for the flat en map and for merge: a dotted key is nested
             # before either consumer sees the tree.
             tree = nest_dotted_keys(tree)
             en = V.flatten(tree)
-            rules = V.parse_rules(self.read(ARTIFACT_PATH), self.read(CHROME_PATH))
+            rules = V.parse_rules(self.read_first(ARTIFACT_PATHS), self.read_first(CHROME_PATHS))
         except (ValueError, V.RulesError) as e:
             raise SyncError(str(e)) from e
         return Snapshot(self.sha, self.date, en, tree, rules, release=self.release, ref=self.ref)

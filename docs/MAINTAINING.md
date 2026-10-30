@@ -59,15 +59,32 @@ upstream predecessor, so the git diff shows only what really changed.
 
 ## Why the rules are parsed, not copied
 
-Orca rejects the *entire* pack if it translates a protected key
-(`auto.components.settings.` + `/^plugin/i`, minus an exact-path exemption list).
-Those rules live in upstream TypeScript and have already changed shape once, so
-`validate.py` reads the constants out of `plugin-language-pack-artifact.ts` and
-`plugin-translatable-chrome.ts` at the same commit it is syncing. If upstream
-refactors them beyond recognition, sync **fails loudly** instead of guessing. If
-the *logic* of `protectedTranslation` changes, the command prints a warning with
-a fingerprint mismatch: re-read that function, update `is_protected()`, and set
-`PROTECTED_FN_FINGERPRINT` in `scripts/validate.py`.
+Orca rejects the *entire* pack if it translates a protected key. `validate.py`
+reads the constants out of the loader sources at the same commit it is syncing:
+
+| File | v1.4.245 and later | v1.4.244 and earlier |
+|---|---|---|
+| English catalog | `src/renderer/src/i18n/locales/en.json` (unchanged) | same path |
+| Protected-path rules | `src/shared/plugins/artifacts/plugin-language-pack-artifact.ts` | `src/shared/plugins/plugin-language-pack-artifact.ts` |
+| Exempt chrome paths | `src/shared/plugins/languages/plugin-translatable-chrome.ts` | `src/shared/plugins/plugin-translatable-chrome.ts` |
+
+`sync.py` tries the newer path first and, only when that file is missing
+(HTTP 404, or `git show` reporting the path is not in the revision), reads the
+older path. A non-missing failure such as HTTP 500 does not fall through.
+
+A path is protected when `isProtectedPluginTranslationPath` says so (the
+function was `protectedTranslation` through v1.4.244):
+
+- it equals one of `PROTECTED_TRANSLATION_COMPONENTS`, or sits under that path
+  (`<component>.…`) — this list starts at v1.4.245; older tags have no list;
+- otherwise it starts with `auto.components.settings.` and the remainder matches
+  `/^plugin/i`, unless the full path is an exact entry in
+  `TRANSLATABLE_PLUGIN_CHROME`.
+
+If upstream refactors the constants beyond recognition, sync **fails loudly**
+instead of guessing. If the protected-path function body changes, the command
+prints a fingerprint mismatch: re-read it, update `is_protected()`, and add the
+digest to `PROTECTED_FN_FINGERPRINTS` in `scripts/validate.py`.
 
 ## Files
 

@@ -24,10 +24,17 @@ BRACE_RE = re.compile(r"\{\{\s*([\w.]+)\s*\}\}|\{([\w.]+)\}")
 # reasonably localise them, so a mismatch is a warning, not an error.
 TAG_RE = re.compile(r"</?[A-Za-z][A-Za-z0-9]*>")
 
-# Fingerprint of upstream's `protectedTranslation` body (whitespace-normalised).
+# Fingerprints of the protected-path function body (whitespace-normalised).
 # The constants are parsed, but the *logic* around them is mirrored by
-# `is_protected`; if this changes upstream, a human must re-read that function.
-PROTECTED_FN_FINGERPRINT = "d8929abb"
+# `is_protected`; a digest outside this set means the function moved and a
+# human must re-read it.
+# d8929abb: protectedTranslation (<= v1.4.244)
+# 3ab1fe55: isProtectedPluginTranslationPath (>= v1.4.245)
+PROTECTED_FN_FINGERPRINTS = frozenset({"d8929abb", "3ab1fe55"})
+_PROTECTED_FN_RE = re.compile(
+    r"function (protectedTranslation|isProtectedPluginTranslationPath)\(.*?\n\}",
+    re.DOTALL,
+)
 
 
 class RulesError(RuntimeError):
@@ -42,6 +49,9 @@ class Rules:
     max_entries: int
     max_depth: int
     max_string: int
+    # Whole catalog paths protected outside PROTECTED_TRANSLATION_ROOT.
+    # Empty on tags that still use protectedTranslation (<= v1.4.244).
+    components: frozenset[str] = frozenset()
     warnings: tuple[str, ...] = ()
 
 
@@ -84,23 +94,73 @@ def parse_rules(artifact_ts: str, chrome_ts: str) -> Rules:
     if not exempt:
         raise RulesError("exempt path list parsed as empty; refusing to guess")
 
-    warnings = []
-    fn = re.search(r"function protectedTranslation\(.*?\n\}", artifact_ts, re.DOTALL)
+    warnings: list[str] = []
+    fn = _PROTECTED_FN_RE.search(artifact_ts)
+    # v1.4.245 renamed protectedTranslation and added a component list. Older
+    # tags have neither the new name nor the list; an empty list is that layout.
+    components = _protected_components(artifact_ts, fn.group(1) if fn else None)
     if not fn:
-        warnings.append("upstream `protectedTranslation` function not found")
+        warnings.append(
+            "upstream protected-path function not found "
+            "(protectedTranslation or isProtectedPluginTranslationPath)"
+        )
     else:
         digest = hashlib.sha1(re.sub(r"\s+", "", fn.group(0)).encode()).hexdigest()[:8]
-        if digest != PROTECTED_FN_FINGERPRINT:
+        if digest not in PROTECTED_FN_FINGERPRINTS:
+            known = ", ".join(sorted(PROTECTED_FN_FINGERPRINTS))
             warnings.append(
-                f"upstream `protectedTranslation` changed (fingerprint {digest}, expected "
-                f"{PROTECTED_FN_FINGERPRINT}): re-read it, update is_protected() if the logic "
-                "moved, then set PROTECTED_FN_FINGERPRINT"
+                f"upstream `{fn.group(1)}` changed (fingerprint {digest}, expected one of "
+                f"{known}): re-read it, update is_protected() if the logic moved, then add "
+                "the fingerprint to PROTECTED_FN_FINGERPRINTS"
             )
-    return Rules(root, module, exempt, max_entries, max_depth, max_string, tuple(warnings))
+    return Rules(
+        root,
+        module,
+        exempt,
+        max_entries,
+        max_depth,
+        max_string,
+        components,
+        tuple(warnings),
+    )
+
+
+def _protected_components(artifact_ts: str, function_name: str | None) -> frozenset[str]:
+    """Paths protected by exact match or by a `<path>.` prefix.
+
+    `isProtectedPluginTranslationPath` checks this list before the settings/plugin
+    rule. `protectedTranslation` has no list.
+    """
+    match = re.search(
+        r"PROTECTED_TRANSLATION_COMPONENTS\s*=\s*\[(.*?)\]",
+        artifact_ts,
+        re.DOTALL,
+    )
+    if function_name == "isProtectedPluginTranslationPath" and not match:
+        raise RulesError(
+            "cannot find PROTECTED_TRANSLATION_COMPONENTS in upstream source; "
+            "the loader was refactored and scripts/validate.py:parse_rules needs updating"
+        )
+    if not match:
+        return frozenset()
+    block = re.sub(r"//[^\n]*", "", match.group(1))
+    components = frozenset(re.findall(r"'([^']+)'", block))
+    if not components:
+        raise RulesError("protected component list parsed as empty; refusing to guess")
+    return components
 
 
 def is_protected(path: str, rules: Rules) -> bool:
-    """True if a language pack may not carry `path` (Orca rejects the whole pack)."""
+    """True if a language pack may not carry `path` (Orca rejects the whole pack).
+
+    Same order as upstream `isProtectedPluginTranslationPath`: a component path
+    (or anything nested under it) is protected, then the settings-root rule with
+    exact chrome exemptions. Tags <= v1.4.244 have an empty component list, which
+    is `protectedTranslation`.
+    """
+    for component in rules.components:
+        if path == component or path.startswith(component + "."):
+            return True
     if not path.startswith(rules.root):
         return False
     if path in rules.exempt:
