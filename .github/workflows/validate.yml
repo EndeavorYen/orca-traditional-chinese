@@ -1,7 +1,9 @@
 name: validate
 
-# Required check for PRs: the pack must satisfy Orca's loader rules (a single
-# violation makes Orca reject the whole pack) plus placeholder/glossary checks.
+# Required check for PRs: the pack must satisfy Orca's loader rules plus
+# placeholder/glossary checks. A structural loader break rejects the pack.
+# A protected path rejects the pack through v1.4.244; from v1.4.245 the runtime
+# skips that path and leaves English, and strict validation still fails.
 # Validates against the upstream commit pinned in .sync/lock.json, so the
 # result does not change just because upstream moved.
 

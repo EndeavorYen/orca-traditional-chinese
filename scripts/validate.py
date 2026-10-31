@@ -2,8 +2,12 @@
 
 Two layers, both pure functions (no network, no files):
 
-1. Loader rules -- mirror Orca's ``parsePluginLanguagePackArtifact``. Breaking one
-   of these makes Orca reject the *whole* pack at load time, so they are errors.
+1. Loader rules -- mirror Orca's ``parsePluginLanguagePackArtifact``. A structural
+   break (unsafe key, depth, length, or a value that is not a string or object)
+   makes Orca reject the whole pack at load time, so those are errors. A protected
+   path rejects the whole pack through v1.4.244. From v1.4.245 the runtime skips
+   that path and leaves the English string; strict validation still errors, and
+   so does this checker.
    The constants are parsed out of the upstream TypeScript at sync time
    (``parse_rules``) instead of being copied here, so an upstream rule change
    cannot silently diverge from this checker.
@@ -151,7 +155,11 @@ def _protected_components(artifact_ts: str, function_name: str | None) -> frozen
 
 
 def is_protected(path: str, rules: Rules) -> bool:
-    """True if a language pack may not carry `path` (Orca rejects the whole pack).
+    """True when a language pack must not carry `path`.
+
+    Through v1.4.244, carrying it makes Orca reject the whole pack.
+    From v1.4.245, runtime loading skips the path and leaves the English
+    string; strict validation still errors.
 
     Same order as upstream `isProtectedPluginTranslationPath`: a component path
     (or anything nested under it) is protected, then the settings-root rule with

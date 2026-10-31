@@ -59,8 +59,11 @@ upstream predecessor, so the git diff shows only what really changed.
 
 ## Why the rules are parsed, not copied
 
-Orca rejects the *entire* pack if it translates a protected key. `validate.py`
-reads the constants out of the loader sources at the same commit it is syncing:
+Through v1.4.244, translating a protected key makes Orca reject the whole pack.
+From v1.4.245, runtime loading skips that path and leaves the English string;
+strict validation still errors (upstream `validate:plugin`, and `sync.py validate`
+here, with or without `--strict`). `validate.py` reads the constants out of the
+loader sources at the same commit it is syncing:
 
 | File | v1.4.245 and later | v1.4.244 and earlier |
 |---|---|---|
