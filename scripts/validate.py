@@ -4,7 +4,9 @@ Two layers, both pure functions (no network, no files):
 
 1. Loader rules -- mirror Orca's ``parsePluginLanguagePackArtifact``. A structural
    break (unsafe key, depth, length, or a value that is not a string or object)
-   makes Orca reject the whole pack at load time, so those are errors. A protected
+   rejects the whole pack through v1.4.244. From v1.4.245 the runtime still
+   rejects that break outside a protected path, and skips a break at a protected
+   path so the English string stays; this checker still reports it as an error. A protected
    path rejects the whole pack through v1.4.244. From v1.4.245 the runtime skips
    that path and leaves the English string; strict validation still errors, and
    so does this checker.
