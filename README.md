@@ -26,7 +26,7 @@
 - 525 plugin-protected keys and 0 oversize inline-CSS keys are excluded by design and fall back to English
 <!-- sync-status:end -->
 
-`engines.orca` (`>=1.4.0`) is the minimum engine that can load this pack, not the badge's tested release.
+`engines.orca` (`>=1.4.245`) is the minimum engine that can load this pack, not the badge's tested release. From 2.0.0 the catalog has more than 20000 entries, which Orca v1.4.244 and earlier reject, so older Orca releases stay on 1.1.19.
 每次對齊 Orca release 時 plugin 版本只 bump patch；minor 與 major 僅在身分或引擎需求變更時調整。
 
 ## 已知限制
