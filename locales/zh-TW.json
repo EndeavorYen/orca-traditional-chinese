@@ -115,7 +115,7 @@
         "readDirectoryFailed": "讀取目錄失敗：{{detail}}",
         "createDirectoryFailed": "建立目錄失敗：{{detail}}",
         "prepareDirectoryFailed": "準備目錄失敗：{{detail}}",
-        "gitIdentityMissing": "未設定 Git 作者身分。請執行  與 ，然後再試一次。",
+        "gitIdentityMissing": "未設定 Git 作者身分。請執行 `git config --global user.name \"Your Name\"` 與 `git config --global user.email \"you@example.com\"`，然後再試一次。",
         "gitInitFailed": "初始化 Git 儲存庫失敗：{{detail}}",
         "initialCommitFailed": "建立初始提交失敗：{{detail}}"
       }
@@ -7308,8 +7308,8 @@
                   "6dabefd63e": "#{{pr}} 已要求變更。",
                   "c23faf74df": "#{{pr}} 必須更新。",
                   "f561e80968": "#{{pr}} 已遭封鎖。",
-                  "mergeThroughLabel_one": "透過 #{{pr}} 合併 · {{count}} 個 PR",
-                  "mergeThroughLabel_other": "透過 #{{pr}} 合併 · {{count}} 個 PR"
+                  "mergeThroughLabel_one": "合併至 #{{pr}}（含） · {{count}} 個 PR",
+                  "mergeThroughLabel_other": "合併至 #{{pr}}（含） · {{count}} 個 PR"
                 }
               }
             },
