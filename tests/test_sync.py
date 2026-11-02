@@ -168,6 +168,14 @@ class Validate(unittest.TestCase):
             node = {"n": node}
         self.assertIn("depth", self.codes(self.run_validate(node)))
 
+    def test_key_over_128_utf16_units_is_unsafe(self):
+        key = "\U0001F600" * 100  # 100 code points, 200 UTF-16 units
+        self.assertIn("unsafe-key", self.codes(self.run_validate({key: "x"})))
+
+    def test_key_of_128_utf16_units_is_safe(self):
+        key = "\U0001F600" * 64
+        self.assertNotIn("unsafe-key", self.codes(self.run_validate({key: "x"})))
+
 
 class Manifests(unittest.TestCase):
     PLUGIN = {"publisher": "endeavoryen", "id": "traditional-chinese", "version": "1.1.0"}

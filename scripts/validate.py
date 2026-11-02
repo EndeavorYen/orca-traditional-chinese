@@ -5,7 +5,7 @@ Two layers, both pure functions (no network, no files):
 1. Loader rules -- mirror Orca's ``parsePluginLanguagePackArtifact``. A structural
    break rejects the whole pack through v1.4.244. From v1.4.245 the loader
    checks each key before it applies the protected-path skip, so an unsafe key
-   (empty, over 128 characters, a reserved name, a dot, or a control character)
+   (empty, over 128 UTF-16 code units, a reserved name, a dot, or a control character)
    at a protected position still rejects the pack, but keys inside a skipped
    protected value are never read, so they do not. Other breaks (depth, value
    length, or a value that is not a string or object) reject the pack from
@@ -339,7 +339,7 @@ def _walk_loader_rules(node: Any, rules: Rules, report: Report) -> None:
                 report.error("dotted-key", path, f"key {key!r} must not contain '.'")
             elif (
                 not key
-                or len(key) > 128
+                or utf16_len(key) > 128
                 or key in ("__proto__", "prototype", "constructor")
                 or any(ord(c) <= 31 for c in key)
             ):
