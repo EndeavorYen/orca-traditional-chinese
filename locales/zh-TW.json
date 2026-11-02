@@ -7288,16 +7288,16 @@
             "pr": {
               "stack": {
                 "confirmation": {
-                  "1feef35ca4": "透過 #{{pr}} 合併？",
-                  "queueDescription_one": "{{included}}GitHub 會將 {{count}} 個 PR 一起加入合併佇列。佇列會決定合併方式，並可能分組進行合併。",
-                  "queueDescription_other": "{{included}}GitHub 會將 {{count}} 個 PR 一起加入合併佇列。佇列會決定合併方式，並可能分組進行合併。",
+                  "1feef35ca4": "合併至 #{{pr}}（含）？",
+                  "queueDescription_one": "{{included}}GitHub 會將 {{count}} 個提取請求一起加入合併佇列。佇列會決定合併方式，並可能分組進行合併。",
+                  "queueDescription_other": "{{included}}GitHub 會將 {{count}} 個提取請求一起加入合併佇列。佇列會決定合併方式，並可能分組進行合併。",
                   "queueConfirm_one": "將 {{count}} 個 PR 加入佇列",
                   "queueConfirm_other": "將 {{count}} 個 PR 加入佇列",
-                  "mergeDescription_one": "{{included}}GitHub 將使用 {{method}} 以原子方式合併 {{count}} 個 PR。若它無法合併，則不會合併任何內容。",
-                  "mergeDescription_other": "{{included}}GitHub 將使用 {{method}} 以原子方式合併 {{count}} 個 PR。若有任何一個無法合併，則全部都不會合併。",
+                  "mergeDescription_one": "{{included}}GitHub 將使用 {{method}} 以原子方式合併 {{count}} 個提取請求。若它無法合併，則不會合併任何內容。",
+                  "mergeDescription_other": "{{included}}GitHub 將使用 {{method}} 以原子方式合併 {{count}} 個提取請求。若有任何一個無法合併，則全部都不會合併。",
                   "mergeConfirm_one": "合併 {{count}} 個 PR",
                   "mergeConfirm_other": "合併 {{count}} 個 PR",
-                  "541984b2eb": "將 #{{pr}} 加入佇列？",
+                  "541984b2eb": "將 #{{pr}}（含）以前的提取請求加入佇列？",
                   "84f6f5b9eb": "已包含：{{numbers}}。"
                 },
                 "merge": {
