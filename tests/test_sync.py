@@ -204,7 +204,7 @@ class Manifests(unittest.TestCase):
         root = Path(__file__).resolve().parents[1]
         plugin = json.loads((root / "orca-plugin.json").read_text())
         market = json.loads((root / "orca-marketplace.json").read_text())
-        self.assertEqual(plugin["engines"]["orca"], ">=1.4.0")
+        self.assertEqual(plugin["engines"]["orca"], ">=1.4.245")
         self.assertEqual(set(plugin["contributes"]["languagePacks"][0]), {"locale", "path"})
         self.assertNotIn("displayName", (root / "orca-plugin.json").read_text())
         self.assertEqual(V.check_manifests(plugin, market), [])
@@ -451,7 +451,7 @@ class CommittedPack(unittest.TestCase):
         self.assertIn(release, badge_body)
         status = readme[readme.index("<!-- sync-status:start -->"):readme.index("<!-- sync-status:end -->")]
         self.assertIn(release, status)
-        self.assertIn(">=1.4.0", readme)
+        self.assertIn(">=1.4.245", readme)
         self.assertIn("not the badge's tested release", readme)
         self.assertIn("patch", readme)
 
@@ -462,7 +462,7 @@ class CommittedPack(unittest.TestCase):
             self.assertNotIn(term, resync)
         maintaining = (self.root / "docs/MAINTAINING.md").read_text()
         self.assertIn("exceptions", maintaining)
-        self.assertIn(">=1.4.0", maintaining)
+        self.assertIn(">=1.4.245", maintaining)
         self.assertIn("not the badge's tested release", maintaining)
         self.assertNotIn("zero occurrences", maintaining)
         workflow = (self.root / ".github/workflows/resync-check.yml").read_text()

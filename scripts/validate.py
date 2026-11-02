@@ -3,11 +3,16 @@
 Two layers, both pure functions (no network, no files):
 
 1. Loader rules -- mirror Orca's ``parsePluginLanguagePackArtifact``. A structural
-   break (unsafe key, depth, length, or a value that is not a string or object)
-   makes Orca reject the whole pack at load time, so those are errors. A protected
-   path rejects the whole pack through v1.4.244. From v1.4.245 the runtime skips
-   that path and leaves the English string; strict validation still errors, and
-   so does this checker.
+   break rejects the whole pack through v1.4.244. From v1.4.245 the loader
+   checks each key before it applies the protected-path skip, so an unsafe key
+   (empty, over 128 characters, a reserved name, a dot, or a control character)
+   at a protected position still rejects the pack, but keys inside a skipped
+   protected value are never read, so they do not. Other breaks (depth, value
+   length, or a value that is not a string or object) reject the pack from
+   v1.4.245 only outside a protected path. This checker reports all of them.
+   Translating a protected path rejects the whole pack through v1.4.244. From
+   v1.4.245 the runtime skips that path and leaves the English string; strict
+   validation still errors, and so does this checker.
    The constants are parsed out of the upstream TypeScript at sync time
    (``parse_rules``) instead of being copied here, so an upstream rule change
    cannot silently diverge from this checker.
