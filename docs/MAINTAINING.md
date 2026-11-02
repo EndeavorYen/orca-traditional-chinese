@@ -116,7 +116,7 @@ allows `name`, `owner` and `plugins`, so do not add fields to it.
   Syncing to an Orca release uses that same patch bump. It does not bump minor
   just because Orca shipped a release.
 - Bump **minor** by hand for a plugin identity change or a release worth calling
-  out, **major** if `engines.orca` or `pluginApi` moves.
+  out, **major** if `engines.orca` moves.
 - Commit the bumped manifest together with the resync so the version always
   matches the catalog it ships.
 
@@ -150,19 +150,22 @@ see a *different* plugin: existing users must remove the old one and install the
 new one, so say so in the README and release notes (done for
 `a-lang.traditional-chinese`).
 
-**displayName.** The language menu shows `zh-TW — <publisher>.<id>`; native
-custom names are tracked in stablyai/orca [#13031](https://github.com/stablyai/orca/issues/13031) /
-PR [#13140](https://github.com/stablyai/orca/pull/13140). **Do not add `displayName`
-to `orca-plugin.json` until PR #13140 is merged** — the upstream manifest schema is
-`.strict()`, so an unknown key makes Orca reject the whole plugin.
+**displayName.** The pack uses manifest format 2 with `execution: data` and a
+language-pack `displayName`, which sets the label in the language picker. Orca
+supports both from v1.4.245, which is already the `engines.orca` floor. Format 2 is
+strict: unknown keys are rejected at every level, and `pluginApi` is refused on
+`data` plugins, so the manifest omits it (it defaults to 1). Orca before v1.4.245
+rejects `displayName` as an unknown key; `sync.py validate` only accepts it together
+with format 2, and checks the rules above.
 
 **Moving or forking the pack** -- change together, then run
 `python3 scripts/sync.py validate`:
 
 1. `orca-plugin.json`: `publisher`, `repository`, `version`
 2. `orca-marketplace.json`: `owner`, plugin `id`, `source.url`
-3. `README.md`: install URL, plugin id, the language-picker label
-   (`zh-TW — <publisher>.<id>`), and the migration note
+3. `README.md`: install URL, plugin id, the older-version language-picker label
+   (`zh-TW — <publisher>.<id>`), and the migration note. The current label is the
+   `displayName` in `orca-plugin.json`; keep the README in step if it changes
 4. `UPSTREAM_REPO` in `scripts/sync.py` only if the *upstream* Orca repo moves
 
 ## GitHub Release notes

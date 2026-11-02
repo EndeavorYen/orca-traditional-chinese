@@ -422,8 +422,22 @@ def validate_catalog(
 _ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 _OWNER_RE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$")
 _SEMVER_RE = re.compile(r"^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
-# pluginLanguagePackContributionSchema is strict today: only these keys.
-LANGUAGE_PACK_KEYS = frozenset({"locale", "path"})
+# pluginLanguagePackContributionSchema is strict. Orca before v1.4.245 rejects displayName as an
+# unknown key. Allowing it only with manifest format 2 (Orca >=1.4.245) is this pack's rule.
+LANGUAGE_PACK_KEYS_V1 = frozenset({"locale", "path"})
+LANGUAGE_PACK_KEYS_V2 = LANGUAGE_PACK_KEYS_V1 | {"displayName"}
+DISPLAY_NAME_MAX_LENGTH = 80
+# Mirrors upstream plugin-execution-profile.ts and pluginManifestV2Object.
+EXECUTION_PROFILES = ("data", "declarative", "sandboxed-ui", "trusted-worker")
+NO_HOST_API_PROFILES = ("data", "declarative")
+MANIFEST_V2_KEYS = frozenset({
+    "$schema", "manifestVersion", "execution", "id", "publisher", "name", "version", "description",
+    "author", "repository", "license", "homepage", "icon", "engines", "main", "contributes",
+    "capabilities", "cover", "screenshots", "pluginApi",
+})
+MANIFEST_V2_MIN_ORCA = (1, 4, 245)
+SCHEMA_URL_MAX_LENGTH = 2048
+_ENGINE_RANGE_RE = re.compile(r">=(\d+)\.(\d+)\.(\d+)")
 
 
 def check_manifests(plugin: dict[str, Any], marketplace: dict[str, Any] | None) -> list[str]:
@@ -453,16 +467,68 @@ def check_manifests(plugin: dict[str, Any], marketplace: dict[str, Any] | None) 
             errs.append(f"orca-marketplace.json has no plugin id {publisher}.{pid!s} (found {ids}); it must equal <publisher>.<id> of the manifest")
         if len(ids) != len(set(ids)):
             errs.append("orca-marketplace.json has duplicate plugin ids")
+    errs.extend(manifest_format_errors(plugin))
     errs.extend(language_pack_errors(plugin))
+    return errs
+
+
+def manifest_format_errors(plugin: dict[str, Any]) -> list[str]:
+    """Format 1 and format 2 rules from upstream plugin-manifest.ts."""
+    version = plugin.get("manifestVersion")
+    # bool is an int in Python, but JSON `true` is not the literal 1.
+    if isinstance(version, bool) or version not in (1, 2):
+        return [f"orca-plugin.json manifestVersion {version!r} must be 1 or 2"]
+    if version == 1:
+        if "pluginApi" not in plugin:
+            return ["orca-plugin.json pluginApi is required in manifest format 1"]
+        return []
+
+    errs: list[str] = []
+    unknown = sorted(set(plugin) - MANIFEST_V2_KEYS)
+    if unknown:
+        errs.append(f"orca-plugin.json has unknown top-level key(s) {', '.join(unknown)}; manifest format 2 is strict")
+    schema_url = plugin.get("$schema", "")
+    if not isinstance(schema_url, str) or len(schema_url) > SCHEMA_URL_MAX_LENGTH:
+        errs.append(f"orca-plugin.json $schema must be a string of at most {SCHEMA_URL_MAX_LENGTH} characters")
+    execution = plugin.get("execution")
+    if execution not in EXECUTION_PROFILES:
+        errs.append(f"orca-plugin.json execution {execution!r} must be one of {', '.join(EXECUTION_PROFILES)}")
+    elif execution in NO_HOST_API_PROFILES and "pluginApi" in plugin:
+        errs.append(f"orca-plugin.json pluginApi is refused on {execution} plugins, which never call the host API")
+    errs.extend(engine_errors(plugin))
+    return errs
+
+
+def engine_errors(plugin: dict[str, Any]) -> list[str]:
+    """Format 2 allows only engines.orca, and it must reach the first release that reads format 2."""
+    engines = plugin.get("engines")
+    if not isinstance(engines, dict):
+        return ["orca-plugin.json engines must be an object with an orca range in manifest format 2"]
+    errs: list[str] = []
+    unknown = sorted(set(engines) - {"orca"})
+    if unknown:
+        errs.append(f"orca-plugin.json engines has unknown key(s) {', '.join(unknown)}; manifest format 2 accepts only orca")
+    orca = engines.get("orca")
+    m = _ENGINE_RANGE_RE.fullmatch(orca) if isinstance(orca, str) else None
+    floor = ".".join(map(str, MANIFEST_V2_MIN_ORCA))
+    if m is None:
+        errs.append(f"orca-plugin.json engines.orca {orca!r} must be a >=x.y.z range")
+    elif tuple(map(int, m.groups())) < MANIFEST_V2_MIN_ORCA:
+        errs.append(f"orca-plugin.json engines.orca {orca!r} must be at least >={floor} for manifest format 2")
     return errs
 
 
 def language_pack_errors(plugin: dict[str, Any]) -> list[str]:
     """Unknown language-pack keys fail the whole plugin under the strict schema.
 
-    `displayName` is not accepted until upstream ships it. `locale` and `path` pass.
+    Orca before v1.4.245 knows only `locale` and `path`, so it rejects `displayName` as an
+    unknown key. This pack's rule is stricter than upstream: `displayName` is accepted only
+    with manifest format 2, which needs Orca >=1.4.245, so it never appears in a manifest
+    that older Orca could still try to read.
     """
     errs: list[str] = []
+    v2 = plugin.get("manifestVersion") == 2
+    allowed = LANGUAGE_PACK_KEYS_V2 if v2 else LANGUAGE_PACK_KEYS_V1
     contributes = plugin.get("contributes")
     if not isinstance(contributes, dict):
         return errs
@@ -476,14 +542,33 @@ def language_pack_errors(plugin: dict[str, Any]) -> list[str]:
         if not isinstance(pack, dict):
             errs.append(f"orca-plugin.json languagePacks[{index}] must be an object")
             continue
-        unknown = sorted(set(pack) - LANGUAGE_PACK_KEYS)
+        unknown = sorted(set(pack) - allowed)
         if unknown:
+            rule = (
+                f"manifest format 2 accepts only {', '.join(sorted(allowed))}"
+                if v2
+                else "this pack allows only locale and path in manifest format 1: displayName needs "
+                "manifest format 2, which needs Orca >=1.4.245, and Orca before v1.4.245 rejects "
+                "displayName as an unknown key"
+            )
             errs.append(
                 "orca-plugin.json languagePacks"
-                f"[{index}] has unknown key(s) {', '.join(unknown)}; "
-                "pluginLanguagePackContributionSchema only accepts locale and path"
+                f"[{index}] has unknown key(s) {', '.join(unknown)}; {rule}"
+            )
+        if v2 and "displayName" in pack and not _valid_display_name(pack["displayName"]):
+            errs.append(
+                f"orca-plugin.json languagePacks[{index}] displayName must be a string of "
+                f"1 to {DISPLAY_NAME_MAX_LENGTH} characters after trimming"
             )
     return errs
+
+
+def _valid_display_name(value: Any) -> bool:
+    if not isinstance(value, str):
+        return False
+    # zod measures UTF-16 code units, so a character outside the BMP counts as two.
+    length = len(value.strip().encode("utf-16-le", "surrogatepass")) // 2
+    return 1 <= length <= DISPLAY_NAME_MAX_LENGTH
 
 
 def summarize(items: list[tuple[str, str, str]], limit: int = 8) -> str:

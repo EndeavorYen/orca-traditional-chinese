@@ -1,20 +1,21 @@
 {
-  "manifestVersion": 1,
+  "manifestVersion": 2,
+  "execution": "data",
   "id": "traditional-chinese",
   "publisher": "endeavoryen",
   "name": "繁體中文（台灣）",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Traditional Chinese (zh-TW) translations for Orca.",
   "repository": "https://github.com/EndeavorYen/orca-traditional-chinese",
   "engines": {
     "orca": ">=1.4.245"
   },
-  "pluginApi": 1,
   "contributes": {
     "languagePacks": [
       {
         "locale": "zh-TW",
-        "path": "locales/zh-TW.json"
+        "path": "locales/zh-TW.json",
+        "displayName": "繁體中文（台灣）"
       }
     ]
   },

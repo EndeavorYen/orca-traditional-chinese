@@ -14,7 +14,7 @@
 
 1. **新增來源**：前往 **Settings → Plugins**，開啟 **Plugin system**（預設關閉且標記為實驗性），點選 **Manage sources**，輸入 Git URL `https://github.com/EndeavorYen/orca-traditional-chinese.git`、Git ref `main`，再按 **Add source**。
 2. **安裝並啟用**：在 **Traditional Chinese** 卡片按 **Install** → **Install plugin**，再按 **Enable plugin**。
-3. **套用語言**：前往 **Settings → Appearance → Language**，選取 `zh-TW — endeavoryen.traditional-chinese`。
+3. **套用語言**：前往 **Settings → Appearance → Language**，選取「繁體中文（台灣）」。
 
 > **遷移提示**：先前使用 `a-lang.traditional-chinese` 的使用者，因發布者身分已變更為 `endeavoryen`，請先移除舊的來源與外掛，再依上述步驟安裝。
 
@@ -32,7 +32,7 @@
 ## 已知限制
 
 - 外掛保護鍵值（`auto.components.settings.plugin*`）與超過 8,192 字元的超長字串依設計維持英文。
-- 語言選單目前顯示為 `zh-TW — endeavoryen.traditional-chinese`，待上游支援自訂 `displayName`（[#13031](https://github.com/stablyai/orca/issues/13031)、[#13140](https://github.com/stablyai/orca/pull/13140)）。
+- 語言選單自語言包 2.1.0（需 Orca v1.4.245 以上）起顯示為「繁體中文（台灣）」；更早的語言包版本仍顯示 `zh-TW — endeavoryen.traditional-chinese`。
 - 譯文採 LLM 輔助生成，並經 loader、placeholder 與術語表自動檢查，歡迎協助修正。
 
 ## 貢獻

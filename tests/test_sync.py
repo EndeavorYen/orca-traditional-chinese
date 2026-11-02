@@ -170,7 +170,25 @@ class Validate(unittest.TestCase):
 
 
 class Manifests(unittest.TestCase):
-    PLUGIN = {"publisher": "endeavoryen", "id": "traditional-chinese", "version": "1.1.0"}
+    PACK = {"locale": "zh-TW", "path": "locales/zh-TW.json"}
+    PLUGIN = {
+        "manifestVersion": 2,
+        "execution": "data",
+        "publisher": "endeavoryen",
+        "id": "traditional-chinese",
+        "version": "1.1.0",
+        "engines": {"orca": ">=1.4.245"},
+        "contributes": {"languagePacks": [PACK]},
+    }
+    PLUGIN_V1 = {
+        "manifestVersion": 1,
+        "pluginApi": 1,
+        "publisher": "endeavoryen",
+        "id": "traditional-chinese",
+        "version": "1.1.0",
+        "engines": {"orca": ">=1.4.160"},
+        "contributes": {"languagePacks": [PACK]},
+    }
     MARKET = {"owner": "EndeavorYen", "plugins": [{"id": "endeavoryen.traditional-chinese"}]}
 
     def test_good(self):
@@ -192,21 +210,80 @@ class Manifests(unittest.TestCase):
     def test_bad_semver(self):
         self.assertTrue(V.check_manifests({**self.PLUGIN, "version": "1.1"}, None))
 
-    def test_language_pack_accepts_only_locale_and_path(self):
-        pack = {"locale": "zh-TW", "path": "locales/zh-TW.json"}
-        plugin = {**self.PLUGIN, "contributes": {"languagePacks": [pack]}}
-        self.assertEqual(V.check_manifests(plugin, None), [])
-        bad = {**pack, "displayName": "繁體中文"}
-        errs = V.check_manifests({**self.PLUGIN, "contributes": {"languagePacks": [bad]}}, None)
-        self.assertTrue(any("displayName" in e for e in errs))
+    def with_pack(self, plugin, **extra):
+        return {**plugin, "contributes": {"languagePacks": [{**self.PACK, **extra}]}}
 
-    def test_shipped_manifest_keeps_display_name_out(self):
+    def assert_error(self, plugin, needle):
+        errs = V.check_manifests(plugin, None)
+        self.assertTrue(any(needle in e for e in errs), errs)
+
+    def without(self, plugin, key):
+        return {k: v for k, v in plugin.items() if k != key}
+
+    def test_manifest_version_must_be_1_or_2(self):
+        for version in (0, 3, "2", True, None):
+            self.assert_error({**self.PLUGIN, "manifestVersion": version}, "manifestVersion")
+        self.assert_error(self.without(self.PLUGIN, "manifestVersion"), "manifestVersion")
+
+    def test_pack_rule_allows_display_name_only_in_v2(self):
+        self.assertEqual(V.check_manifests(self.PLUGIN_V1, None), [])
+        self.assert_error(self.with_pack(self.PLUGIN_V1, displayName="繁體中文"), "this pack allows only")
+
+    def test_v1_requires_plugin_api_and_stays_lenient_otherwise(self):
+        self.assert_error(self.without(self.PLUGIN_V1, "pluginApi"), "pluginApi")
+        self.assertEqual(V.check_manifests({**self.PLUGIN_V1, "someFutureKey": 1}, None), [])
+
+    def test_v2_accepts_display_name(self):
+        for name in ("繁體中文（台灣）", "x" * 80, "  " + "x" * 80 + "  "):
+            self.assertEqual(V.check_manifests(self.with_pack(self.PLUGIN, displayName=name), None), [])
+
+    def test_v2_rejects_unknown_pack_key(self):
+        self.assert_error(self.with_pack(self.PLUGIN, label="繁體中文"), "label")
+
+    def test_v2_rejects_bad_display_name(self):
+        for name in ("", "   ", "x" * 81, "\U0001F600" * 41, 1, None):
+            self.assert_error(self.with_pack(self.PLUGIN, displayName=name), "displayName")
+
+    def test_v2_requires_a_known_execution(self):
+        self.assert_error(self.without(self.PLUGIN, "execution"), "execution")
+        for value in ("native", "", ["data"], None):
+            self.assert_error({**self.PLUGIN, "execution": value}, "execution")
+
+    def test_v2_plugin_api_depends_on_execution(self):
+        for execution in ("data", "declarative"):
+            self.assert_error({**self.PLUGIN, "execution": execution, "pluginApi": 1}, "pluginApi")
+        for execution in ("sandboxed-ui", "trusted-worker"):
+            self.assertEqual(V.check_manifests({**self.PLUGIN, "execution": execution, "pluginApi": 1}, None), [])
+
+    def test_v2_rejects_unknown_top_level_key(self):
+        self.assert_error({**self.PLUGIN, "someFutureKey": 1}, "someFutureKey")
+
+    def test_v2_schema_url_must_be_a_bounded_string(self):
+        self.assertEqual(V.check_manifests({**self.PLUGIN, "$schema": "https://example.com/s.json"}, None), [])
+        for value in (1, "x" * 2049):
+            self.assert_error({**self.PLUGIN, "$schema": value}, "$schema")
+
+    def test_v2_engine_rules(self):
+        for orca in (">=1.4.244", ">=1.3.999", ">=0.9.300"):
+            self.assert_error({**self.PLUGIN, "engines": {"orca": orca}}, "at least")
+        self.assertEqual(V.check_manifests({**self.PLUGIN, "engines": {"orca": ">=1.10.0"}}, None), [])
+        for orca in ("1.4.245", "^1.4.245", ">=1.4", ">=1.4.245\n", 1):
+            self.assert_error({**self.PLUGIN, "engines": {"orca": orca}}, "range")
+        self.assert_error(self.without(self.PLUGIN, "engines"), "engines")
+        self.assert_error({**self.PLUGIN, "engines": {}}, "engines.orca")
+        self.assert_error({**self.PLUGIN, "engines": {"orca": ">=1.4.245", "node": ">=20.0.0"}}, "node")
+
+    def test_shipped_manifest_is_format_2_with_display_name(self):
         root = Path(__file__).resolve().parents[1]
-        plugin = json.loads((root / "orca-plugin.json").read_text())
-        market = json.loads((root / "orca-marketplace.json").read_text())
+        plugin = json.loads((root / "orca-plugin.json").read_text("utf-8"))
+        market = json.loads((root / "orca-marketplace.json").read_text("utf-8"))
+        self.assertEqual(plugin["manifestVersion"], 2)
+        self.assertEqual(plugin["execution"], "data")
+        self.assertNotIn("pluginApi", plugin)
+        self.assertEqual(plugin["publisher"], "endeavoryen")
+        self.assertEqual(plugin["id"], "traditional-chinese")
         self.assertEqual(plugin["engines"]["orca"], ">=1.4.245")
-        self.assertEqual(set(plugin["contributes"]["languagePacks"][0]), {"locale", "path"})
-        self.assertNotIn("displayName", (root / "orca-plugin.json").read_text())
+        self.assertEqual(plugin["contributes"]["languagePacks"][0]["displayName"], "繁體中文（台灣）")
         self.assertEqual(V.check_manifests(plugin, market), [])
 
 
@@ -469,7 +546,8 @@ class CommittedPack(unittest.TestCase):
         self.assertNotIn("--ref main", workflow)
         self.assertIn(".release", workflow)
         self.assertNotIn("\n  release:", workflow)
-        self.assertIn("displayName", (self.root / "README.md").read_text())
+        self.assertIn("繁體中文（台灣）", (self.root / "README.md").read_text("utf-8"))
+        self.assertIn("displayName", maintaining)
 
 
 class Merge(unittest.TestCase):
