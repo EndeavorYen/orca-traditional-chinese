@@ -120,9 +120,9 @@ allows `name`, `owner` and `plugins`, so do not add fields to it.
 - Commit the bumped manifest together with the resync so the version always
   matches the catalog it ships.
 
-`engines.orca` (`>=1.4.245`) is the minimum engine that can load this pack, not the badge's tested release. From 2.0.0 the catalog has more than 20000 entries, which Orca v1.4.244 and earlier reject, so older Orca releases stay on 1.1.19.
+`engines.orca` (`>=1.4.245`) is the minimum engine that can load this pack, not the badge's tested release. From 2.0.0 the catalog has more than 20000 entries, which Orca v1.4.244 and earlier reject. Existing installs on those releases stay on 1.1.19, but a new install there fails, because the marketplace source follows `main`. On Orca v1.4.244 and earlier, add the source with Git URL `https://github.com/EndeavorYen/orca-traditional-chinese.git` and Git ref `v1.1.19` instead of `main`.
 The README badge and `.sync/lock.json` `upstream.release` name the Orca release the catalog
-was synced against (plus `upstream.sha`, that release's commit). Move it only when an older engine can no longer load the pack, with a major version bump.
+was synced against (plus `upstream.sha`, that release's commit). Move `engines.orca` only when an older engine can no longer load the pack, with a major version bump.
 
 `check` and `prepare` default to the latest stable Orca release: GitHub's latest release,
 which is not an `-rc` / prerelease and not `main`. Pass `--ref main` to track main, or
